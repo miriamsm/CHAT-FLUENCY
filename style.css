@@ -92,4 +92,9 @@ li a {
 li a:hover {
   background-color: #111;
 }
-  
+.mycontainer {
+  display: flex;
+}
+.mycontainer > div {
+  width:33%;
+}
