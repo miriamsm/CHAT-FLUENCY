@@ -10,7 +10,7 @@
    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.2/css/all.min.css">
 
    <!-- custom css file link  -->
-   <link rel="stylesheet" href="css/style.css">
+   <link rel="stylesheet" href="style.css">
 
 </head>
 <body>
@@ -19,7 +19,7 @@
    
    <section class="flex">
 
-      <a href="home.html" class="logo">Educa.</a>
+      <a href="home.html" class="logo"></a> <img src = "logo.jpg" width="210" height="60"> 
 
       <form action="search.html" method="post" class="search-form">
          <input type="text" name="search_box" required placeholder="search courses..." maxlength="100">
@@ -33,17 +33,6 @@
          <div id="toggle-btn" class="fas fa-sun"></div>
       </div>
 
-      <div class="profile">
-         <img src="images/pic-1.jpg" class="image" alt="">
-         <h3 class="name">shaikh anas</h3>
-         <p class="role">studen</p>
-         <a href="profile.html" class="btn">view profile</a>
-         <div class="flex-btn">
-            <a href="login.html" class="option-btn">login</a>
-            <a href="register.html" class="option-btn">register</a>
-         </div>
-      </div>
-
    </section>
 
 </header>   
@@ -55,16 +44,15 @@
    </div>
 
    <div class="profile">
-      <img src="images/pic-1.jpg" class="image" alt="">
-      <h3 class="name">shaikh anas</h3>
-      <p class="role">studen</p>
-      <a href="profile.html" class="btn">view profile</a>
+      <img src="pic-1.jpg" class="image" alt="">
+      <h3 class="name">Leena Alshaikh</h3>
+      <p class="role">Learner</p>
    </div>
 
    <nav class="navbar">
       <a href="home.html"><i class="fas fa-home"></i><span>home</span></a>
       <a href="about.html"><i class="fas fa-question"></i><span>about</span></a>
-      <a href="courses.html"><i class="fas fa-graduation-cap"></i><span>courses</span></a>
+      <a href="courses.html"><i class="fas fa-graduation-cap"></i><span>sessions</span></a>
       <a href="teachers.html"><i class="fas fa-chalkboard-user"></i><span>teachers</span></a>
       <a href="contact.html"><i class="fas fa-headset"></i><span>contact us</span></a>
    </nav>
@@ -74,47 +62,34 @@
 <section class="form-container">
 
    <form action="" method="post" enctype="multipart/form-data">
-      <h3>update profile</h3>
-      <p>update name</p>
-      <input type="text" name="name" placeholder="shaikh anas" maxlength="50" class="box">
-      <p>update email</p>
-      <input type="email" name="email" placeholder="shaikh@gmail.come" maxlength="50" class="box">
+      <h3>edit profile</h3>
+      <p>edit first name</p>
+      <input type="text" name="name" placeholder="Leena" maxlength="50" class="box">
+      <p>edit last name</p>
+      <input type="text" name="name" placeholder="Alshaikh" maxlength="50" class="box">
+      <p>edit location, city</p>
+      <input type="text" name="name" placeholder="Riyadh, KSA" maxlength="50" class="box">
+      <p>edit email</p>
+      <input type="email" name="email" placeholder="Leena@gmail.come" maxlength="50" class="box">
+    </form>
+</section>
+<section class="form-container">
+      <form action="" method="post" enctype="multipart/form-data">
       <p>previous password</p>
       <input type="password" name="old_pass" placeholder="enter your old password" maxlength="20" class="box">
       <p>new password</p>
       <input type="password" name="new_pass" placeholder="enter your old password" maxlength="20" class="box">
       <p>confirm password</p>
       <input type="password" name="c_pass" placeholder="confirm your new password" maxlength="20" class="box">
-      <p>update pic</p>
+      <p>edit pic</p>
       <input type="file" accept="image/*" class="box">
-      <input type="submit" value="update profile" name="submit" class="btn">
+      <input type="submit" value="cancel" name="submit" class="option-btn">
+      <input type="submit" value="update" name="submit" class="btn">
+      <input type="submit" value="delete account" name="submit" class="delete-btn">
    </form>
-
 </section>
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-<footer class="footer">
-
-   &copy; copyright @ 2022 by <span>mr. web designer</span> | all rights reserved!
-
-</footer>
-
-<!-- custom js file link  -->
-<script src="js/script.js"></script>
-
-   
 </body>
 </html>
