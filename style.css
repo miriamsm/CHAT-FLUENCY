@@ -1235,15 +1235,16 @@ section{
 .form-container{
    min-height: calc(100vh - 20rem);
    display: flex;
-   align-items: center;
-   justify-content: center;
+ 
 }
+
 
 .form-container form{
    background-color: var(--white);
    border-radius: .5rem;
    padding: 2rem;
    width: 50rem;
+   margin: 10px;
 }
 
 .form-container form h3{
