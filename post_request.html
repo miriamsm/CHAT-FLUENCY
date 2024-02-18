@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>post a request</title>
+    
+   <!-- font awesome cdn link  -->
+   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.2/css/all.min.css">
+
+   <!-- custom css file link  -->
+   <link rel="stylesheet" href="style.css">
+
+</head>
+<body>
+   
+    
+<header class="header">
+   
+    <section class="flex">
+ 
+       <!-- <a class="logo"><img src="images/IMG_9876.png" alt="logo"> </a> -->
+ 
+       <!-- <form action="search.html" method="post" class="search-form">
+          <input type="text" name="search_box" required placeholder="search courses..." maxlength="100">
+          <button type="submit" class="fas fa-search"></button>
+       </form> -->
+ 
+       <div class="icons">
+          <div id="menu-btn" class="fas fa-bars"></div>
+          <div id="search-btn" class="fas fa-search"></div>
+          <div id="user-btn" class="fas fa-user"></div>
+          <div id="toggle-btn" class="fas fa-sun"></div>
+       </div>
+ 
+       <div class="profile">
+          <img src="images/pic-1.jpg" class="image" alt="">
+          <h3 class="name">shaikh anas</h3>
+          <p class="role">studen</p>
+          <a href="profile.html" class="btn">view profile</a>
+          <div class="flex-btn">
+             <a href="login.html" class="option-btn">login</a>
+             <a href="register.html" class="option-btn">register</a>
+          </div>
+       </div>
+ 
+    </section>
+ 
+ </header>   
+
+
+<section class="form-container">
+
+    <form action="" method="post" >
+       <h3>Post a request</h3>
+       <p> language <span>*</span></p>
+       <select id="language" name="language" required class="box">
+        <option value="" disabled selected>Specify the language you want to learn</option>
+        <option value="English">English</option>
+        <option value="Spanish">Spanish</option>
+        <option value="French">French</option>
+        <option value="Mandarin Chinese">Mandarin Chinese</option>
+        <option value="Arabic">Arabic</option>
+        <option value="Hindi">Hindi</option>
+        <option value="Russian">Russian</option>
+        <option value="Portuguese">Portuguese</option>
+        <option value="Bengali">Bengali</option>
+        <option value="German">German</option>
+    </select>       
+       <p> your level <span>*</span></p><select id="level" name="level" required class="box">
+        <option value="" disabled selected>Specify your current proficiency level</option>
+       
+            <option value="Beginner">Beginner</option>
+        
+            <option value="Intermediate">Intermediate</option>
+        
+            <option value="Advanced">Advanced</option>
+        
+    </select>
+       <p>enter your preferred schedule <span>*</span></p>
+       <input type="schedule" name="pass" placeholder="E.g. weekdays evenings , weekends mornings " required maxlength="20" class="box">
+       
+       <p>enter your session duration <span>*</span></p>
+       <input type="duration" name="Session duration" placeholder="E.g. 1 hour , 90 minutes " required maxlength="20" class="box">
+      
+       
+       <input type="submit" value="post" name="submit" class="btn">
+    </form>
+ 
+ </section>
+</body>
+
+
+
+<footer class="footer">
+
+    &copy; copyright @ 2022 by <span>chat fluency</span> | all rights reserved!
+ 
+ </footer>
+ 
+</html>

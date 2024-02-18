@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+   <meta charset="UTF-8">
+   <meta http-equiv="X-UA-Compatible" content="IE=edge">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <title>Sign Up As Language Partner</title>
+
+   <!-- font awesome cdn link  -->
+   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.2/css/all.min.css">
+
+   <!-- custom css file link  -->
+   <link rel="stylesheet" href="style.css">
+
+   <style>
+      body {
+         margin: 0;
+         padding: 0;
+      }
+
+      .header {
+         background-color: #333;
+         color: #fff;
+         padding: 10px;
+      }
+
+      .footer {
+         background-color: #333;
+         color: #fff;
+         padding: 10px;
+         text-align: center;
+      }
+   </style>
+   
+
+
+</head>
+<body>
+
+<header class="header">
+   
+   <section class="flex">
+      <a href="home.html" class="logo">Educa.</a>
+      <!-- Other header content goes here -->
+   </section>
+
+</header>   
+
+
+<section class="form-container">
+   <form action="" method="post" enctype="multipart/form-data">
+      <h3>Sign up now</h3>
+      <p>Your first name <span>*</span></p>
+      <input type="text" name="first_name" placeholder="enter your first name" required maxlength="50" class="box">
+      
+      <p>Your last name <span>*</span></p>
+      <input type="text" name="last_name" placeholder="enter your last name" required maxlength="50" class="box">
+   
+      <p>Your email <span>*</span></p>
+      <input type="email" name="email" placeholder="enter your email" required maxlength="50" class="box">
+   
+      <p>Your password <span>*</span></p>
+      <input type="password" name="pass" placeholder="enter your password" required maxlength="20" class="box">
+   
+      <p>Your photo (optional)</p>
+      <input type="file" name="photo" accept="image/*">
+   
+      <p>Your city <span>*</span></p>
+      <input type="text" name="city" placeholder="enter your city" required maxlength="50" class="box">
+   
+      <p>Your location <span>*</span></p>
+      <input type="text" name="location" placeholder="enter your location" required maxlength="100" class="box">
+
+      <button type="button">Add Interests</button>
+
+      <button type="button">Add Gender</button>
+
+      <button type="button">Add Phone</button>
+
+      <button type="button">Add Short Bio</button>
+
+      <input type="submit" value="Sign up" name="submit" class="btn">
+   </form>
+</section>
+
+<footer class="footer">
+   &copy; copyright @ 2022 by <span>mr. web designer</span> | all rights reserved!
+</footer>
+
+<!-- custom js file link  -->
+<script src="js/script.js"></script>
+
+</body>
+</html>
