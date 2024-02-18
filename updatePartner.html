@@ -11,7 +11,26 @@
 
    <!-- custom css file link  -->
    <link rel="stylesheet" href="style.css">
-
+   <style>
+      .form-container {
+         display: flex;
+         justify-content: flex-start;
+         align-items: flex-start;
+         min-height: calc(100vh - 20rem);
+      }
+   
+      .form-container form {
+         background-color: var(--white);
+         border-radius: 0.5rem;
+         padding: 2rem;
+         width: 600rem;
+         margin-right: 10px;
+      }
+   
+      .form-container form:last-child {
+         margin-right: 0;
+      }
+   </style>
 </head>
 <body>
 
@@ -79,7 +98,7 @@
     </form>
       <form action="" method="post" enctype="multipart/form-data">
       <p>edit gender</p>
-      <input type="text" name="gender" placeholder="male" maxlength="50" class="box">
+    <input type="text" name="gender" placeholder="male" maxlength="50" class="box">
       <p>edit age</p>
       <input type="text" name="age" placeholder="34" maxlength="50" class="box">
       <p>previous password</p>
