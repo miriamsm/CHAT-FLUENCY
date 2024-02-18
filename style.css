@@ -309,6 +309,11 @@ section{
    padding: 2rem;
    font-size: 2rem;
 }
+.side-bar .navbar img{
+    width: 24px;
+    height: 24px;
+
+}
 
 .side-bar .navbar a i{
    margin-right: 1.5rem;
