@@ -128,8 +128,6 @@ section{
    color: var(--white);
 }
 
-
-
 .flex-btn{
    display: flex;
    gap: 1rem;
