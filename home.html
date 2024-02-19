@@ -5,21 +5,12 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Home</title>
-    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.2/css/all.min.css"> 
+ 
+   <!-- custom css file link  --> 
+   <link rel="stylesheet" href="style.css"> 
+ 
     <style>
-      
-    </style>
-    <link rel="stylesheet" href="style.css">
-    <style>
-      body {
-        margin: 0;
-        padding: 0;
-        display: flex;
-        flex-direction: column;
-        min-height: 100vh; /* Ensure the body takes at least the full viewport height */
-      }
-
-    
       .box {
         width: 500%; /* Adjust the width as needed */
         max-width: 600px; /* Set a maximum width if desired */
@@ -32,32 +23,22 @@
     .box-container{
       text-align: center;
     }
-      .header {
-        padding: 10px;
-      }
-    
-      .footer {
-        padding: 10px;
-        text-align: center;
-        margin-top: auto; /* Push the footer to the bottom */
-      }
     </style>
     
 </head>
-<body>
+<body style="padding-left: 0;">
     <header class="header">
-      <section class="flex">
-
-         <a href="home.html" class="logo"></a> <img src = "images/logo.jpg" width="210" height="60"> 
-   
-        
+      <section class="flex"> 
+         <a class="logo"></a> <img src = "images/logo.jpg" width="210" height="60">  
+         
+         
          <div class="icons">
-            <div id="home-btn" class="fas fa-home"></div>
-         </div>
+            <a href="home.html"> <div id="home-btn" class="fas fa-home"> </div> </a>
+            <div id="toggle-btn" class="fas fa-sun"></div>
+          </div>
+    
    
-       
-   
-      </section>
+      </section> 
     </header>
 
     <section class="home-grid">

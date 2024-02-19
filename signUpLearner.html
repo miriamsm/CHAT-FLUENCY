@@ -12,29 +12,7 @@
    <!-- custom css file link  --> 
    <link rel="stylesheet" href="style.css"> 
  
-   <!-- <style> 
-      body { 
-         margin: 0; 
-         padding: 0; 
-      } 
- 
-      .header { 
-         padding: 10px;
-      } 
- 
-      .footer { 
-         padding: 10px; 
-         text-align: center; 
-      } 
-
-      .flex{
-         display: flex;
-         justify-content: space-between;
-      }
-      .logo{
-         margin-left: auto;
-
-      }
+   <style> 
    .form-container { 
       display: flex; 
       justify-content: flex-start; 
@@ -57,7 +35,7 @@
    .form-container form textarea::placeholder { 
    font-size: 14px;  /* Adjust the font size as needed */ 
 } 
-</style>  -->
+</style>  
  
  
 </head> 
@@ -69,9 +47,12 @@
    <section class="flex"> 
       <a class="logo"></a> <img src = "images/logo.jpg" width="210" height="60">  
       
+      
       <div class="icons">
-         <div id="home-btn" class="fas fa-home"></div>
-      </div>
+         <a href="home.html"> <div id="home-btn" class="fas fa-home"> </div> </a>
+         <div id="toggle-btn" class="fas fa-sun"></div>
+       </div>
+ 
 
    </section> 
  
@@ -95,7 +76,7 @@
  
       
    </form> 
-   <form action="" method="post" enctype="multipart/form-data"> 
+   <form action="profileLearner.html" method="post" enctype="multipart/form-data"> 
        
       <p>Your photo (optional)</p> 
       <input type="file" accept="image/*" class="box"> 
