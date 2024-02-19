@@ -1,112 +1,122 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-   <meta charset="UTF-8">
-   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-   <title>Sign Up As Language Learner</title>
+<!DOCTYPE html> 
+<html lang="en"> 
+<head> 
+   <meta charset="UTF-8"> 
+   <meta http-equiv="X-UA-Compatible" content="IE=edge"> 
+   <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+   <title>Sign Up As Language Learner</title> 
+ 
+   <!-- font awesome cdn link  --> 
+   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.2/css/all.min.css"> 
+ 
+   <!-- custom css file link  --> 
+   <link rel="stylesheet" href="style.css"> 
+ 
+   <!-- <style> 
+      body { 
+         margin: 0; 
+         padding: 0; 
+      } 
+ 
+      .header { 
+         padding: 10px;
+      } 
+ 
+      .footer { 
+         padding: 10px; 
+         text-align: center; 
+      } 
 
-   <!-- font awesome cdn link  -->
-   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.2/css/all.min.css">
+      .flex{
+         display: flex;
+         justify-content: space-between;
+      }
+      .logo{
+         margin-left: auto;
 
-   <!-- custom css file link  -->
-   <link rel="stylesheet" href="style.css">
-
-</head>
-<body>
-
-<header class="header">
-   
-   <section class="flex">
-
-      <a href="home.html" class="logo">Educa.</a>
-
-     
-
+      }
+   .form-container { 
+      display: flex; 
+      justify-content: flex-start; 
+      align-items: flex-start; 
+      min-height: calc(100vh - 20rem); 
+   } 
+ 
+   .form-container form { 
+      background-color: var(--white); 
+      border-radius: 0.5rem; 
+      padding: 2rem; 
+      width: 60%; 
+      margin-right: 10px; 
+   } 
+ 
+   .form-container form:last-child { 
+      margin-right: 0; 
+   } 
+ 
+   .form-container form textarea::placeholder { 
+   font-size: 14px;  /* Adjust the font size as needed */ 
+} 
+</style>  -->
+ 
+ 
+</head> 
+<body style="padding-left: 0;"> 
+ 
+<header class="header"> 
+    
+    
+   <section class="flex"> 
+      <a class="logo"></a> <img src = "images/logo.jpg" width="210" height="60">  
+      
       <div class="icons">
-         <div id="menu-btn" class="fas fa-bars"></div>
-         <div id="search-btn" class="fas fa-search"></div>
-         <div id="user-btn" class="fas fa-user"></div>
-         <div id="toggle-btn" class="fas fa-sun"></div>
+         <div id="home-btn" class="fas fa-home"></div>
       </div>
 
-   </section>
-
-</header>   
-
-<div class="side-bar">
-
-   <div id="close-btn">
-      <i class="fas fa-times"></i>
-   </div>
-
-   <div class="profile">
-      <img src="images/pic-1.jpg" class="image" alt="">
-      <h3 class="name">shaikh anas</h3>
-      <p class="role">studen</p>
-      <a href="profile.html" class="btn">view profile</a>
-   </div>
-
-   <nav class="navbar">
-      <a href="home.html"><i class="fas fa-home"></i><span>home</span></a>
+   </section> 
+ 
+</header>    
+ 
+ 
+<section class="form-container"> 
+   <form action="" method="post" enctype="multipart/form-data"> 
+       
+      <p>Your first name <span>*</span></p> 
+      <input type="text" name="first_name" placeholder="enter your first name" required maxlength="50" class="box"> 
+ 
+      <p>Your last name <span>*</span></p> 
+      <input type="text" name="last_name" placeholder="enter your last name" required maxlength="50" class="box"> 
+ 
+      <p>Your email <span>*</span></p> 
+      <input type="email" name="email" placeholder="enter your email" required maxlength="50" class="box"> 
+ 
+      <p>Your password <span>*</span></p> 
+      <input type="password" name="pass" placeholder="enter your password" required maxlength="20" class="box"> 
+ 
       
-   </nav>
-
-</div>
-
-<section class="form-container">
-
-   <form action="" method="post" enctype="multipart/form-data">
-      <h3>Sign up now</h3>
-      <p>Your first name <span>*</span></p>
-      <input type="text" name="first_name" placeholder="enter your first name" required maxlength="50" class="box">
-      
-      <p>Your last name <span>*</span></p>
-      <input type="text" name="last_name" placeholder="enter your last name" required maxlength="50" class="box">
-   
-      <p>Your email <span>*</span></p>
-      <input type="email" name="email" placeholder="enter your email" required maxlength="50" class="box">
-   
-      <p>Your password <span>*</span></p>
-      <input type="password" name="pass" placeholder="enter your password" required maxlength="20" class="box">
-   
-      <p>Your photo (optional)</p>
-      <input type="file" name="photo" accept="image/*">
-   
-      <p>Your city <span>*</span></p>
-      <input type="text" name="city" placeholder="enter your city" required maxlength="50" class="box">
-   
-      <p>Your location <span>*</span></p>
-      <input type="text" name="location" placeholder="enter your location" required maxlength="100" class="box">
-   
-      <input type="submit" value="Sign up" name="submit" class="btn">
-   </form>
-
-</section>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<footer class="footer">
-
-   &copy; copyright @ 2022 by <span>mr. web designer</span> | all rights reserved!
-
-</footer>
-
-<!-- custom js file link  -->
-<script src="js/script.js"></script>
-
-   
-</body>
+   </form> 
+   <form action="" method="post" enctype="multipart/form-data"> 
+       
+      <p>Your photo (optional)</p> 
+      <input type="file" accept="image/*" class="box"> 
+ 
+      <p>Your city <span>*</span></p> 
+      <input type="text" name="city" placeholder="enter your city" required maxlength="50" class="box"> 
+ 
+      <p>Your location <span>*</span></p> 
+      <input type="text" name="location" placeholder="enter your location" required maxlength="100" class="box"> 
+ 
+      <input type="submit" value="Sign up" name="submit" class="btn"> 
+ 
+   </form> 
+</section> 
+ 
+<footer class="footer"> 
+   &copy; copyright @ 2024 by <span>Chat Fluency</span> | all rights reserved! 
+</footer> 
+ 
+<!-- custom js file link  --> 
+<script src="js/script.js"></script> 
+ 
+</body> 
 </html>
