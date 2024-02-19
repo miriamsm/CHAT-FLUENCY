@@ -4,7 +4,7 @@
    <meta charset="UTF-8"> 
    <meta http-equiv="X-UA-Compatible" content="IE=edge"> 
    <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
-   <title>Sign Up As Language Partner</title> 
+   <title>Sign up</title> 
  
    <!-- font awesome cdn link  --> 
    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.2/css/all.min.css"> 
@@ -13,28 +13,7 @@
    <link rel="stylesheet" href="style.css"> 
  
    <style> 
-      body { 
-         margin: 0; 
-         padding: 0; 
-      } 
- 
-      .header { 
-         padding: 10px;
-      } 
- 
-      .footer { 
-         padding: 10px; 
-         text-align: center; 
-      } 
-
-      .flex{
-         display: flex;
-         justify-content: space-between;
-      }
-      .logo{
-         margin-left: auto;
-
-      }
+    
    .form-container { 
       display: flex; 
       justify-content: flex-start; 
@@ -61,17 +40,20 @@
  
  
 </head> 
-<body> 
+<body style="padding-left: 0;"> 
  
 <header class="header"> 
     
     
    <section class="flex"> 
-      <a class="logo"></a> <img src = "images/logo.jpg" width="210" height="60">  
+      <a class="logo"> <img src = "images/logo.jpg" width="210" height="60" alt="logo"></a>
       
+     
       <div class="icons">
-         <div id="home-btn" class="fas fa-home"></div>
+        <a href="home.html"> <div id="home-btn" class="fas fa-home"> </div> </a>
+         <div id="toggle-btn" class="fas fa-sun"></div>
       </div>
+
 
    </section> 
  
@@ -104,7 +86,7 @@
       <input type="file" accept="image/*" class="box"> 
  
    </form> 
-   <form action="" method="post" enctype="multipart/form-data"> 
+   <form action="profilePartner.html" method="post" enctype="multipart/form-data"> 
 
       <p>Your password <span>*</span></p> 
       <input type="password" name="pass" placeholder="enter your password" required maxlength="20" class="box"> 
@@ -124,7 +106,9 @@
 </section> 
  
 <footer class="footer"> 
-   &copy; copyright @ 2024 by <span>Chat Fluency</span> | all rights reserved! 
+   &copy; copyright @ 2024 by <span>CHAT FLUENCY</span> | all rights reserved! 
+   <a href="contact.html"><i class="fas fa-headset"></i><span> contact us</span></a>
+
 </footer> 
  
 <!-- custom js file link  --> 
