@@ -79,7 +79,7 @@ section{
 .inline-delete-btn,
 .btn,
 .delete-btn,
-.option-btn,
+.option-btn
 {
    border-radius: .5rem;
    color:#fff;
