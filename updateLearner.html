@@ -13,24 +13,7 @@
    <!-- custom css file link  -->
    <link rel="stylesheet" href="style.css">
    <style>
-      .form-container {
-         display: flex;
-         justify-content: flex-start;
-         align-items: flex-start;
-         min-height: calc(100vh - 20rem);
-      }
-   
-      .form-container form {
-         background-color: var(--white);
-         border-radius: 0.5rem;
-         padding: 2rem;
-         width: 60rem;
-         margin-right: 10px;
-      }
-   
-      .form-container form:last-child {
-         margin-right: 0;
-      }
+     
   .option-btn {
     background-color: gray;
   }
@@ -44,47 +27,49 @@
 
 <body>
 
-<header class="header">
+   <header class="header">
    
-   <section class="flex">
+      <section class="flex">
+   
+         <a href="profileLearner.html" class="logo"> <img src = "images/logo.jpg" width="210" height="60" alt="logo"></a> 
+   
+         <div class="icons">
+            <div id="menu-btn" class="fas fa-bars"></div>
+            <div id="toggle-btn" class="fas fa-sun"></div>
+         </div>
+   
+   
+      </section>
+   
+   </header>  
 
-      <a href="home.html" class="logo"><img src = "images/logo.jpg" width="210" height="60" alt="logo"></a> 
+   <div class="side-bar">
 
-      <div class="icons">
-         <div id="menu-btn" class="fas fa-bars"></div>
-         <div id="search-btn" class="fas fa-search"></div>
-         <div id="toggle-btn" class="fas fa-sun"></div>
+      <div id="close-btn">
+         <i class="fas fa-times"></i>
       </div>
-
-   </section>
-
-</header>   
-
-<div class="side-bar">
-
-   <div id="close-btn">
-      <i class="fas fa-times"></i>
+   
+      <div class="profile">
+         <img src="images/pic-1.jpg" class="image" alt="">
+         <h3 class="name">Leena Alshaikh</h3>
+         <p class="role">Learner</p>
+      </div>
+   
+      <nav class="navbar">
+         <a href="profileLearner.html"><i class="fas fa-home"></i><span>home</span></a>
+         <a href="SesssionsLearner.html"><i><img src="images/session.png" alt="sessions"></i><span>sessions</span></a>
+         <a href="partners.html"><i class="fas fa-chalkboard-user"></i><span>partners</span></a>
+         <a href="about_learner.html"><i class="fas fa-question"></i><span>about</span></a>
+      </nav>
+      <nav>
+         <div style="text-align: center; margin-top: 20px; margin-bottom: 150px;">
+         <a href="#"  class="inline-btn" >Sign out</a>
+      </div>
+      </nav>
+   
    </div>
 
-   <div class="profile">
-      <img src="images/pic-1.jpg" class="image" alt="">
-      <h3 class="name">Leena Alshaikh</h3>
-      <p class="role">Learner</p>
-   </div>
-
-   <nav class="navbar">
-      <a href="profileLearner.html"><i class="fas fa-home"></i><span>home</span></a>
-      <a href="SessionsPartner.html"><i><img src="images/session.png"></i><span>sessions</span></a>
-      <a href="teachers.html"><i class="fas fa-chalkboard-user"></i><span>partners</span></a>
-      <a href="about.html"><i class="fas fa-question"></i><span>about</span></a>
-   </nav>
-   <nav>
-      <div style="text-align: center; margin-top: 20px; margin-top: 150px;">
-      <a href="#"  class="inline-btn">Sign out</a>
-   </div>
-   </nav>
-</div>
-
+   
 <section class="form-container">
    <form action="" method="post" enctype="multipart/form-data">
       <p>edit first name</p>
@@ -97,8 +82,6 @@
       <input type="text" name="name" placeholder="KSA" maxlength="50" class="box">
       <p>edit email</p>
       <input type="email" name="email" placeholder="Leena@gmail.come" maxlength="50" class="box">
-    </form>
-      <form action="profileLearner.html" method="post" enctype="multipart/form-data">
       <p>previous password</p>
       <input type="password" name="old_pass" placeholder="enter your old password" maxlength="20" class="box">
       <p>new password</p>
@@ -114,11 +97,10 @@
 </section>
 
 
-
 <footer class="footer">
 
    &copy; copyright @ 2024 by <span>CHAT FLUENCY</span> | all rights reserved!
-   <a href="contact.html"><i class="fas fa-headset"></i><span> contact us</span></a>
+   <a href="contact_learner.html"><i class="fas fa-headset"></i><span> contact us</span></a>
 
 </footer>
 

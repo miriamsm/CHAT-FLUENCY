@@ -12,56 +12,30 @@
    <!-- custom css file link  --> 
    <link rel="stylesheet" href="style.css"> 
  
-   <style> 
-    
-   .form-container { 
-      display: flex; 
-      justify-content: flex-start; 
-      align-items: flex-start; 
-      min-height: calc(100vh - 20rem); 
-   } 
- 
-   .form-container form { 
-      background-color: var(--white); 
-      border-radius: 0.5rem; 
-      padding: 2rem; 
-      width: 60%; 
-      margin-right: 10px; 
-   } 
- 
-   .form-container form:last-child { 
-      margin-right: 0; 
-   } 
- 
-   .form-container form textarea::placeholder { 
-   font-size: 14px;  /* Adjust the font size as needed */ 
-} 
-</style> 
+
  
  
 </head> 
 <body style="padding-left: 0;"> 
  
-<header class="header"> 
-    
-    
-   <section class="flex"> 
-      <a class="logo"> <img src = "images/logo.jpg" width="210" height="60" alt="logo"></a>
-      
-     
-      <div class="icons">
-        <a href="home.html"> <div id="home-btn" class="fas fa-home"> </div> </a>
-         <div id="toggle-btn" class="fas fa-sun"></div>
-      </div>
-
-
-   </section> 
+   <header class="header">
+   
+      <section class="flex">
+   
+         <a href="home.html" class="logo"> <img src = "images/logo.jpg" width="210" height="60" alt="logo"></a> 
+   
+         <div class="icons">
+            <a href="home.html"> <div id="home-btn" class="fas fa-home"> </div> </a>
+            <div id="toggle-btn" class="fas fa-sun"></div>
+         </div>
+   
+   
+      </section>
+   
+   </header>    
  
-</header>    
- 
- 
-<section class="form-container"> 
-   <form action="" method="post" enctype="multipart/form-data"> 
+<section class="form-container">
+   <form action="profilePartner.html" method="post" enctype="multipart/form-data"> 
        
       <p>Your first name <span>*</span></p> 
       <input type="text" name="first_name" placeholder="enter your first name" required maxlength="50" class="box"> 
@@ -80,14 +54,7 @@
  
       <p>Your email <span>*</span></p> 
       <input type="email" name="email" placeholder="enter your email" required maxlength="50" class="box"> 
- 
-   
-      <p>Your photo (optional)</p> 
-      <input type="file" accept="image/*" class="box"> 
- 
-   </form> 
-   <form action="profilePartner.html" method="post" enctype="multipart/form-data"> 
-
+      
       <p>Your password <span>*</span></p> 
       <input type="password" name="pass" placeholder="enter your password" required maxlength="20" class="box"> 
  
@@ -97,17 +64,19 @@
       <p>Your city <span>*</span></p> 
       <input type="text" name="city" placeholder="enter your city" required maxlength="50" class="box"> 
  
-      <p>Your short bio <span>*</span></p> 
+      <p>Your short bio(Spoken language and cultural knowledge) <span>*</span></p> 
       <textarea name="short_bio" placeholder="enter your short bio" required maxlength="200" class="box" rows="3"></textarea> 
  
-      <input type="submit" value="Sign up" name="submit" class="btn"> 
+      <p>Your photo (optional)</p> 
+      <input type="file" accept="image/*" class="box"> 
  
+      <input type="submit" value="Sign up" name="submit" class="btn"> 
    </form> 
 </section> 
  
 <footer class="footer"> 
    &copy; copyright @ 2024 by <span>CHAT FLUENCY</span> | all rights reserved! 
-   <a href="contact.html"><i class="fas fa-headset"></i><span> contact us</span></a>
+   <a href="contact_partner.html"><i class="fas fa-headset"></i><span> contact us</span></a>
 
 </footer> 
  
