@@ -77,7 +77,7 @@
        <p> language <span>*</span></p>
        <select id="language" name="language" required class="box">
         <option value="" disabled selected>Specify the language you want to learn</option>
-        <option value="English">English</option>
+        <option value="English" selected>English</option>
         <option value="Spanish">Spanish</option>
         <option value="French">French</option>
         <option value="Mandarin Chinese">Mandarin Chinese</option>
@@ -95,15 +95,13 @@
         
             <option value="Intermediate">Intermediate</option>
         
-            <option value="Advanced">Advanced</option>
+            <option value="Advanced" selected>Advanced</option>
         
     </select>
        <p>enter your preferred schedule <span>*</span></p>
-       <input type="schedule" name="pass" placeholder="E.g. weekdays evenings , weekends mornings " required maxlength="20" class="box">
-       
+       <input type="text" name="pass" value="weekdays mornings" placeholder="E.g. weekdays evenings, weekends mornings" required maxlength="20" class="box">       
        <p>enter your session duration <span>*</span></p>
-       <input type="duration" name="Session duration" placeholder="E.g. 1 hour , 90 minutes " required maxlength="20" class="box">
-      
+       <input type="text" name="Session duration" value="1 hour" placeholder="E.g. 1 hour, 90 minutes" required maxlength="20" class="box">      
        
        <input type="submit" value="Save changes" name="submit" class="btn">
        
