@@ -13,28 +13,7 @@
    <link rel="stylesheet" href="style.css"> 
  
    <style> 
-   .form-container { 
-      display: flex; 
-      justify-content: flex-start; 
-      align-items: flex-start; 
-      min-height: calc(100vh - 20rem); 
-   } 
- 
-   .form-container form { 
-      background-color: var(--white); 
-      border-radius: 0.5rem; 
-      padding: 2rem; 
-      width: 60%; 
-      margin-right: 10px; 
-   } 
- 
-   .form-container form:last-child { 
-      margin-right: 0; 
-   } 
- 
-   .form-container form textarea::placeholder { 
-   font-size: 14px;  /* Adjust the font size as needed */ 
-} 
+  
 </style>  
  
  
@@ -58,9 +37,8 @@
  
 </header>    
  
- 
-<section class="form-container"> 
-   <form action="" method="post" enctype="multipart/form-data"> 
+<section class="form-container">
+   <form action="profileLearner.html" method="post" enctype="multipart/form-data"> 
        
       <p>Your first name <span>*</span></p> 
       <input type="text" name="first_name" placeholder="enter your first name" required maxlength="50" class="box"> 
@@ -73,24 +51,19 @@
  
       <p>Your password <span>*</span></p> 
       <input type="password" name="pass" placeholder="enter your password" required maxlength="20" class="box"> 
- 
-      
-   </form> 
-   <form action="profileLearner.html" method="post" enctype="multipart/form-data"> 
-       
+
       <p>Your photo (optional)</p> 
       <input type="file" accept="image/*" class="box"> 
- 
+
       <p>Your city <span>*</span></p> 
       <input type="text" name="city" placeholder="enter your city" required maxlength="50" class="box"> 
- 
+
       <p>Your location <span>*</span></p> 
       <input type="text" name="location" placeholder="enter your location" required maxlength="100" class="box"> 
  
-      <input type="submit" value="Sign up" name="submit" class="btn"> 
- 
+      <input type="submit" value="Sign up" name="submit"  class="btn"> 
    </form> 
-</section> 
+</section>
  
 <footer class="footer"> 
    &copy; copyright @ 2024 by <span>CHAT FLUENCY</span> | all rights reserved! 
