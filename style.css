@@ -79,7 +79,8 @@ section{
 .inline-delete-btn,
 .btn,
 .delete-btn,
-.option-btn{
+.option-btn,
+.inline-btnn{
    border-radius: .5rem;
    color:#fff;
    font-size: 1.8rem;
@@ -99,12 +100,14 @@ section{
 
 .inline-btn,
 .inline-option-btn,
-.inline-delete-btn{
+.inline-delete-btn
+.inline-btnn{
    display: inline-block;
 }
 
 .btn,
-.inline-btn{
+.inline-btn
+.inline-btnn{
    background-color: var(--main-color);
 }
 
@@ -119,6 +122,7 @@ section{
 }
 
 .inline-btn:hover,
+.inline-btnn:hover,
 .inline-option-btn:hover,
 .inline-delete-btn:hover,
 .btn:hover,
