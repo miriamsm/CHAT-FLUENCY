@@ -1324,10 +1324,10 @@ section{
    font-size: 2rem;
    padding:2.5rem 2rem;
    color:var(--black);
-   margin-top: 1rem;
+   /* margin-top: 1rem; */
    z-index: 1000;
-   /* padding-bottom: 9.5rem; */
-}
+   margin-top: 500px;
+   }
 
 .footer span{
    color:var(--main-color);
