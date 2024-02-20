@@ -13,24 +13,7 @@
    <!-- custom css file link  -->
    <link rel="stylesheet" href="style.css">
    <style>
-      .form-container {
-         display: flex;
-         justify-content: flex-start;
-         align-items: flex-start;
-         min-height: calc(100vh - 20rem);
-      }
-   
-      .form-container form {
-         background-color: var(--white);
-         border-radius: 0.5rem;
-         padding: 2rem;
-         width: 60rem;
-         margin-right: 10px;
-      }
-   
-      .form-container form:last-child {
-         margin-right: 0;
-      }
+     
   .option-btn {
     background-color: gray;
   }
@@ -79,12 +62,11 @@
       <a href="about.html"><i class="fas fa-question"></i><span>about</span></a>
    </nav>
    <nav>
-      <div style="text-align: center; margin-top: 20px; margin-top: 150px;">
+      <div style="text-align: center; margin-top: 20px; margin-bottom: 150px;">
       <a href="#"  class="inline-btn">Sign out</a>
    </div>
    </nav>
 </div>
-
 <section class="form-container">
    <form action="" method="post" enctype="multipart/form-data">
       <p>edit first name</p>
@@ -97,8 +79,6 @@
       <input type="text" name="name" placeholder="KSA" maxlength="50" class="box">
       <p>edit email</p>
       <input type="email" name="email" placeholder="Leena@gmail.come" maxlength="50" class="box">
-    </form>
-      <form action="profileLearner.html" method="post" enctype="multipart/form-data">
       <p>previous password</p>
       <input type="password" name="old_pass" placeholder="enter your old password" maxlength="20" class="box">
       <p>new password</p>
@@ -109,10 +89,9 @@
       <input type="file" accept="image/*" class="box">
       <input type="submit" value="cancel" name="submit" class="option-btn">
       <input type="submit" value="update" name="submit" class="btn">
-      <input type="submit" value="delete account" name="submit"class="delete-btn ">
+      <input type="submit" value="delete account" name="submit" class="delete-btn">
    </form>
 </section>
-
 
 
 <footer class="footer">
