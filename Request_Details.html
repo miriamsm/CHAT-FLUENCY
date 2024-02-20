@@ -4,13 +4,18 @@
    <meta charset="UTF-8">
    <meta http-equiv="X-UA-Compatible" content="IE=edge">
    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-   <title>Request_Details</title>
+   <title>Request details</title>
 
    <!-- font awesome cdn link  -->
    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.2/css/all.min.css">
 
    <!-- custom css file link  -->
    <link rel="stylesheet" href="style.css">
+   <style>
+      .inline-btn {
+    background-color: green;
+  }
+   </style>
 
 </head>
 <body>
@@ -19,11 +24,11 @@
    
    <section class="flex">
 
-      <a href="home.html" class="logo"></a> <img src = "images/logo.jpg" width="210" height="60"> 
+      <a href="home.html" class="logo"><img src = "images/logo.jpg" width="210" height="60" alt="logo"></a> 
 
       <div class="icons">
          <div id="menu-btn" class="fas fa-bars"></div>
-         <div id="user-btn" class="fas fa-user"></div>
+         
          <div id="toggle-btn" class="fas fa-sun"></div>
       </div>
 
@@ -52,14 +57,14 @@
       <img src="images/pic-1.jpg" class="image" alt="">
       <h3 class="name">Richard Murphy</h3>
       <p class="role">Partner</p>
-      <a href="profilePartner.html" class="btn">view profile</a>
+      
    </div>
 
    <nav class="navbar">
-      <a href="homePartner.html"><i class="fas fa-home"></i><span>home</span></a>
-      <a href="about.html"><i class="fas fa-question"></i><span>about</span></a>
+      <a href="profilePartner.html"><i class="fas fa-home"></i><span>home</span></a>
       <a href="SessionsPartner.html"><i><img src="images/session.png"></i><span>sessions</span></a>
-      <a href="contact.html"><i class="fas fa-headset"></i><span>contact us</span></a>
+      <a href="about.html"><i class="fas fa-question"></i><span>about</span></a>
+      
    </nav>
 
 </div>
@@ -105,8 +110,8 @@
    
       </div>
       <div style="text-align: center; margin-top: 20px; ">
-         <a href="#" class="inline-btn" style="margin-right: 10px; background-color: green; color: white;">Accept request</a>
-         <a href="#" class="inline-btn" style="background-color: #e74c3c; color: white;">Reject request</a>
+         <a href="#" class="inline-btn" style="margin-right: 10px;">Accept request</a>
+         <a href="#" class="inline-delete-btn" >Reject request</a>
      </div>
    </div>
   
@@ -119,7 +124,8 @@
 </body>
 <footer class="footer">
 
-   &copy; copyright @ 2022 by <span>chat fluency</span> | all rights reserved!
+   &copy; copyright @ 2024 by <span>CHAT FLUENCY</span> | all rights reserved!
+   <a href="contact.html"><i class="fas fa-headset"></i><span> contact us</span></a>
 
 </footer>
 </html>

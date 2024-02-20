@@ -4,14 +4,13 @@
    <meta charset="UTF-8">
    <meta http-equiv="X-UA-Compatible" content="IE=edge">
    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-   <title>profile</title>
+   <title>Profile</title>
 
    <!-- font awesome cdn link  -->
    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.2/css/all.min.css">
 
    <!-- custom css file link  -->
    <link rel="stylesheet" href="style.css">
-
 </head>
 <body>
 
@@ -19,7 +18,7 @@
    
    <section class="flex">
 
-    <a href="home.html" class="logo"></a> <img src = "images/logo.jpg" width="210" height="60"> 
+    <a href="home.html" class="logo"><img src = "images/logo.jpg" width="210" height="60" alt="logo"></a> 
 
 
       <div class="icons">
@@ -56,11 +55,14 @@
 
    <nav class="navbar">
       <a href="profileLearner.html"><i class="fas fa-home"></i><span>home</span></a>
-      <a href="SessionsPartner.html"><i><img src="images/session.png"></i><span>sessions</span></a>
+      <a href="SessionsPartner.html"><i><img src="images/session.png" alt="sessions"></i><span>sessions</span></a>
       <a href="teachers.html"><i class="fas fa-chalkboard-user"></i><span>partners</span></a>
       <a href="about.html"><i class="fas fa-question"></i><span>about</span></a>
-      <a href="contact.html"><i class="fas fa-headset"></i><span>contact us</span></a>
    </nav>
+   <nav>
+      <div style="text-align: center; margin-top: 20px; margin-top: 150px;">
+      <a href="#"  class="inline-btn">Sign out</a>
+   </div>
    </nav>
 
 </div>
@@ -83,7 +85,7 @@
 
         <div class="box">
           <div class="flex">
-            <img src="images/session.png"  style="width: 25px; height: 25px;">
+            <img src="images/session.png"  style="width: 25px; height: 25px;" alt="sessions">
              <div>
               
                 <span>2</span>
@@ -95,24 +97,24 @@
 
        <div class="box">
           <div class="flex">
-            <img src="images/request.png"  style="width: 30px; height: 30px;">
+            <img src="images/request.png"  style="width: 30px; height: 30px;" alt="request">
              <div>
                 <span>3</span>
                 <p>requests</p>
              </div>
           </div>
-          <a href="view_request_learner.html" class="inline-btn">view requests</a>
+          <a href="list_of_requests_learner.html" class="inline-btn">view requests</a>
        </div>
    
        <div class="box">
         <div class="flex">
-         <img src="images/teacher-at-the-blackboard.png"  style="width: 30px; height: 30px;">
+         <img src="images/teacher-at-the-blackboard.png"  style="width: 30px; height: 30px;" alt="teacher-at-the-blackboard">
            <div>
               <span>1</span>
-              <p>teachers</p>
+              <p>partners</p>
                </div>
             </div>
-            <a href="teachers.html" class="inline-btn">view my teachers</a>
+            <a href="teachers.html" class="inline-btn">view partners</a>
          </div>
    
       </div>
@@ -122,7 +124,8 @@
 
 <footer class="footer">
 
-   &copy; copyright @ 2024 by <span>Chat fluency</span> | all rights reserved!
+   &copy; copyright @ 2024 by <span>CHAT FLUENCY</span> | all rights reserved!
+   <a href="contact.html"><i class="fas fa-headset"></i><span> contact us</span></a>
 
 </footer>
 
