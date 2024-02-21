@@ -69,8 +69,9 @@
    </div>
 
    
-<div class="form-container">
+<section class="form-container">
    <form method="post" enctype="multipart/form-data">
+      <h3>Edit profile</h3>
       <p>edit first name</p>
       <input type="text" name="name" placeholder="Richard" maxlength="50" class="box">
       <p>edit last name</p>
@@ -85,11 +86,11 @@
       <input type="text" name="phone" placeholder="+966" maxlength="10" class="box">
       <p>edit gender</p>
       <select name="gender" class="box">
-         <option value="female">Female</option>
          <option value="male">Male</option>
+         <option value="female">Female</option>
       </select>
       <p>edit age</p>
-      <input type="text" name="age" placeholder="34" maxlength="50" class="box">
+      <input type="number" name="age" required class="box" value="34">
       <p>previous password</p>
       <input type="password" name="old_pass" placeholder="enter your old password" maxlength="20" class="box">
       <p>new password</p>
@@ -101,7 +102,7 @@
       <input type="submit" value="cancel" name="submit" class="option-btn">
       <input type="submit" value="update" name="submit" class="btn">
       <input type="submit" value="delete account" name="submit" class="delete-btn">
-   </form>
+   </section>
 </div>
 
 <footer class="footer">
