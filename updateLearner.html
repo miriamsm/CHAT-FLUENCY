@@ -21,6 +21,11 @@
   .btn {
     background-color: green;
   }
+  .error-message {
+         color: red;
+         font-size: 16px;
+         margin-top: 5px;
+      }
    </style>
    <script src="script.js"></script>
    
@@ -28,6 +33,8 @@
 
 
 <body>
+
+
 
    <header class="header">
    
@@ -93,6 +100,13 @@
       <input id="confirm-pass-input" type="password" name="c_pass" placeholder="confirm your new password" maxlength="20" class="box">
       <p>edit pic</p>
       <input id="pic-input" type="file" accept="image/*" class="box">
+      <!-- Span elements for displaying validation messages -->
+<span id="email-error" class="error-message"></span>
+<span id="password-error" class="error-message"></span>
+<span id="firstName-error" class="error-message"></span>
+<span id="lastName-error" class="error-message"></span>
+<span id="city-error" class="error-message"></span>
+<span id="location-error" class="error-message"></span>
       <input  type="submit" id="cancel-btn" value="cancel" name="submit" class="option-btn">
       <input type="submit" id="update-btn" value="update" name="submit" class="btn">
       <input type="submit" id= "delete-btn" value="delete account" name="submit" class="delete-btn">
@@ -183,12 +197,18 @@ document.getElementById('cancel-btn').addEventListener('click', function() {
    document.getElementById('profile-form').reset();
 
    // Perform cancel action here
-   window.location.href = 'profileLearner.html'; // Example: Show an alert message
+    // Example: Show an alert message
 });
 // Event listener for the update button
 // Event listener for the update button
 document.getElementById('update-btn').addEventListener('click', function() {
   
+   document.getElementById('email-error').textContent = '';
+   document.getElementById('password-error').textContent = '';
+   document.getElementById('firstName-error').textContent = '';
+   document.getElementById('lastName-error').textContent = '';
+   document.getElementById('city-error').textContent = '';
+   document.getElementById('location-error').textContent = '';
 
    // Perform update action here
    const firstName = document.getElementById('first-name-input').value;
@@ -212,7 +232,7 @@ document.getElementById('update-btn').addEventListener('click', function() {
    if (email.trim() !== '') {
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
       if (!emailRegex.test(email)) {
-         alert('Invalid email format');
+         document.getElementById('email-error').textContent = 'Invalid email format';
          isEmailValid = false;
       }
    }
@@ -221,14 +241,14 @@ document.getElementById('update-btn').addEventListener('click', function() {
    if (newPassword.trim() !== '') {
       const passwordRegex = /^(?=.*[0-9])(?=.*[a-zA-Z])[a-zA-Z0-9]{8,}$/;
       if (!passwordRegex.test(newPassword)) {
-         alert('Password must be at least 8 characters long and contain alphanumeric characters');
+         document.getElementById('password-error').textContent = 'Password must be at least 8 characters long and contain alphanumeric characters';
          isPasswordValid = false;
       }
    }
 
    // Validate password matching
    if (newPassword.trim() !== '' && confirmPassword.trim() !== '' && newPassword !== confirmPassword) {
-      alert('New password and confirm password must match');
+      document.getElementById('password-error').textContent = 'New password and confirm password must match';
       isPasswordMatch = false;
    }
 
@@ -236,7 +256,7 @@ document.getElementById('update-btn').addEventListener('click', function() {
    const nameRegex = /^[a-zA-Z]+$/;
    if (firstName.trim() !== '') {
       if (!nameRegex.test(firstName)) {
-         alert('First name can only contain characters');
+         document.getElementById('firstName-error').textContent = 'First name can only contain characters';
          isFirstNameValid = false;
       }
    }
@@ -244,20 +264,21 @@ document.getElementById('update-btn').addEventListener('click', function() {
    if (lastName.trim() !== '') {
       if (!nameRegex.test(lastName)) {
          alert('Last name can only contain characters');
+         document.getElementById('lastName-error').textContent = 'Last name can only contain characters';
          isLastNameValid = false;
       }
    }
 
    if (city.trim() !== '') {
       if (!nameRegex.test(city)) {
-         alert('City can only contain characters');
+         document.getElementById('city-error').textContent = 'city can only contain characters';
          isCityValid = false;
       }
    }
 
    if (location.trim() !== '') {
       if (!nameRegex.test(location)) {
-         alert('Location can only contain characters');
+         document.getElementById('location-error').textContent = 'Location can only contain characters';
          isLocationValid = false;
       }
    }
