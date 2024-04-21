@@ -20,6 +20,11 @@
   .btn {
     background-color: green;
   }
+  .error-message {
+         color: red;
+         font-size: 16px;
+         margin-top: 5px;
+      }
    </style>
 </head>
 <body>
@@ -70,38 +75,49 @@
 
    
 <section class="form-container">
-   <form method="post" enctype="multipart/form-data">
+
+   <form id="profile-form" method="post" enctype="multipart/form-data">
       <h3>Edit profile</h3>
       <p>edit first name</p>
-      <input type="text" name="name" placeholder="Richard" maxlength="50" class="box">
+      <input id="first-name-input" type="text" name="name" placeholder="Richard" maxlength="50" class="box">
       <p>edit last name</p>
-      <input type="text" name="name" placeholder="Murphy" maxlength="50" class="box">
+      <input id="last-name-input" type="text" name="name" placeholder="Murphy" maxlength="50" class="box">
       <p>edit bio</p>
-      <input type="text" name="name" placeholder="I am a native English speaker from England! I am a TEFL/TESOL-certified English language teacher." size="30" maxlength="100" class="box">
+      <input id="bio-input" type="text" name="name" placeholder="I am a native English speaker from England! I am a TEFL/TESOL-certified English language teacher." size="30" maxlength="100" class="box">
       <p>edit city</p>
-      <input type="text" name="name" placeholder="Manchester" maxlength="50" class="box">
+      <input id="city-input" type="text" name="name" placeholder="Manchester" maxlength="50" class="box">
       <p>edit email</p>
-      <input type="email" name="email" placeholder="Richard@gmail.come" maxlength="50" class="box">
+      <input id="email-input" type="email" name="email" placeholder="Richard@gmail.come" maxlength="50" class="box">
       <p>edit phone</p>
-      <input type="text" name="phone" placeholder="+966" maxlength="10" class="box">
+      <input id="phone-input" type="text" name="phone" placeholder="+966" maxlength="10" class="box">
       <p>edit gender</p>
-      <select name="gender" class="box">
+      <select id="gender-input" name="gender" class="box">
          <option value="male">Male</option>
          <option value="female">Female</option>
       </select>
       <p>edit age</p>
-      <input type="number" name="age" required class="box" value="34">
+      <input id="age-input" type="number" name="age" required class="box" value="34">
       <p>previous password</p>
-      <input type="password" name="old_pass" placeholder="enter your old password" maxlength="20" class="box">
+      <input id="previous-pass-input" type="password" name="old_pass" placeholder="enter your old password" maxlength="20" class="box">
       <p>new password</p>
-      <input type="password" name="new_pass" placeholder="enter your old password" maxlength="20" class="box">
+      <input id="new-pass-input" type="password" name="new_pass" placeholder="enter your old password" maxlength="20" class="box">
       <p>confirm password</p>
-      <input type="password" name="c_pass" placeholder="confirm your new password" maxlength="20" class="box">
+      <input id="confirm-pass-input" type="password" name="c_pass" placeholder="confirm your new password" maxlength="20" class="box">
       <p>edit pic</p>
-      <input type="file" accept="image/*" class="box"> 
-      <input type="submit" value="cancel" name="submit" class="option-btn">
-      <input type="submit" value="update" name="submit" class="btn">
-      <input type="submit" value="delete account" name="submit" class="delete-btn">
+      <input id="pic-input" type="file" accept="image/*" class="box">
+         <!-- Span elements for displaying validation messages -->
+<span id="email-error" class="error-message"></span>
+<span id="password-error" class="error-message"></span>
+<span id="firstName-error" class="error-message"></span>
+<span id="lastName-error" class="error-message"></span>
+<span id="city-error" class="error-message"></span>
+<span id="phone-error" class="error-message"></span>
+<span id="age-error" class="error-message"></span>
+
+
+      <input type="submit" id="cancel-btn"  value="cancel" name="submit" class="option-btn">
+      <input type="submit" id="update-btn" value="update" name="submit" class="btn">
+      <input type="submit" id="delete-btn" value="delete account" name="submit" class="delete-btn">
    </section>
 </div>
 
@@ -112,6 +128,200 @@
 
 </footer>
 
+<script>
+   // JavaScript code for handling form submission and button clicks
+   // Event listener for form submission
+   document.getElementById('profile-form').addEventListener('submit', function(event) {
+      event.preventDefault(); 
+    // Prevent the default form submission
+   
+      // Perform actions based on the form data
+      const firstName = document.getElementById('first-name-input').value;
+      const lastName = document.getElementById('last-name-input').value;
+      const bio = document.getElementById('bio-input').value;
+      const city = document.getElementById('city-input').value;
+      const email = document.getElementById('email-input').value;
+      const phone = document.getElementById('phone-input').value;
+      const gender = document.getElementById('gender-input').value;
+      const age = document.getElementById('age-input').value;
+      const oldPassword = document.getElementById('old-pass-input').value;
+      const newPassword = document.getElementById('new-pass-input').value;
+      const confirmPassword = document.getElementById('confirm-pass-input').value;
+      const pic = document.getElementById('pic-input').value;
+   
+      // Perform further actions such as validation, AJAX requests, etc.
+   
+      // Example: Log the form data to the console
+      console.log('First Name:', firstName);
+      console.log('Last Name:', lastName);
+      console.log('Bio:', bio);
+      console.log('City:', city);
+      console.log('Email:', email);
+      console.log('Phone:', phone);
+      console.log('Gender:', gender);
+      console.log('Age:', age);
+      console.log('Old Password:', oldPassword);
+      console.log('New Password:', newPassword);
+      console.log('Confirm Password:', confirmPassword);
+      console.log('Pic:', pic);
+   
+      // Reset the form
+      document.getElementById('profile-form').reset();
+   });
+   
+   
+   // Event listener for the cancel button
+   document.getElementById('cancel-btn').addEventListener('click', function() {
+      // Reset the form
+      document.getElementById('profile-form').reset();
+      window.location.href = 'profilePartner.html';
+   
+      // Perform cancel action here
+       // Example: Show an alert message
+   });
+   // Event listener for the update button
+   // Event listener for the update button
+   document.getElementById('update-btn').addEventListener('click', function() {
+     
+      document.getElementById('email-error').textContent = '';
+      document.getElementById('password-error').textContent = '';
+      document.getElementById('firstName-error').textContent = '';
+      document.getElementById('lastName-error').textContent = '';
+      document.getElementById('city-error').textContent = '';
+      document.getElementById('phone-error').textContent = '';
+      document.getElementById('age-error').textContent = '';
+   
+      // Perform update action here
+      const firstName = document.getElementById('first-name-input').value;
+      const lastName = document.getElementById('last-name-input').value;
+      const city = document.getElementById('city-input').value;
+      const age = document.getElementById('age-input').value;
+      const phone = document.getElementById('phone-input').value;
+      const email = document.getElementById('email-input').value;
+      const oldPassword = document.getElementById('previous-pass-input').value;
+      const newPassword = document.getElementById('new-pass-input').value;
+      const confirmPassword = document.getElementById('confirm-pass-input').value;
+      const pic = document.getElementById('pic-input').value;
+      const bio = document.getElementById('bio-input').value;
+      const gender = document.getElementById('gender-input').value;
+   
+      let isEmailValid = true;
+      let isPasswordValid = true;
+      let isFirstNameValid = true;
+      let isLastNameValid = true;
+      let isCityValid = true;
+      let isPhoneValid = true;
+      let isAgeValid= true;
+   
+      // Validate email format
+      if (email.trim() !== '') {
+         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+         if (!emailRegex.test(email)) {
+            document.getElementById('email-error').textContent = 'Invalid email format';
+            isEmailValid = false;
+         }
+      }
+   
+      // Validate password length and alphanumeric characters
+      if (newPassword.trim() !== '') {
+         const passwordRegex = /^(?=.*[0-9])(?=.*[a-zA-Z])[a-zA-Z0-9]{8,}$/;
+         if (!passwordRegex.test(newPassword)) {
+            document.getElementById('password-error').textContent = 'Password must be at least 8 characters long and contain alphanumeric characters';
+            isPasswordValid = false;
+         }
+      }
+   
+      // Validate password matching
+      if (newPassword.trim() !== '' && confirmPassword.trim() !== '' && newPassword !== confirmPassword) {
+         document.getElementById('password-error').textContent = 'New password and confirm password must match';
+         isPasswordValid = false;
+      }
+   
+      // Validate first name, last name, city, and location to be characters only
+      const nameRegex = /^[a-zA-Z]+$/;
+      if (firstName.trim() !== '') {
+         if (!nameRegex.test(firstName)) {
+            document.getElementById('firstName-error').textContent = 'First name can only contain characters';
+            isFirstNameValid = false;
+         }
+      }
+   
+      if (lastName.trim() !== '') {
+         if (!nameRegex.test(lastName)) {
+            document.getElementById('lastName-error').textContent = 'Last name can only contain characters';
+            isLastNameValid = false;
+         }
+      }
+   
+      if (city.trim() !== '') {
+         if (!nameRegex.test(city)) {
+            document.getElementById('city-error').textContent = 'city can only contain characters';
+            isCityValid = false;
+         }
+      }
+    // Validate phone number to allow only numbers
+    if (phone.trim() !== '') {
+      const phoneRegex = /^\d+$/;
+      if (!phoneRegex.test(phone)) {
+         document.getElementById('phone-error').textContent = 'Phone number can only contain numbers';
+         isPhoneValid = false;
+      }
+   }
+
+    // Validate age to be positive
+    if (age.trim() !== '') {
+      const ageNumber = parseInt(age);
+      if (isNaN(ageNumber) || ageNumber < 1) {
+         document.getElementById('age-error').textContent = 'Age must be a positive number';
+         isAgeValid = false;
+      }
+   }
+   if (oldPassword && !newPassword && !confirmPassword) {
+      document.getElementById('phone-error').textContent = 'enter new and confirm passwords';
+      isPasswordValid=false;
+   }
+      // Check if any validation failed
+      if (!isEmailValid || !isPasswordValid || !isFirstNameValid || !isLastNameValid || !isCityValid || !isPhoneValid || !isAgeValid) {
+         return;
+      }
+      // Log the updated form data to the console
+      console.log('First Name:', firstName);
+      console.log('Last Name:', lastName);
+      console.log('Bio:', bio);
+      console.log('City:', city);
+      console.log('Phone:', phone);
+      console.log('Gender:', gender);
+      console.log('Age:', age);
+      console.log('Email:', email);
+      console.log('Old Password:', oldPassword);
+      console.log('New Password:', newPassword);
+      console.log('Confirm Password:', confirmPassword);
+      console.log('Pic:', pic);
+   
+      // Reset the form
+      document.getElementById('profile-form').reset();
+      // Perform further actions such as AJAX requests or updating the database
+      // ...
+   
+     
+      // Show a success message
+      alert('Form updated');
+      window.location.href = 'profileLearner.html';
+   });
+   // Event listener for the delete button
+   document.getElementById('delete-btn').addEventListener('click', function() {
+      // Perform delete action here
+      if (confirm('Are you sure you want to delete?')) {
+             // Redirect to home.html
+             window.location.href = 'home.html';
+          // Show a success message
+          alert('Account deleted successfully');
+      } else {
+          // Deletion canceled
+          alert('Deletion canceled');  // Example: Show an alert message
+      }
+   });
+   </script>
 <!-- custom js file link  -->
 <script src="script.js"></script>
 

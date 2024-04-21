@@ -195,6 +195,7 @@ const formData = {
 document.getElementById('cancel-btn').addEventListener('click', function() {
    // Reset the form
    document.getElementById('profile-form').reset();
+   window.location.href = 'profileLearner.html';
 
    // Perform cancel action here
     // Example: Show an alert message
@@ -249,7 +250,7 @@ document.getElementById('update-btn').addEventListener('click', function() {
    // Validate password matching
    if (newPassword.trim() !== '' && confirmPassword.trim() !== '' && newPassword !== confirmPassword) {
       document.getElementById('password-error').textContent = 'New password and confirm password must match';
-      isPasswordMatch = false;
+      isPasswordvalid = false;
    }
 
    // Validate first name, last name, city, and location to be characters only
@@ -263,7 +264,6 @@ document.getElementById('update-btn').addEventListener('click', function() {
 
    if (lastName.trim() !== '') {
       if (!nameRegex.test(lastName)) {
-         alert('Last name can only contain characters');
          document.getElementById('lastName-error').textContent = 'Last name can only contain characters';
          isLastNameValid = false;
       }
@@ -281,6 +281,10 @@ document.getElementById('update-btn').addEventListener('click', function() {
          document.getElementById('location-error').textContent = 'Location can only contain characters';
          isLocationValid = false;
       }
+   }
+   if (oldPassword && !newPassword && !confirmPassword) {
+      document.getElementById('phone-error').textContent = 'enter new and confirm passwords';
+      isPasswordValid=false;
    }
    // Check if any validation failed
    if (!isEmailValid || !isPasswordValid || !isFirstNameValid || !isLastNameValid || !isCityValid || !isLocationValid) {
