@@ -15,6 +15,26 @@
       margin-top : 50px;
       }
       </style>
+   <script>
+      // Function to validate the form
+      function validateForm() {
+        var language = document.getElementById('language').value;
+        var level = document.getElementById('level').value;
+        var schedule = document.getElementsByName('pass')[0].value;
+        var sessionDuration = document.getElementsByName('Session duration')[0].value;
+    
+        // Check if any field is empty
+        if (language === "" || level === "" || schedule === "" || sessionDuration === "") {
+          alert("Please fill in all fields.");
+          return false;
+        }
+    
+        // Additional validation logic can be added here if needed
+    
+        // Form is valid, allow submission
+        return true;
+      }
+    </script>
 </head>
 <body>
    
@@ -61,46 +81,40 @@
       </nav>
    
    </div>
+   <section class="form-container">
 
-<section class="form-container">
-
-    <form  method="post" >
-       <h3>Edit your request information </h3>
-       <p> language <span>*</span></p>
-       <select id="language" name="language" required class="box">
-        <option value="" disabled selected>Specify the language you want to learn</option>
-        <option value="English">English</option>
-        <option value="Spanish">Spanish</option>
-        <option value="French">French</option>
-        <option value="Mandarin Chinese">Mandarin Chinese</option>
-        <option value="Arabic">Arabic</option>
-        <option value="Hindi">Hindi</option>
-        <option value="Russian">Russian</option>
-        <option value="Portuguese">Portuguese</option>
-        <option value="Bengali">Bengali</option>
-        <option value="German">German</option>
-    </select>       
-       <p> your level <span>*</span></p><select id="level" name="level" required class="box">
-        <option value="" disabled selected>Specify your current proficiency level</option>
-       
-            <option value="Beginner">Beginner</option>
-        
-            <option value="Intermediate">Intermediate</option>
-        
-            <option value="Advanced" >Advanced</option>
-        
-    </select>
-       <p>enter your preferred schedule <span>*</span></p>
-       <input type="text" name="pass" value="weekdays mornings" placeholder="E.g. weekdays evenings, weekends mornings" required maxlength="20" class="box">       
-       <p>enter your session duration <span>*</span></p>
-       <input type="text" name="Session duration" value="1 hour" placeholder="E.g. 1 hour, 90 minutes" required maxlength="20" class="box">      
-       
-       <input type="submit" value="Save changes" name="submit" class="btn">
-       
-    </form>
- 
- </section>
-
+      <form method="post" onsubmit="return validateForm()">
+         <h3>Edit your request information</h3>
+         <p>Language <span>*</span></p>
+         <select id="language" name="language" class="box">
+          <option value="" disabled selected>Specify the language you want to learn</option>
+          <option value="English">English</option>
+          <option value="Spanish">Spanish</option>
+          <option value="French">French</option>
+          <option value="Mandarin Chinese">Mandarin Chinese</option>
+          <option value="Arabic">Arabic</option>
+          <option value="Hindi">Hindi</option>
+          <option value="Russian">Russian</option>
+          <option value="Portuguese">Portuguese</option>
+          <option value="Bengali">Bengali</option>
+          <option value="German">German</option>
+      </select>       
+         <p>Your level <span>*</span></p>
+         <select id="level" name="level" class="box">
+          <option value="" disabled selected>Specify your current proficiency level</option>
+          <option value="Beginner">Beginner</option>
+          <option value="Intermediate" >Intermediate</option>
+          <option value="Advanced">Advanced</option>
+      </select>
+         <p>Enter your preferred schedule <span>*</span></p>
+         <input type="text" name="pass"  placeholder="E.g. weekdays evenings, weekends mornings" maxlength="20" class="box">       
+         <p>Enter your session duration <span>*</span></p>
+         <input type="text" name="Session duration" placeholder="E.g. 1 hour, 90 minutes" maxlength="20" class="box">      
+         
+         <input type="submit" value="Save changes" name="submit" class="btn">
+         
+      </form>
+  </section>
 
 
 
@@ -110,5 +124,6 @@
     <a href="contact_learner.html"><i class="fas fa-headset"></i><span> contact us</span></a>
 
  </footer>
+ <script src="script.js"></script>
 </body>
 </html>
