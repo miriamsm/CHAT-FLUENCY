@@ -12,8 +12,6 @@
    <!-- custom css file link  --> 
    <link rel="stylesheet" href="style.css"> 
  
- 
- 
 </head> 
 <body style="padding-left: 0;"> 
  
@@ -34,7 +32,7 @@
    </header>    
  
 <section class="form-container">
-   <form action="profileLearner.html" method="post" enctype="multipart/form-data"> 
+   <form action="profileLearner.html" method="post" enctype="multipart/form-data" onsubmit="return validateForm()"> 
        <h3>Sign Up</h3>
       <p>Your first name <span>*</span></p> 
       <input type="text" name="first_name" placeholder="enter your first name" required maxlength="50" class="box"> 
@@ -69,6 +67,22 @@
  
 <!-- custom js file link  --> 
 <script src="js/script.js"></script> 
+
+<script>
+   function validateForm() {
+      var firstName = document.forms["signupForm"]["first_name"].value;
+      var lastName = document.forms["signupForm"]["last_name"].value;
+      var email = document.forms["signupForm"]["email"].value;
+      var password = document.forms["signupForm"]["pass"].value;
+      var city = document.forms["signupForm"]["city"].value;
+      var location = document.forms["signupForm"]["location"].value;
+
+      if (firstName == "" || lastName == "" || email == "" || password == "" || city == "" || location == "") {
+         alert("All fields must be filled out");
+         return false;
+      }
+   }
+</script>
  
 </body> 
 </html>
