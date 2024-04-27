@@ -7,6 +7,7 @@ if(isset($_COOKIE['user_id'])){
    $user_id = '';
 }
 
+global $conn;
 // Fetch learner requests from the database
 $sql = "SELECT * FROM learningrequests";
 $result = mysqli_query($conn, $sql);
