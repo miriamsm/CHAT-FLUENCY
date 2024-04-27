@@ -1413,3 +1413,26 @@ section{
    }
 
 }
+
+.request-status {
+   display: inline-block; /* Display as inline block */
+    padding: 2px 8px; /* Adjust padding as needed */
+    border-radius: 5px;
+    font-weight: bold;
+    font-size: 1.5rem;
+}
+
+.pending {
+   background-color: grey;
+   color: white;
+}
+
+.accepted {
+   background-color: green;
+   color: white;
+}
+
+.rejected {
+   background-color: red;
+   color: white;
+}
