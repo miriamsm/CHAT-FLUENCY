@@ -1,3 +1,147 @@
+<?php
+
+include 'connect.php';
+
+if(isset($_COOKIE['user_id'])){
+   $user_id = $_COOKIE['user_id'];
+}else{
+   $user_id = '';
+ //  header('location:login.php');
+}
+
+if(isset($_POST['submit'])){ //checks if a form with a submit button named 'submit' has been submitted.
+
+   $select_user = $conn->prepare("SELECT * FROM `languagelearners` WHERE LearnerID = ? LIMIT 1");
+   $select_user->execute([$user_id]);
+   $fetch_user = $select_user->fetch(PDO::FETCH_ASSOC);
+
+   $prev_pass = $fetch_user['Password'];
+   $prev_image = $fetch_user['Photo'];
+
+$fname = $_POST['FirstName'];
+$fname = filter_var($fname, FILTER_SANITIZE_STRING);
+
+$lname = $_POST['LastName'];
+$lname = filter_var($lname, FILTER_SANITIZE_STRING);
+
+if(!empty($fname)){
+    $update_fname = $conn->prepare("UPDATE `languagelearners` SET FirstName = ? WHERE LearnerID = ?");
+    $update_fname->execute([$fname, $user_id]);
+    $message[] = 'First name updated successfully!';
+}
+
+if(!empty($lname)){
+    $update_lname = $conn->prepare("UPDATE `languagelearners` SET LastName = ? WHERE LearnerID = ?");
+    $update_lname->execute([$lname, $user_id]);
+    $message[] = 'Last name updated successfully!';
+}
+
+$city = $_POST['City'];
+if (!empty($city)) {
+    // Perform any necessary sanitization or validation of the input data
+
+    // Prepare and execute SQL query to update the city in the database
+    $update_city = $conn->prepare("UPDATE 'languagelearners' SET City = ? WHERE LearnerID = ?");
+    $update_city->execute([$city, $user_id]);
+
+    // Check if the update was successful
+    if ($update_city->rowCount() > 0) {
+        $message[] = 'City updated successfully!';
+    } else {
+        $message[] = 'Failed to update city.';
+    }
+} else {
+    $message[] = 'Please fill in the city field.';
+}
+
+
+$location = $_POST['Location'];
+if (!empty($location)) {
+    // Perform any necessary sanitization or validation of the input data
+
+    // Prepare and execute SQL query to update the location in the database
+    $update_location = $conn->prepare("UPDATE 'languagelearners' SET Location = ? WHERE LearnerID = ?");
+    $update_location->execute([$location, $user_id]);
+
+    // Check if the update was successful
+    if ($update_location->rowCount() > 0) {
+        $message[] = 'Location updated successfully!';
+    } else {
+        $message[] = 'Failed to update location.';
+    }
+} else {
+    $message[] = 'Please fill in the location field.';
+}
+
+
+   $email = $_POST['email'];
+   $email = filter_var($email, FILTER_SANITIZE_STRING);
+
+   if(!empty($email)){
+      $select_email = $conn->prepare("SELECT Email FROM `languagelearners` WHERE Email = ?");
+      $select_email->execute([$email]);
+      if($select_email->rowCount() > 0){
+         $message[] = 'email already taken!';
+      }else{
+         $update_email = $conn->prepare("UPDATE `languagelearners` SET Email = ? WHERE LearnerID= ?");
+         $update_email->execute([$email, $user_id]);
+         $message[] = 'email updated successfully!';
+      }
+   }
+
+   $Photo = $_FILES['Photo']['name'];//fetches the name of the uploaded image file.
+   $Photo = filter_var($Photo, FILTER_SANITIZE_STRING);
+   $ext = pathinfo($Photo, PATHINFO_EXTENSION);
+   $rename = unique_id().'.'.$ext;
+   $Photo_size = $_FILES['Photo']['size'];
+   $Photo_tmp_name = $_FILES['Photo']['tmp_name'];
+   $Photo_folder = 'uploaded_files/'.$rename;
+
+   if(!empty($Photo)){
+      if($Photo_size > 2000000){
+         $message[] = 'photo size too large!';
+      }else{
+         $update_Photo = $conn->prepare("UPDATE `languagelearners` SET `Photo` = ? WHERE LearnerID= ?");
+         $update_Photo->execute([$rename, $user_id]);
+         move_uploaded_file($Photo_tmp_name, $Photo_folder);
+         if($prev_Photo != '' AND $prev_Photo != $rename){
+            unlink('uploaded_files/'.$prev_Photo);
+         }
+         $message[] = 'Photo updated successfully!';
+      }
+   }
+
+   $empty_pass = 'da39a3ee5e6b4b0d3255bfef95601890afd80709';//This hash value might represent an empty password or a default value. It's used for comparison purposes.
+   $old_pass = sha1($_POST['old_pass']);
+   $old_pass = filter_var($old_pass, FILTER_SANITIZE_STRING);
+   $new_pass = sha1($_POST['new_pass']);
+   $new_pass = filter_var($new_pass, FILTER_SANITIZE_STRING);
+   $cpass = sha1($_POST['cpass']);
+   $cpass = filter_var($cpass, FILTER_SANITIZE_STRING);
+
+   if($old_pass != $empty_pass){
+      if($old_pass != $prev_pass){
+         $message[] = 'old password not matched!';//This condition checks if the hashed value of the old password is not equal to the previous password stored in $prev_pass
+      }elseif($new_pass != $cpass){
+         $message[] = 'confirm password not matched!';
+      }else{
+         if($new_pass != $empty_pass){
+            $update_pass = $conn->prepare("UPDATE `users` SET password = ? WHERE LearnerID = ?");
+            $update_pass->execute([$cpass, $user_id]);
+            $message[] = 'password updated successfully!';
+         }else{
+            $message[] = 'please enter a new password!';
+         }
+      }
+   }
+
+}
+
+?>
+
+
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -83,23 +227,23 @@
    <form id= profile-form method="post" enctype="multipart/form-data">
       <h3>Edit profile</h3>
       <p>edit first name</p>
-      <input id= "first-name-input" type="text" name="name" placeholder="Leena" maxlength="50" class="box">
+      <input id= "first-name-input" type="text" name="FirstName" placeholder="<?= $fetch_profile['FirstName']; ?>" maxlength="50" class="box">
       <p>edit last name</p>
-      <input id="last-name-input" type="text" name="name" placeholder="Alshaikh" maxlength="50" class="box">
+      <input id="last-name-input" type="text" name="LastName" placeholder="<?= $fetch_profile['LastName']; ?>" maxlength="50" class="box">
       <p>edit city</p>
-      <input id="city-input" type="text" name="name" placeholder="Riyadh," maxlength="50" class="box">
+      <input id="city-input" type="text" name="City" placeholder="Riyadh," maxlength="50" class="box">
       <p>edit location</p>
-      <input id="location-input" type="text" name="name" placeholder="KSA" maxlength="50" class="box">
+      <input id="location-input" type="text" name="Location" placeholder="KSA" maxlength="50" class="box">
       <p>edit email</p>
-      <input id="email-input" name="email" placeholder="Leena@gmail.come" maxlength="50" class="box">
+      <input id="email-input" name="Email" placeholder="<?= $fetch_profile['Email']; ?>" maxlength="50" class="box">
       <p>previous password</p>
       <input id="old-pass-input"  name="old_pass" placeholder="enter your old password" maxlength="20" class="box">
       <p>new password</p>
       <input id="new-pass-input" type="password" name="new_pass" placeholder="enter your new password" maxlength="20" class="box">
       <p>confirm password</p>
-      <input id="confirm-pass-input" type="password" name="c_pass" placeholder="confirm your new password" maxlength="20" class="box">
+      <input id="confirm-pass-input" type="password" name="cpass" placeholder="confirm your new password" maxlength="20" class="box">
       <p>edit pic</p>
-      <input id="pic-input" type="file" accept="image/*" class="box">
+      <input id="pic-input" name="Photo" type="file" accept="image/*" class="box">
       <!-- Span elements for displaying validation messages -->
 <span id="email-error" class="error-message"></span>
 <span id="password-error" class="error-message"></span>
@@ -123,6 +267,7 @@
 
 
 <script>
+   /*
 // JavaScript code for handling form submission and button clicks
 // Event listener for form submission
 document.getElementById('profile-form').addEventListener('submit', function(event) {
@@ -156,40 +301,7 @@ document.getElementById('profile-form').addEventListener('submit', function(even
    // Reset the form
    document.getElementById('profile-form').reset();
 });
-/*
-//database
-const formData = {
-        firstName: firstName,
-        lastName: lastName,
-        city: city,
-        location: location,
-        email: email,
-        oldPassword: oldPassword,
-        newPassowrd: newPassword,
-        confirmPassword: confirmPassword,
-        Pic: pic,
-      };
-      // Make an AJAX request to the server
-      fetch('/submit', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(formData)
-      })
-      .then(response => {
-        if (response.ok) {
-          console.log('Form data sent successfully');
-          // Reset the form
-          document.getElementById('profile-form').reset();
-        } else {
-          console.error('Failed to send form data');
-        }
-      })
-      .catch(error => {
-        console.error('Error sending form data:', error);
-      });
-      */
+
 
 // Event listener for the cancel button
 document.getElementById('cancel-btn').addEventListener('click', function() {
@@ -324,6 +436,8 @@ document.getElementById('delete-btn').addEventListener('click', function() {
        alert('Deletion canceled');  // Example: Show an alert message
    }
 });
+*/
 </script>
+
 </body>
 </html>
