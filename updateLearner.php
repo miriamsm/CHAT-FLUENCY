@@ -6,7 +6,7 @@ if(isset($_COOKIE['user_id'])){
    $user_id = $_COOKIE['user_id'];
 }else{
    $user_id = '';
- //  header('location:login.php');
+  header('location:login.php');
 }
 
 if(isset($_POST['submit'])){ //checks if a form with a submit button named 'submit' has been submitted.
@@ -43,16 +43,9 @@ if (!empty($city)) {
     // Prepare and execute SQL query to update the city in the database
     $update_city = $conn->prepare("UPDATE 'languagelearners' SET City = ? WHERE LearnerID = ?");
     $update_city->execute([$city, $user_id]);
-
-    // Check if the update was successful
-    if ($update_city->rowCount() > 0) {
-        $message[] = 'City updated successfully!';
-    } else {
-        $message[] = 'Failed to update city.';
-    }
-} else {
-    $message[] = 'Please fill in the city field.';
-}
+    $message[] = 'City updated successfully!';
+    
+} 
 
 
 $location = $_POST['Location'];
@@ -62,16 +55,9 @@ if (!empty($location)) {
     // Prepare and execute SQL query to update the location in the database
     $update_location = $conn->prepare("UPDATE 'languagelearners' SET Location = ? WHERE LearnerID = ?");
     $update_location->execute([$location, $user_id]);
-
-    // Check if the update was successful
-    if ($update_location->rowCount() > 0) {
-        $message[] = 'Location updated successfully!';
-    } else {
-        $message[] = 'Failed to update location.';
-    }
-} else {
-    $message[] = 'Please fill in the location field.';
-}
+    $message[] = 'Location updated successfully!';
+    
+} 
 
 
    $email = $_POST['email'];
@@ -227,15 +213,15 @@ if (!empty($location)) {
    <form id= profile-form method="post" enctype="multipart/form-data">
       <h3>Edit profile</h3>
       <p>edit first name</p>
-      <input id= "first-name-input" type="text" name="FirstName" placeholder="<?= $fetch_profile['FirstName']; ?>" maxlength="50" class="box">
+      <input id= "first-name-input" type="text"name="FirstName" placeholder="<?= $fetch_user['FirstName']; ?>" maxlength="50" class="box">
       <p>edit last name</p>
-      <input id="last-name-input" type="text" name="LastName" placeholder="<?= $fetch_profile['LastName']; ?>" maxlength="50" class="box">
+      <input id="last-name-input" type="text" name="LastName" placeholder="<?= $fetch_user['LastName']; ?>" maxlength="50" class="box">
       <p>edit city</p>
-      <input id="city-input" type="text" name="City" placeholder="Riyadh," maxlength="50" class="box">
+      <input id="city-input" type="text"name="City" placeholder="<?= $fetch_user['City']; ?>" maxlength="50" class="box">
       <p>edit location</p>
-      <input id="location-input" type="text" name="Location" placeholder="KSA" maxlength="50" class="box">
+      <input id="location-input" type="text" name="Location" placeholder="<?= $fetch_user['Location']; ?>" maxlength="50" class="box">
       <p>edit email</p>
-      <input id="email-input" name="Email" placeholder="<?= $fetch_profile['Email']; ?>" maxlength="50" class="box">
+      <input id="email-input" name="Email" placeholder="<?= $fetch_user['Email']; ?>" maxlength="50" class="box">
       <p>previous password</p>
       <input id="old-pass-input"  name="old_pass" placeholder="enter your old password" maxlength="20" class="box">
       <p>new password</p>
