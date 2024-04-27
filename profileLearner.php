@@ -1,3 +1,41 @@
+<?php
+
+include 'connect.php';
+
+if(isset($_COOKIE['user_id'])){
+   $user_id = $_COOKIE['user_id'];
+}else{
+   $user_id = '';
+   header('location:login.php');
+}
+$select_user = $conn->prepare("SELECT * FROM `languagelearners` WHERE LearnerID = ? LIMIT 1");
+$select_user->execute([$user_id]);
+$fetch_user = $select_user->fetch(PDO::FETCH_ASSOC);
+
+// Check if the query was successful
+if ($fetch) {
+    // Get the 'name' attribute from the fetched row
+    $name = $fetch['name'];
+} else {
+    // Default name if the query fails or no data is found
+    $name = "Guest";
+}
+$select_sessions = $conn->prepare("SELECT * FROM `learningsessions` WHERE LearnerID = ?");
+$select_sessions->execute([$user_id]);
+$total_sessions = $select_sessions->rowCount();
+
+$select_requests = $conn->prepare("SELECT * FROM `learningrequests` WHERE LearnerID = ?");
+$select_requests->execute([$user_id]);
+$total_requests = $select_requests->rowCount();
+
+$select_partners = $conn->prepare("SELECT * FROM `languagepartners` WHERE LearnerID = ?"); //must insert new table 
+$select_partners->execute([$user_id]);
+$total_partners = $select_partners->rowCount();
+
+?>
+
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -38,7 +76,7 @@
    
       <div class="profile">
          <img src="images/pic-1.jpg" class="image" alt="">
-         <h3 class="name">Leena Alshaikh</h3>
+         <h3 class="name"><?= $fetch_user['FirstName'] . ' ' . $fetch_user['LastName']; ?></h3>
          <p class="role">Learner</p>
       </div>
    
@@ -60,15 +98,15 @@
 
 <section class="user-profile">
 
-   <h1 class="heading">Welcome Leena !</h1>
+   <h1 class="heading"> Welcome <?= $fetch_user['FirstName']; ?>!</h1>
 
    <div class="info">
 
       <div class="user">
-         <img src="images/pic-1.jpg" alt="">
-         <h3>Leena Alshaikh</h3>
+         <img src="uploaded_files/<?= $fetch_user['Photo']; ?>" alt="">
+         <h3><?= $fetch_user['FirstName']; ?></h3>
          <p>Learner</p>
-         <p>Riyadh, KSA</p>
+         <p><?= $fetch_user['City'] . ', ' . $fetch_user['Location']; ?></p>
          <a href="updateLearner.html" class="inline-btn">edit profile</a>
       </div>
    
@@ -79,7 +117,7 @@
             <img src="images/session.png"  style="width: 25px; height: 25px;" alt="sessions">
              <div>
               
-                <span>2</span>
+                <span><?= $total_sessions; ?></span>
                 <p>sessions</p>
              </div>
           </div>
@@ -90,7 +128,7 @@
           <div class="flex">
             <img src="images/request.png"  style="width: 30px; height: 30px;" alt="request">
              <div>
-                <span>3</span>
+                <span><?= $total_requests; ?></span>
                 <p>requests</p>
              </div>
           </div>
@@ -101,7 +139,7 @@
         <div class="flex">
          <img src="images/teacher-at-the-blackboard.png"  style="width: 30px; height: 30px;" alt="teacher-at-the-blackboard">
            <div>
-              <span>1</span>
+              <span><?= $total_partners; ?></span>
               <p>partners</p>
                </div>
             </div>
@@ -122,31 +160,6 @@
 
 <!-- custom js file link  -->
 <script src="script.js"></script>
-
-<?php
-
-include 'components/connect.php';
-
-if(isset($_COOKIE['user_id'])){
-   $user_id = $_COOKIE['user_id'];
-}else{
-   $user_id = '';
-   header('location:login.php');
-}
-
-$select_likes = $conn->prepare("SELECT * FROM `likes` WHERE user_id = ?");
-$select_likes->execute([$user_id]);
-$total_likes = $select_likes->rowCount();
-
-$select_comments = $conn->prepare("SELECT * FROM `comments` WHERE user_id = ?");
-$select_comments->execute([$user_id]);
-$total_comments = $select_comments->rowCount();
-
-$select_bookmark = $conn->prepare("SELECT * FROM `bookmark` WHERE user_id = ?");
-$select_bookmark->execute([$user_id]);
-$total_bookmarked = $select_bookmark->rowCount();
-
-?>
 
 </body>
 </html>
