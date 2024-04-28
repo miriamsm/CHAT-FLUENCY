@@ -26,7 +26,7 @@ if(isset($_POST['submit'])){
    $image_tmp_name = $_FILES['photo']['tmp_name'];
    $image_folder = 'uploaded_files/'.$rename;
 
-   $select_learner = $conn->prepare("SELECT * FROM `languagelearners` WHERE email = ?");
+   $select_learner = $conn->prepare("SELECT * FROM `languagelearners` WHERE Email = ?");
    $select_learner->execute([$email]);
    
    if($select_learner->rowCount() > 0){
@@ -36,7 +36,7 @@ if(isset($_POST['submit'])){
       $insert_learner->execute([$id, $first_name, $last_name, $email, $password, $rename, $city, $location]);
       move_uploaded_file($image_tmp_name, $image_folder);
       
-      $verify_learner = $conn->prepare("SELECT * FROM `languagelearners` WHERE email = ? AND password = ? LIMIT 1"); 
+      $verify_learner = $conn->prepare("SELECT * FROM `languagelearners` WHERE Email = ? AND password = ? LIMIT 1"); 
       $verify_learner->execute([$email, $password]);
       $row = $verify_learner->fetch(PDO::FETCH_ASSOC);
       
