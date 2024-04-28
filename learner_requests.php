@@ -116,7 +116,7 @@ $stmt = $conn->query($sql); // Use PDO query method
    </div>
 
 </section>
-
+<script src="script.js"></script>
 <footer style="margin-top : 80px;" class="footer">
    &copy; copyright @ 2024 by <span>CHAT FLUENCY</span> | all rights reserved!
    <a href="contact_partner.html"><i class="fas fa-headset"></i><span> contact us</span></a>
