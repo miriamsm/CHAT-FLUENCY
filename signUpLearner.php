@@ -1,54 +1,64 @@
 <?php
-
 include 'connect.php';
 
-if(isset($_POST['submit'])){
+// Check if the form is submitted
+if(isset($_POST['submit'])) {
+    // Assign form data to variables
+    $firstName = $_POST['first_name'];
+    $lastName = $_POST['last_name'];
+    $email = $_POST['email'];
+    $password = $_POST['pass'];
+    $city = $_POST['city'];
+    $location = $_POST['location'];
 
-   $id = unique_id();
-   $first_name = $_POST['first_name'];
-   $first_name = filter_var($first_name, FILTER_SANITIZE_STRING);
-   $last_name = $_POST['last_name'];
-   $last_name = filter_var($last_name, FILTER_SANITIZE_STRING);
-   $email = $_POST['email'];
-   $email = filter_var($email, FILTER_SANITIZE_STRING);
-   $password = sha1($_POST['pass']);
-   $password = filter_var($password, FILTER_SANITIZE_STRING);
-   $city = $_POST['city'];
-   $city = filter_var($city, FILTER_SANITIZE_STRING);
-   $location = $_POST['location'];
-   $location = filter_var($location, FILTER_SANITIZE_STRING);
+    // Upload photo
+    $photo = '';
+    if(isset($_FILES['photo']) && $_FILES['photo']['error'] == 0) {
+        $target_dir = "uploads/";
+        $target_file = $target_dir . basename($_FILES["photo"]["name"]);
+        $uploadOk = 1;
+        $imageFileType = strtolower(pathinfo($target_file,PATHINFO_EXTENSION));
+        // Check if image file is a actual image or fake image
+        $check = getimagesize($_FILES["photo"]["tmp_name"]);
+        if($check !== false) {
+            $uploadOk = 1;
+        } else {
+            $uploadOk = 0;
+        }
+        // Check if file already exists
+        if (file_exists($target_file)) {
+            $uploadOk = 0;
+        }
+        // Check file size
+        if ($_FILES["photo"]["size"] > 500000) {
+            $uploadOk = 0;
+        }
+        // Allow only certain file formats
+        if($imageFileType != "jpg" && $imageFileType != "png" && $imageFileType != "jpeg"
+        && $imageFileType != "gif" ) {
+            $uploadOk = 0;
+        }
+        // Check if $uploadOk is set to 0 by an error
+        if ($uploadOk == 1) {
+            if (move_uploaded_file($_FILES["photo"]["tmp_name"], $target_file)) {
+                $photo = $target_file;
+            }
+        }
+    }
 
-   $image = $_FILES['photo']['name'];
-   $image = filter_var($image, FILTER_SANITIZE_STRING);
-   $ext = pathinfo($image, PATHINFO_EXTENSION);
-   $rename = unique_id().'.'.$ext;
-   $image_size = $_FILES['photo']['size'];
-   $image_tmp_name = $_FILES['photo']['tmp_name'];
-   $image_folder = 'uploaded_files/'.$rename;
+    // Insert data into database
+    $sql = "INSERT INTO languagelearners (FirstName, LastName, Email, Password, Photo, City, Location)
+            VALUES ('$firstName', '$lastName', '$email', '$password', '$photo', '$city', '$location')";
 
-   $select_learner = $conn->prepare("SELECT * FROM `languagelearners` WHERE Email = ?");
-   $select_learner->execute([$email]);
-   
-   if($select_learner->rowCount() > 0){
-      $message[] = 'Email already taken!';
-   }else{
-      $insert_learner = $conn->prepare("INSERT INTO `languagelearners`(id, first_name, last_name, email, password, photo, city, location) VALUES(?,?,?,?,?,?,?,?)"); 
-      $insert_learner->execute([$id, $first_name, $last_name, $email, $password, $rename, $city, $location]);
-      move_uploaded_file($image_tmp_name, $image_folder);
-      
-      $verify_learner = $conn->prepare("SELECT * FROM `languagelearners` WHERE Email = ? AND password = ? LIMIT 1"); 
-      $verify_learner->execute([$email, $password]);
-      $row = $verify_learner->fetch(PDO::FETCH_ASSOC);
-      
-      if($verify_learner->rowCount() > 0){
-         setcookie('user_id', $row['id'], time() + 60*60*24*30, '/');
-         header('location:profileLearner.php'); // Redirect to learner profile page
-         exit(); // Stop further execution
-      }
-   }
+    if (mysqli_query($conn, $sql)) {
+        echo "New record created successfully";
+    } else {
+        echo "Error: " . $sql . "<br>" . mysqli_error($conn);
+    }
 
+    // Close connection
+    mysqli_close($conn);
 }
-
 ?>
 
 <!DOCTYPE html> 
