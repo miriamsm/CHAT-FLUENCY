@@ -60,7 +60,7 @@ if (!empty($location)) {
 } 
 
 
-   $email = $_POST['email'];
+   $email = $_POST['Email'];
    $email = filter_var($email, FILTER_SANITIZE_STRING);
 
    if(!empty($email)){
@@ -112,7 +112,7 @@ if (!empty($location)) {
          $message[] = 'confirm password not matched!';
       }else{
          if($new_pass != $empty_pass){
-            $update_pass = $conn->prepare("UPDATE `users` SET password = ? WHERE LearnerID = ?");
+            $update_pass = $conn->prepare("UPDATE `users` SET Password = ? WHERE LearnerID = ?");
             $update_pass->execute([$cpass, $user_id]);
             $message[] = 'password updated successfully!';
          }else{
