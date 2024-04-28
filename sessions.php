@@ -7,18 +7,27 @@ if(isset($_COOKIE['user_id'])){
     $user_id = '';
  }
  
+// Fetching scheduled sessions from LearningSessions table
+$sqlCurrent = "SELECT LearningSessions.SessionID, LearningSessions.SessionDate, LearningSessions.SessionDuration, LanguageLearners.FirstName AS LearnerFirstName, LanguageLearners.LastName AS LearnerLastName, LanguagePartners.FirstName AS PartnerFirstName, LanguagePartners.LastName AS PartnerLastName
+               FROM LearningSessions
+               INNER JOIN LanguageLearners ON LearningSessions.LearnerID = LanguageLearners.LearnerID
+               INNER JOIN LanguagePartners ON LearningSessions.PartnerID = LanguagePartners.PartnerID
+               WHERE LearningSessions.Status = 'Scheduled'
+               ORDER BY LearningSessions.SessionDate DESC";
 
-// Fetching data from LearningSessions table
-$sql = "SELECT LearningSessions.SessionID, LearningSessions.SessionDate, LearningSessions.SessionDuration, LanguageLearners.FirstName AS LearnerFirstName, LanguageLearners.LastName AS LearnerLastName, LanguagePartners.FirstName AS PartnerFirstName, LanguagePartners.LastName AS PartnerLastName
-        FROM LearningSessions
-        INNER JOIN LanguageLearners ON LearningSessions.LearnerID = LanguageLearners.LearnerID
-        INNER JOIN LanguagePartners ON LearningSessions.PartnerID = LanguagePartners.PartnerID
-        WHERE LearningSessions.Status = 'Scheduled'
-        ORDER BY LearningSessions.SessionDate DESC"; // Query to fetch scheduled sessions
+// Fetching completed or canceled sessions from LearningSessions table
+$sqlPrevious = "SELECT LearningSessions.SessionID, LearningSessions.SessionDate, LearningSessions.SessionDuration, LanguageLearners.FirstName AS LearnerFirstName, LanguageLearners.LastName AS LearnerLastName, LanguagePartners.FirstName AS PartnerFirstName, LanguagePartners.LastName AS PartnerLastName
+                FROM LearningSessions
+                INNER JOIN LanguageLearners ON LearningSessions.LearnerID = LanguageLearners.LearnerID
+                INNER JOIN LanguagePartners ON LearningSessions.PartnerID = LanguagePartners.PartnerID
+                WHERE LearningSessions.Status = 'Completed' OR LearningSessions.Status = 'Canceled'
+                ORDER BY LearningSessions.SessionDate DESC";
 
-$result = $conn->query($sql);
+$resultCurrent = $conn->query($sqlCurrent); // Execute query for scheduled sessions
+$resultPrevious = $conn->query($sqlPrevious); // Execute query for completed or canceled sessions
 
 ?>
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -82,15 +91,15 @@ $result = $conn->query($sql);
 
 
 
-   <section class="playlist-videos">
+   <section class="playlist-videos" style="flex: 1; margin-right: 20px;">
 
       <h1 class="heading">Current sessions</h1>
 
       <div class="box-container">
          <?php
-         if ($result->rowCount() > 0) {
+         if ($resultCurrentt->rowCount() > 0) {
              // Output data of each row
-             while ($row = $result->fetch(PDO::FETCH_ASSOC)) {
+             while ($row = $resultCurrent->fetch(PDO::FETCH_ASSOC)) {
                  echo "<a class='box2'>";
                  echo "<div class='student'>";
                  echo "<img src='images/pic-2.jpg' alt=''>";
@@ -109,6 +118,35 @@ $result = $conn->query($sql);
       </div>
 
    </section>
+
+   <section class="playlist-videos" style="flex: 1;">
+
+<h1 class="heading">Previous sessions</h1>
+
+<div class="box-container">
+
+<?php
+         if ($resultPrevious->rowCount() > 0) {
+             // Output data of each row for completed or canceled sessions
+             while ($row = $resultPrevious->fetch(PDO::FETCH_ASSOC)) {
+                 echo "<a class='box'>";
+                 echo "<div class='tutor'>";
+                 echo "<img src='images/pic-2.jpg' alt=''>";
+                 echo "<div class='info'>";
+                 echo "<h3>" . $row['PartnerFirstName'] . " " . $row['PartnerLastName'] . "</h3>";
+                 echo "<span>" . date('d-m-Y', strtotime($row['SessionDate'])) . "</span>";
+                 echo "</div>";
+                 echo "</div>";
+                 echo "<h3>" . $row['SessionID'] . "</h3>"; // Displaying session ID
+                 echo "</a>";
+             }
+         } else {
+             echo "<p>No previous sessions found.</p>";
+         }
+         ?>
+</div>
+
+</section>
 
    <footer class="footer">
 
