@@ -73,22 +73,16 @@ if(isset($_POST['submit'])) {
 
 <section class="form-container">
 
-   <form  method="post" enctype="multipart/form-data">
+   <form method="post" enctype="multipart/form-data">
       <h3>login now</h3>
-   <!--  <p>Select your role <span>*</span></p>
-      <select name="role" class="box">
-         <option value="partner">Partner</option>
-         <option value="learner">Learner</option>
-      </select> -->
-   
       <p>your email <span>*</span></p>
       <input type="email" name="email" placeholder="enter your email" required maxlength="50" class="box">
       
       <p>your password <span>*</span></p>
       <input type="password" name="pass" placeholder="enter your password" required maxlength="20" class="box">
    
-      <a href="profileLearner.html" class="btn">Log In As learner</a>
-      <a href="profilePartner.html" class="btn">Log In As Partner</a>
+      <button type="submit" name="login_learner" class="btn">Log In As learner</button>
+      <button type="submit" name="login_partner" class="btn">Log In As Partner</button>
    </form>
 </section>
 
