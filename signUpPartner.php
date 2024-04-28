@@ -1,3 +1,60 @@
+<?php
+
+include 'connect.php';
+
+if(isset($_POST['submit'])){
+
+   $partner_id = unique_id();
+   $first_name = $_POST['first_name'];
+   $first_name = filter_var($first_name, FILTER_SANITIZE_STRING);
+   $last_name = $_POST['last_name'];
+   $last_name = filter_var($last_name, FILTER_SANITIZE_STRING);
+   $age = $_POST['age'];
+   $age = filter_var($age, FILTER_SANITIZE_NUMBER_INT);
+   $gender = $_POST['gender'];
+   $gender = filter_var($gender, FILTER_SANITIZE_STRING);
+   $email = $_POST['email'];
+   $email = filter_var($email, FILTER_SANITIZE_STRING);
+   $password = sha1($_POST['password']);
+   $password = filter_var($password, FILTER_SANITIZE_STRING);
+   $phone = $_POST['phone'];
+   $phone = filter_var($phone, FILTER_SANITIZE_STRING);
+   $city = $_POST['city'];
+   $city = filter_var($city, FILTER_SANITIZE_STRING);
+   $short_bio = $_POST['short_bio'];
+   $short_bio = filter_var($short_bio, FILTER_SANITIZE_STRING);
+
+   $image = $_FILES['photo']['name'];
+   $image = filter_var($image, FILTER_SANITIZE_STRING);
+   $ext = pathinfo($image, PATHINFO_EXTENSION);
+   $rename = unique_id().'.'.$ext;
+   $image_size = $_FILES['photo']['size'];
+   $image_tmp_name = $_FILES['photo']['tmp_name'];
+   $image_folder = 'uploaded_files/'.$rename;
+
+   $select_partner = $conn->prepare("SELECT * FROM `languagepartners` WHERE email = ?");
+   $select_partner->execute([$email]);
+   
+   if($select_partner->rowCount() > 0){
+      $message[] = 'Email already taken!';
+   }else{
+      $insert_partner = $conn->prepare("INSERT INTO `languagepartners`(partner_id, first_name, last_name, age, gender, email, photo, password, phone, city, bio) VALUES(?,?,?,?,?,?,?,?,?,?,?)");
+      $insert_partner->execute([$partner_id, $first_name, $last_name, $age, $gender, $email, $rename, $password, $phone, $city, $short_bio]);
+      move_uploaded_file($image_tmp_name, $image_folder);
+      
+      $verify_partner = $conn->prepare("SELECT * FROM `languagepartners` WHERE email = ? AND password = ? LIMIT 1");
+      $verify_partner->execute([$email, $password]);
+      $row = $verify_partner->fetch(PDO::FETCH_ASSOC);
+      
+      if($verify_partner->rowCount() > 0){
+         setcookie('partner_id', $row['partner_id'], time() + 60*60*24*30, '/');
+         header('location:partner_home.php');
+      }
+   }
+
+}
+
+?>
 <!DOCTYPE html> 
 <html lang="en"> 
 <head> 

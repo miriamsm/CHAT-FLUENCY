@@ -1,3 +1,43 @@
+<?php
+
+include 'connect.php';
+
+if(isset($_POST['submit'])) {
+   $email = $_POST['email'];
+   $password = sha1($_POST['pass']);
+   
+   // Check if login as learner button is clicked
+   if(isset($_POST['login_learner'])) {
+      $select_learner = $conn->prepare("SELECT * FROM `languagelearners` WHERE email = ? AND password = ?");
+      $select_learner->execute([$email, $password]);
+      
+      if($select_learner->rowCount() > 0) {
+         $row = $select_learner->fetch(PDO::FETCH_ASSOC);
+         setcookie('user_id', $row['learner_id'], time() + 60*60*24*30, '/');
+         header('location:profileLearner.php'); // Redirect to learner profile page
+         exit(); // Stop further execution
+      } else {
+         $message = "Invalid email or password!";
+      }
+   }
+   
+   // Check if login as partner button is clicked
+   if(isset($_POST['login_partner'])) {
+      $select_partner = $conn->prepare("SELECT * FROM `languagepartners` WHERE email = ? AND password = ?");
+      $select_partner->execute([$email, $password]);
+      
+      if($select_partner->rowCount() > 0) {
+         $row = $select_partner->fetch(PDO::FETCH_ASSOC);
+         setcookie('partner_id', $row['partner_id'], time() + 60*60*24*30, '/');
+         header('location:profilePartner.php'); // Redirect to partner profile page
+         exit(); // Stop further execution
+      } else {
+         $message = "Invalid email or password!";
+      }
+   }
+}
+
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
