@@ -1,20 +1,23 @@
 <?php
 
 include 'connect.php';
-
+/*
 if(isset($_COOKIE['user_id'])){
    $user_id = $_COOKIE['user_id'];
 }else{
    $user_id = '';
   header('location:login.php');
 }
-
+*/
+$user_id = 1;
+$select_user = $conn->prepare("SELECT * FROM languagelearners WHERE LearnerID = ? LIMIT 1");
+$select_user->execute([$user_id]);
+$fetch_user = $select_user->fetch(PDO::FETCH_ASSOC);
+$message = [];
+$redirect_message = '';
 if(isset($_POST['submit'])){ //checks if a form with a submit button named 'submit' has been submitted.
 
-   $select_user = $conn->prepare("SELECT * FROM `languagelearners` WHERE LearnerID = ? LIMIT 1");
-   $select_user->execute([$user_id]);
-   $fetch_user = $select_user->fetch(PDO::FETCH_ASSOC);
-
+  
    $prev_pass = $fetch_user['Password'];
    $prev_image = $fetch_user['Photo'];
 
@@ -24,56 +27,55 @@ $fname = filter_var($fname, FILTER_SANITIZE_STRING);
 $lname = $_POST['LastName'];
 $lname = filter_var($lname, FILTER_SANITIZE_STRING);
 
-if(!empty($fname)){
-    $update_fname = $conn->prepare("UPDATE `languagelearners` SET FirstName = ? WHERE LearnerID = ?");
+if(!empty($fname) && $fname != $fetch_user['FirstName']){
+    $update_fname = $conn->prepare("UPDATE languagelearners SET FirstName = ? WHERE LearnerID = ?");
     $update_fname->execute([$fname, $user_id]);
-    $message[] = 'First name updated successfully!';
+    $redirect_message ='First name updated successfully!';
 }
 
-if(!empty($lname)){
-    $update_lname = $conn->prepare("UPDATE `languagelearners` SET LastName = ? WHERE LearnerID = ?");
+if(!empty($lname) && $lname != $fetch_user['LastName']){
+    $update_lname = $conn->prepare("UPDATE languagelearners SET LastName = ? WHERE LearnerID = ?");
     $update_lname->execute([$lname, $user_id]);
-    $message[] = 'Last name updated successfully!';
+    $redirect_message = 'Last name updated successfully!';
 }
 
 $city = $_POST['City'];
-if (!empty($city)) {
+if (!empty($city) && $city != $fetch_user['City']) {
     // Perform any necessary sanitization or validation of the input data
 
     // Prepare and execute SQL query to update the city in the database
-    $update_city = $conn->prepare("UPDATE 'languagelearners' SET City = ? WHERE LearnerID = ?");
+    $update_city = $conn->prepare("UPDATE languagelearners SET City = ? WHERE LearnerID = ?");
     $update_city->execute([$city, $user_id]);
-    $message[] = 'City updated successfully!';
+    $redirect_message = 'City updated successfully!';
     
 } 
 
 
 $location = $_POST['Location'];
-if (!empty($location)) {
+if (!empty($location) && $location != $fetch_user['Location']) {
     // Perform any necessary sanitization or validation of the input data
 
     // Prepare and execute SQL query to update the location in the database
-    $update_location = $conn->prepare("UPDATE 'languagelearners' SET Location = ? WHERE LearnerID = ?");
+    $update_location = $conn->prepare("UPDATE languagelearners SET Location = ? WHERE LearnerID = ?");
     $update_location->execute([$location, $user_id]);
-    $message[] = 'Location updated successfully!';
+    $redirect_message  = 'Location updated successfully!';
     
 } 
 
 
-   $email = $_POST['email'];
-   $email = filter_var($email, FILTER_SANITIZE_STRING);
+$email = $_POST['Email'];
+$email = filter_var($email, FILTER_SANITIZE_EMAIL);
 
-   if(!empty($email)){
-      $select_email = $conn->prepare("SELECT Email FROM `languagelearners` WHERE Email = ?");
-      $select_email->execute([$email]);
-      if($select_email->rowCount() > 0){
-         $message[] = 'email already taken!';
-      }else{
-         $update_email = $conn->prepare("UPDATE `languagelearners` SET Email = ? WHERE LearnerID= ?");
-         $update_email->execute([$email, $user_id]);
-         $message[] = 'email updated successfully!';
-      }
-   }
+if (!empty($email) && $email != $fetch_user['Email']) {
+    $email_regex = '/^[^\s@]+@[^\s@]+\.[^\s@]+$/';
+    if (!preg_match($email_regex, $email)) {
+        $message[] = 'Invalid email format';
+    } else {
+        $update_email = $conn->prepare("UPDATE languagelearners SET Email = ? WHERE LearnerID = ?");
+        $update_email->execute([$email, $user_id]);
+        $redirect_message  = 'Email updated successfully!';
+    }
+}
 
    $Photo = $_FILES['Photo']['name'];//fetches the name of the uploaded image file.
    $Photo = filter_var($Photo, FILTER_SANITIZE_STRING);
@@ -81,48 +83,49 @@ if (!empty($location)) {
    $rename = unique_id().'.'.$ext;
    $Photo_size = $_FILES['Photo']['size'];
    $Photo_tmp_name = $_FILES['Photo']['tmp_name'];
-   $Photo_folder = 'uploaded_files/'.$rename;
-
-   if(!empty($Photo)){
+   $Photo_folder = 'uploaded_files/'.$rename;if(!empty($Photo  && $Photo != $fetch_user['Photo'])){
       if($Photo_size > 2000000){
          $message[] = 'photo size too large!';
       }else{
-         $update_Photo = $conn->prepare("UPDATE `languagelearners` SET `Photo` = ? WHERE LearnerID= ?");
+         $update_Photo = $conn->prepare("UPDATE languagelearners SET Photo = ? WHERE LearnerID= ?");
          $update_Photo->execute([$rename, $user_id]);
          move_uploaded_file($Photo_tmp_name, $Photo_folder);
          if($prev_Photo != '' AND $prev_Photo != $rename){
             unlink('uploaded_files/'.$prev_Photo);
          }
-         $message[] = 'Photo updated successfully!';
+         $redirect_message  = 'Photo updated successfully!';
       }
    }
-
-   $empty_pass = 'da39a3ee5e6b4b0d3255bfef95601890afd80709';//This hash value might represent an empty password or a default value. It's used for comparison purposes.
-   $old_pass = sha1($_POST['old_pass']);
+   $old_pass = $_POST['old_pass']; // Assuming the password is sent in plaintext
    $old_pass = filter_var($old_pass, FILTER_SANITIZE_STRING);
-   $new_pass = sha1($_POST['new_pass']);
+   $new_pass = $_POST['new_pass']; // Assuming the password is sent in plaintext
    $new_pass = filter_var($new_pass, FILTER_SANITIZE_STRING);
-   $cpass = sha1($_POST['cpass']);
+   $cpass = $_POST['cpass']; // Assuming the password is sent in plaintext
    $cpass = filter_var($cpass, FILTER_SANITIZE_STRING);
-
-   if($old_pass != $empty_pass){
-      if($old_pass != $prev_pass){
-         $message[] = 'old password not matched!';//This condition checks if the hashed value of the old password is not equal to the previous password stored in $prev_pass
-      }elseif($new_pass != $cpass){
-         $message[] = 'confirm password not matched!';
-      }else{
-         if($new_pass != $empty_pass){
-            $update_pass = $conn->prepare("UPDATE `users` SET password = ? WHERE LearnerID = ?");
-            $update_pass->execute([$cpass, $user_id]);
-            $message[] = 'password updated successfully!';
-         }else{
-            $message[] = 'please enter a new password!';
-         }
-      }
+   
+   if($old_pass !== $prev_pass){
+       $message[] = 'Old password not matched!'; // Inform the user that the old password is incorrect
+   }elseif($new_pass !== $cpass){
+       $message[] = 'Confirm password not matched!'; // Inform the user that the new passwords do not match
+   }else{
+       if($new_pass !== ''){
+           $update_pass = $conn->prepare("UPDATE languagelearners SET Password = ? WHERE LearnerID = ?");
+           $update_pass->execute([$new_pass, $user_id]);
+           $redirect_message = 'Password updated successfully!';
+       }else{
+           $message[] = 'Please enter a new password!'; // Inform the user to enter a new password
+       }
    }
 
 }
 
+if($redirect_message !== '') {
+   // Set the success message in a session variable
+   $_SESSION['redirect_message'] = $redirect_message;
+   // Redirect to profileLearner.php
+   header('Location: profileLearner.php');
+   exit;
+   }
 ?>
 
 
@@ -164,7 +167,16 @@ if (!empty($location)) {
 
 <body>
 
+<script>
+    // Check if the redirect message session variable is set
+    <?php if(isset($_SESSION['redirect_message'])): ?>
+        // Display the redirect message as an alert
+        alert("<?php echo $_SESSION['redirect_message']; ?>");
+        // Unset the session variable to prevent it from being displayed again
+        <?php unset($_SESSION['redirect_message']); ?>
+    <?php endif; ?>
 
+</script>
 
    <header class="header">
    
@@ -182,15 +194,13 @@ if (!empty($location)) {
    
    </header>  
 
-   <div class="side-bar">
-
-      <div id="close-btn">
+   <div class="side-bar"><div id="close-btn">
          <i class="fas fa-times"></i>
       </div>
    
       <div class="profile">
          <img src="images/pic-1.jpg" class="image" alt="">
-         <h3 class="name">Leena Alshaikh</h3>
+         <h3 class="name"><?= $fetch_user['FirstName'] . ' ' . $fetch_user['LastName']; ?></h3>
          <p class="role">Learner</p>
       </div>
    
@@ -213,15 +223,15 @@ if (!empty($location)) {
    <form id= profile-form method="post" enctype="multipart/form-data">
       <h3>Edit profile</h3>
       <p>edit first name</p>
-      <input id= "first-name-input" type="text"name="FirstName" placeholder="<?= $fetch_user['FirstName']; ?>" maxlength="50" class="box">
+      <input id= "first-name-input" type="text"name="FirstName" value="<?= $fetch_user['FirstName']; ?>" placeholder="Enter your first name" maxlength="50" class="box">
       <p>edit last name</p>
-      <input id="last-name-input" type="text" name="LastName" placeholder="<?= $fetch_user['LastName']; ?>" maxlength="50" class="box">
+      <input id="last-name-input" type="text" name="LastName" placeholder="Enter your last name" value="<?= $fetch_user['LastName']; ?>" maxlength="50" class="box">
       <p>edit city</p>
-      <input id="city-input" type="text"name="City" placeholder="<?= $fetch_user['City']; ?>" maxlength="50" class="box">
+      <input id="city-input" type="text"name="City" placeholder="Enter your city" value="<?= $fetch_user['City']; ?>" maxlength="50" class="box">
       <p>edit location</p>
-      <input id="location-input" type="text" name="Location" placeholder="<?= $fetch_user['Location']; ?>" maxlength="50" class="box">
+      <input id="location-input" type="text" name="Location" placeholder="Enter your location" value="<?= $fetch_user['Location']; ?>" maxlength="50" class="box">
       <p>edit email</p>
-      <input id="email-input" name="Email" placeholder="<?= $fetch_user['Email']; ?>" maxlength="50" class="box">
+      <input id="email-input" name="Email" placeholder="Enter your email" value="<?= $fetch_user['Email']; ?>" maxlength="50" class="box">
       <p>previous password</p>
       <input id="old-pass-input"  name="old_pass" placeholder="enter your old password" maxlength="20" class="box">
       <p>new password</p>
@@ -230,13 +240,17 @@ if (!empty($location)) {
       <input id="confirm-pass-input" type="password" name="cpass" placeholder="confirm your new password" maxlength="20" class="box">
       <p>edit pic</p>
       <input id="pic-input" name="Photo" type="file" accept="image/*" class="box">
+      <?php foreach ($message as $msg) {
+   echo '<span class="error-message">' . $msg . '</span>';
+}
+?>
       <!-- Span elements for displaying validation messages -->
-<span id="email-error" class="error-message"></span>
+<!-- <span id="email-error" class="error-message"></span>
 <span id="password-error" class="error-message"></span>
 <span id="firstName-error" class="error-message"></span>
 <span id="lastName-error" class="error-message"></span>
 <span id="city-error" class="error-message"></span>
-<span id="location-error" class="error-message"></span>
+<span id="location-error" class="error-message"></span> -->
       <input  type="submit" id="cancel-btn" value="cancel" name="submit" class="option-btn">
       <input type="submit" id="update-btn" value="update" name="submit" class="btn">
       <input type="submit" id= "delete-btn" value="delete account" name="submit" class="delete-btn">
@@ -258,9 +272,7 @@ if (!empty($location)) {
 // Event listener for form submission
 document.getElementById('profile-form').addEventListener('submit', function(event) {
    event.preventDefault(); 
- // Prevent the default form submission
-
-   // Perform actions based on the form data
+ // Prevent the default form submission// Perform actions based on the form data
    const firstName = document.getElementById('first-name-input').value;
    const lastName = document.getElementById('last-name-input').value;
    const city = document.getElementById('city-input').value;
@@ -293,7 +305,7 @@ document.getElementById('profile-form').addEventListener('submit', function(even
 document.getElementById('cancel-btn').addEventListener('click', function() {
    // Reset the form
    document.getElementById('profile-form').reset();
-   window.location.href = 'profileLearner.html';
+   window.location.href = 'profileLearner.php';
 
    // Perform cancel action here
     // Example: Show an alert message
@@ -349,9 +361,7 @@ document.getElementById('update-btn').addEventListener('click', function() {
    if (newPassword.trim() !== '' && confirmPassword.trim() !== '' && newPassword !== confirmPassword) {
       document.getElementById('password-error').textContent = 'New password and confirm password must match';
       isPasswordvalid = false;
-   }
-
-   // Validate first name, last name, city, and location to be characters only
+   }// Validate first name, last name, city, and location to be characters only
    const nameRegex = /^[a-zA-Z]+$/;
    if (firstName.trim() !== '') {
       if (!nameRegex.test(firstName)) {
@@ -385,9 +395,10 @@ document.getElementById('update-btn').addEventListener('click', function() {
       isPasswordValid=false;
    }
    // Check if any validation failed
-   if (!isEmailValid || !isPasswordValid || !isFirstNameValid || !isLastNameValid || !isCityValid || !isLocationValid) {
+   if (!isEmailValid  !isPasswordValid  !isFirstNameValid  !isLastNameValid  !isCityValid || !isLocationValid) {
       return;
    }
+   /*
    // Log the updated form data to the console
    console.log('First Name:', firstName);
    console.log('Last Name:', lastName);
@@ -407,7 +418,7 @@ document.getElementById('update-btn').addEventListener('click', function() {
   
    // Show a success message
    alert('Form updated');
-   window.location.href = 'profileLearner.html';
+   window.location.href = 'profileLearner.php';
 });
 // Event listener for the delete button
 document.getElementById('delete-btn').addEventListener('click', function() {
@@ -423,7 +434,7 @@ document.getElementById('delete-btn').addEventListener('click', function() {
    }
 });
 */
-</script>
+</script> 
 
 </body>
 </html>

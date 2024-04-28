@@ -9,28 +9,17 @@ function fetchPartnersFromDatabase() {
    // Query to select partners from the database
    $query = "SELECT * FROM languagepartners";
 
-   // Perform the query
-   $result = mysqli_query($conn, $query);
+   // Prepare the statement
+   $statement = $conn->prepare($query);
 
-   // Check if query was successful
-   if ($result) {
-       $partners = []; // Initialize an empty array to store partners
+   // Execute the query
+   $statement->execute();
 
-       // Fetch each row from the result set
-       while ($row = mysqli_fetch_assoc($result)) {
-           // Add each row (partner) to the $partners array
-           $partners[] = $row;
-       }
+   // Fetch partners as associative array
+   $partners = $statement->fetchAll(PDO::FETCH_ASSOC);
 
-       // Free the result set
-       mysqli_free_result($result);
-
-       // Return the array of partners
-       return $partners;
-   } else {
-       // Query failed, return an empty array or handle the error as needed
-       return [];
-   }
+   // Return the array of partners
+   return $partners;
 }
 
 // Call the function to fetch partners
@@ -82,8 +71,30 @@ if (isset($_POST['search_tutor'])) {
    
    </header>   
 
-<div class="side-bar">
-   <!-- Sidebar content -->
+   <div class="side-bar">
+
+<div id="close-btn">
+   <i class="fas fa-times"></i>
+</div>
+
+<div class="profile">
+   <img src="images/pic-1.jpg" class="image" alt="">
+   <h3 class="name">Leena Alshaikh</h3>
+   <p class="role">Learner</p>
+</div>
+
+<nav class="navbar">
+   <a href="profileLearner.html"><i class="fas fa-home"></i><span>home</span></a>
+   <a href="SesssionsLearner.html"><i><img src="images/session.png" alt="sessions"></i><span>sessions</span></a>
+   <a href="partners.html"><i class="fas fa-chalkboard-user"></i><span>partners</span></a>
+   <a href="about_learner.html"><i class="fas fa-question"></i><span>about</span></a>
+</nav>
+<nav>
+   <div style="text-align: center; margin-top: 20px; margin-bottom: 150px;">
+   <a href="home.html"  class="inline-btn" >Sign out</a>
+</div>
+</nav>
+
 </div>
 
 <section class="teachers">
@@ -127,7 +138,10 @@ if (isset($_POST['search_tutor'])) {
 </section>
 
 <footer class="footer">
-   <!-- Footer content -->
+
+   &copy; copyright @ 2024 by <span>CHAT FLUENCY</span> | all rights reserved!
+   <a href="contact_learner.html"><i class="fas fa-headset"></i><span> contact us</span></a>
+
 </footer>
 
 <script src="script.js"></script>
