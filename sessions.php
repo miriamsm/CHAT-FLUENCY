@@ -97,7 +97,7 @@ $resultPrevious = $conn->query($sqlPrevious); // Execute query for completed or 
 
       <div class="box-container">
          <?php
-         if ($resultCurrentt->rowCount() > 0) {
+         if ($resultCurrent->rowCount() > 0) {
              // Output data of each row
              while ($row = $resultCurrent->fetch(PDO::FETCH_ASSOC)) {
                  echo "<a class='box2'>";
