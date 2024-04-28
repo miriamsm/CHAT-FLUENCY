@@ -37,6 +37,7 @@ CREATE TABLE LanguageLearners (
     Photo VARCHAR(255), -- File path to optional photo
     City VARCHAR(20),
     Location VARCHAR(100),
+    User_Role ENUM('learner', 'partner') DEFAULT 'learner',
     -- SignUpDate TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     -- LastLogin TIMESTAMP,
     -- Ensuring unique combination of first and last name
@@ -68,6 +69,7 @@ CREATE TABLE LanguagePartners (
     Phone VARCHAR(15),
     City VARCHAR(20),
     Bio TEXT,
+    User_Role ENUM('learner', 'partner') DEFAULT 'partner', 
     -- SignUpDate TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     -- LastLogin TIMESTAMP,
     -- Ensuring unique combination of first and last name
