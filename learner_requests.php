@@ -8,8 +8,10 @@ if(isset($_COOKIE['user_id'])){
 }
 
 global $conn;
-// Fetch learner requests from the database
-$sql = "SELECT * FROM LearningRequests";
+// Fetch learner requests from the database along with learner names
+$sql = "SELECT lr.*, ll.FirstName AS LearnerFirstName, ll.LastName AS LearnerLastName 
+        FROM LearningRequests lr
+        INNER JOIN LanguageLearners ll ON lr.LearnerID = ll.LearnerID";
 $stmt = $conn->query($sql); // Use PDO query method
 ?>
 
@@ -98,15 +100,14 @@ $stmt = $conn->query($sql); // Use PDO query method
             echo '<div class="tutor">';
             echo '<img src="images/pic-9.jpg" alt="">'; // Assuming static image for now
             echo '<div class="info">';
-            // Check if the array key exists before using it
-            $learner_name = isset($row["LearnerID"]) ? $row["LearnerID"] : "Unknown";
-            $request_date = isset($row["RequestDate"]) ? $row["RequestDate"] : "Unknown";
+            // Display learner's name
+            $learner_name = $row["LearnerFirstName"] . ' ' . $row["LearnerLastName"];
             echo '<h3>' . $learner_name . '</h3>';
-            echo '<span>' . $request_date . '</span>';
+            echo '<span>' . $row["RequestDate"] . '</span>';
             echo '</div>';
             echo '</div>';
             echo '<h3 class="title">' . $learner_name . ' Wants to take a session with you!</h3>';
-            echo '<a href="Request_Details.html" class="inline-btn">Request Details</a>';
+            echo '<a href="Request_Details.php?request_id=' . $row["RequestID"] . '" class="inline-btn">Request Details</a>';
             echo '<div class="box">';
             echo '<div class="request-status pending">Pending</div>';
             echo '</div>';

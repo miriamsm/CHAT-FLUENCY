@@ -25,7 +25,7 @@ if(isset($_GET['request_id'])) {
         }
 
         // Update the status in the database
-        $update_sql = "UPDATE learningrequests SET request_status = :status WHERE request_id = :request_id";
+        $update_sql = "UPDATE LearningRequests SET Status = :status WHERE RequestID = :request_id";
         $stmt = $conn->prepare($update_sql);
         $stmt->bindParam(':status', $status);
         $stmt->bindParam(':request_id', $request_id);
@@ -37,7 +37,7 @@ if(isset($_GET['request_id'])) {
     }
 
     // Fetch request details based on the request ID
-    $sql = "SELECT * FROM learningrequests WHERE request_id = :request_id";
+    $sql = "SELECT * FROM LearningRequests WHERE RequestID = :request_id";
     $stmt = $conn->prepare($sql);
     $stmt->bindParam(':request_id', $request_id);
     $stmt->execute();
@@ -45,11 +45,11 @@ if(isset($_GET['request_id'])) {
     if ($stmt && $stmt->rowCount() > 0) {
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
         // Display the request details
-        $learner_name = $row["learner_name"];
-        $request_date = $row["request_date"];
-        $goals = $row["goals"];
-        $proficiency = $row["proficiency"];
-        $status = $row["request_status"];
+        $learner_name = $row["LearnerID"]; // Update this to the correct column name
+        $request_date = $row["RequestDate"];
+        $goals = $row["LanguageToLearn"]; // Assuming this is the column containing learner's goals
+        $proficiency = $row["ProficiencyLevel"]; // Assuming this is the column containing learner's proficiency
+        $status = $row["Status"]; // Assuming this is the column containing request status
     } else {
         // No request found with the provided ID
         // Redirect back to learner requests page
@@ -170,8 +170,8 @@ if(isset($_GET['request_id'])) {
 
       <div style="text-align: center; margin-top: 20px;">
          <!-- Buttons to accept or reject request -->
-         <a href="Request_details.php?request_id=<?php echo $request_id; ?>&action=accept" class="inline-btn" style="margin-right: 10px;">Accept request</a>
-         <a href="Request_details.php?request_id=<?php echo $request_id; ?>&action=reject" class="inline-delete-btn">Reject request</a>
+         <a href="Request_Details.php?request_id=<?php echo $request_id; ?>&action=accept" class="inline-btn" style="margin-right: 10px;">Accept request</a>
+         <a href="Request_Details.php?request_id=<?php echo $request_id; ?>&action=reject" class="inline-delete-btn">Reject request</a>
       </div>
    </div>
 </section>
