@@ -165,7 +165,7 @@ if($redirect_message !== '') {
    // Set the success message in a session variable
    $_SESSION['redirect_message'] = $redirect_message;
    // Redirect to profileLearner.php
-  header('Location: profileLearner.php');
+  header('Location: profilePartner.php');
    exit;
 
    }
@@ -219,7 +219,7 @@ if($redirect_message !== '') {
    
       <div class="flex">
    
-         <a href="profilePartner.html" class="logo"><img src = "images/logo.jpg" width="210" height="60" alt="logo"></a>
+         <a href="profilePartner.php" class="logo"><img src = "images/logo.jpg" width="210" height="60" alt="logo"></a>
    
         
    

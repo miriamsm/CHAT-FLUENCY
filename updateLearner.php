@@ -203,13 +203,13 @@ if($redirect_message !== '') {
       </div>
    
       <div class="profile">
-         <img src="images/pic-1.jpg" class="image" alt="">
+         <img src="uploaded_files/<?= $fetch_user['Photo']; ?>" class="image" alt="">
          <h3 class="name"><?= $fetch_user['FirstName'] . ' ' . $fetch_user['LastName']; ?></h3>
          <p class="role">Learner</p>
       </div>
    
       <nav class="navbar">
-         <a href="profileLearner.html"><i class="fas fa-home"></i><span>home</span></a>
+         <a href="profileLearner.php"><i class="fas fa-home"></i><span>home</span></a>
          <a href="SesssionsLearner.html"><i><img src="images/session.png" alt="sessions"></i><span>sessions</span></a>
          <a href="partners.html"><i class="fas fa-chalkboard-user"></i><span>partners</span></a>
          <a href="about_learner.html"><i class="fas fa-question"></i><span>about</span></a>

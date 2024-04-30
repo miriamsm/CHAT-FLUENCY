@@ -2,7 +2,7 @@
 
 include 'connect.php';
 
-$select_user = $conn->prepare("SELECT * FROM `languagelearners` WHERE LearnerID = ? LIMIT 1");
+$select_user = $conn->prepare("SELECT * FROM `languagelearners` WHERE LearnerID = ? LIMIT 1"); 
 $select_user->execute([$user_id]);
 $fetch_user = $select_user->fetch(PDO::FETCH_ASSOC);
 
@@ -101,7 +101,7 @@ $total_partners = $select_partners->rowCount();
          <h3><?= $fetch_user['FirstName']; ?></h3>
          <p>Learner</p>
          <p><?= $fetch_user['City'] . ', ' . $fetch_user['Location']; ?></p>
-         <a href="updateLearner.html" class="inline-btn">edit profile</a>
+         <a href="updateLearner.php" class="inline-btn">edit profile</a>
       </div>
    
       <div class="box-container">
