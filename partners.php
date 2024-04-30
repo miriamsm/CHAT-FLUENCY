@@ -127,7 +127,7 @@ if (isset($_POST['search_tutor'])) {
                <!-- Add other partner details as needed -->
 
                <!-- Buttons -->
-               <a href="partner_profile.html" class="inline-btn">view partner details</a>
+               <a href="partner_profile.php?id=<?php echo $partner['id']; ?>" class="inline-btn">View partner details</a>
                <a href="mailto:<?php echo $partner['email']; ?>" class="inline-btn">Arrange meeting</a>
                <a href="post_request_learner.html" class="inline-btn">Send Request</a>
             </div>
