@@ -209,7 +209,7 @@ if($redirect_message !== '') {
       </div>
    
       <nav class="navbar">
-         <a href="profileLearner.html"><i class="fas fa-home"></i><span>home</span></a>
+         <a href="profileLearner.php"><i class="fas fa-home"></i><span>home</span></a>
          <a href="SesssionsLearner.html"><i><img src="images/session.png" alt="sessions"></i><span>sessions</span></a>
          <a href="partners.html"><i class="fas fa-chalkboard-user"></i><span>partners</span></a>
          <a href="about_learner.html"><i class="fas fa-question"></i><span>about</span></a>
