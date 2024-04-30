@@ -10,7 +10,7 @@ if(isset($_COOKIE['user_id'])){
 }
 */
 $user_id = 1;
-$select_user = $conn->prepare("SELECT * FROM languagelearners WHERE LearnerID = ? LIMIT 1");
+$select_user = $conn->prepare("SELECT * FROM `languagelearners` WHERE LearnerID = ? LIMIT 1");
 $select_user->execute([$user_id]);
 $fetch_user = $select_user->fetch(PDO::FETCH_ASSOC);
 $message = [];
@@ -28,13 +28,13 @@ $lname = $_POST['LastName'];
 $lname = filter_var($lname, FILTER_SANITIZE_STRING);
 
 if(!empty($fname) && $fname != $fetch_user['FirstName']){
-    $update_fname = $conn->prepare("UPDATE languagelearners SET FirstName = ? WHERE LearnerID = ?");
+    $update_fname = $conn->prepare("UPDATE `languagelearners` SET FirstName = ? WHERE LearnerID = ?");
     $update_fname->execute([$fname, $user_id]);
     $redirect_message ='First name updated successfully!';
 }
 
 if(!empty($lname) && $lname != $fetch_user['LastName']){
-    $update_lname = $conn->prepare("UPDATE languagelearners SET LastName = ? WHERE LearnerID = ?");
+    $update_lname = $conn->prepare("UPDATE `languagelearners` SET LastName = ? WHERE LearnerID = ?");
     $update_lname->execute([$lname, $user_id]);
     $redirect_message = 'Last name updated successfully!';
 }
@@ -44,7 +44,7 @@ if (!empty($city) && $city != $fetch_user['City']) {
     // Perform any necessary sanitization or validation of the input data
 
     // Prepare and execute SQL query to update the city in the database
-    $update_city = $conn->prepare("UPDATE languagelearners SET City = ? WHERE LearnerID = ?");
+    $update_city = $conn->prepare("UPDATE `languagelearners` SET City = ? WHERE LearnerID = ?");
     $update_city->execute([$city, $user_id]);
     $redirect_message = 'City updated successfully!';
     
@@ -56,7 +56,7 @@ if (!empty($location) && $location != $fetch_user['Location']) {
     // Perform any necessary sanitization or validation of the input data
 
     // Prepare and execute SQL query to update the location in the database
-    $update_location = $conn->prepare("UPDATE languagelearners SET Location = ? WHERE LearnerID = ?");
+    $update_location = $conn->prepare("UPDATE `languagelearners` SET Location = ? WHERE LearnerID = ?");
     $update_location->execute([$location, $user_id]);
     $redirect_message  = 'Location updated successfully!';
     
@@ -71,7 +71,7 @@ if (!empty($email) && $email != $fetch_user['Email']) {
     if (!preg_match($email_regex, $email)) {
         $message[] = 'Invalid email format';
     } else {
-        $update_email = $conn->prepare("UPDATE languagelearners SET Email = ? WHERE LearnerID = ?");
+        $update_email = $conn->prepare("UPDATE `languagelearners` SET Email = ? WHERE LearnerID = ?");
         $update_email->execute([$email, $user_id]);
         $redirect_message  = 'Email updated successfully!';
     }
@@ -83,11 +83,13 @@ if (!empty($email) && $email != $fetch_user['Email']) {
    $rename = unique_id().'.'.$ext;
    $Photo_size = $_FILES['Photo']['size'];
    $Photo_tmp_name = $_FILES['Photo']['tmp_name'];
-   $Photo_folder = 'uploaded_files/'.$rename;if(!empty($Photo  && $Photo != $fetch_user['Photo'])){
+   $Photo_folder = 'uploaded_files/'.$rename;
+
+   if(!empty($Photo  && $Photo != $fetch_user['Photo'])){
       if($Photo_size > 2000000){
          $message[] = 'photo size too large!';
       }else{
-         $update_Photo = $conn->prepare("UPDATE languagelearners SET Photo = ? WHERE LearnerID= ?");
+         $update_Photo = $conn->prepare("UPDATE `languagelearners` SET `Photo` = ? WHERE LearnerID= ?");
          $update_Photo->execute([$rename, $user_id]);
          move_uploaded_file($Photo_tmp_name, $Photo_folder);
          if($prev_Photo != '' AND $prev_Photo != $rename){
@@ -109,7 +111,7 @@ if (!empty($email) && $email != $fetch_user['Email']) {
        $message[] = 'Confirm password not matched!'; // Inform the user that the new passwords do not match
    }else{
        if($new_pass !== ''){
-           $update_pass = $conn->prepare("UPDATE languagelearners SET Password = ? WHERE LearnerID = ?");
+           $update_pass = $conn->prepare("UPDATE `languagelearners` SET Password = ? WHERE LearnerID = ?");
            $update_pass->execute([$new_pass, $user_id]);
            $redirect_message = 'Password updated successfully!';
        }else{
@@ -194,7 +196,9 @@ if($redirect_message !== '') {
    
    </header>  
 
-   <div class="side-bar"><div id="close-btn">
+   <div class="side-bar">
+
+      <div id="close-btn">
          <i class="fas fa-times"></i>
       </div>
    
@@ -231,7 +235,7 @@ if($redirect_message !== '') {
       <p>edit location</p>
       <input id="location-input" type="text" name="Location" placeholder="Enter your location" value="<?= $fetch_user['Location']; ?>" maxlength="50" class="box">
       <p>edit email</p>
-      <input id="email-input" name="Email" placeholder="Enter your email" value="<?= $fetch_user['Email']; ?>" maxlength="50" class="box">
+      <input id="email-input" type=email name="Email" placeholder="Enter your email" value="<?= $fetch_user['Email']; ?>" maxlength="50" class="box">
       <p>previous password</p>
       <input id="old-pass-input"  name="old_pass" placeholder="enter your old password" maxlength="20" class="box">
       <p>new password</p>
@@ -272,7 +276,9 @@ if($redirect_message !== '') {
 // Event listener for form submission
 document.getElementById('profile-form').addEventListener('submit', function(event) {
    event.preventDefault(); 
- // Prevent the default form submission// Perform actions based on the form data
+ // Prevent the default form submission
+
+   // Perform actions based on the form data
    const firstName = document.getElementById('first-name-input').value;
    const lastName = document.getElementById('last-name-input').value;
    const city = document.getElementById('city-input').value;
@@ -361,7 +367,9 @@ document.getElementById('update-btn').addEventListener('click', function() {
    if (newPassword.trim() !== '' && confirmPassword.trim() !== '' && newPassword !== confirmPassword) {
       document.getElementById('password-error').textContent = 'New password and confirm password must match';
       isPasswordvalid = false;
-   }// Validate first name, last name, city, and location to be characters only
+   }
+
+   // Validate first name, last name, city, and location to be characters only
    const nameRegex = /^[a-zA-Z]+$/;
    if (firstName.trim() !== '') {
       if (!nameRegex.test(firstName)) {
@@ -395,7 +403,7 @@ document.getElementById('update-btn').addEventListener('click', function() {
       isPasswordValid=false;
    }
    // Check if any validation failed
-   if (!isEmailValid  !isPasswordValid  !isFirstNameValid  !isLastNameValid  !isCityValid || !isLocationValid) {
+   if (!isEmailValid || !isPasswordValid || !isFirstNameValid || !isLastNameValid || !isCityValid || !isLocationValid) {
       return;
    }
    /*

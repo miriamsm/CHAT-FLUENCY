@@ -1,3 +1,180 @@
+<?php
+
+include 'connect.php';
+/*
+if(isset($_COOKIE['user_id'])){
+   $user_id = $_COOKIE['user_id'];
+}else{
+   $user_id = '';
+  header('location:login.php');
+}
+*/
+$user_id = 1;
+$select_user = $conn->prepare("SELECT * FROM languagepartners WHERE PartnerID = ? LIMIT 1");
+$select_user->execute([$user_id]);
+$fetch_user = $select_user->fetch(PDO::FETCH_ASSOC);
+$message = [];
+$redirect_message = '';
+if(isset($_POST['submit'])){ //checks if a form with a submit button named 'submit' has been submitted.
+
+  
+   $prev_pass = $fetch_user['Password'];
+   $prev_image = $fetch_user['Photo'];
+
+$fname = $_POST['FirstName'];
+$fname = filter_var($fname, FILTER_SANITIZE_STRING);
+
+$lname = $_POST['LastName'];
+$lname = filter_var($lname, FILTER_SANITIZE_STRING);
+
+if(!empty($fname) && $fname != $fetch_user['FirstName']){
+    $update_fname = $conn->prepare("UPDATE languagepartners SET FirstName = ? WHERE PartnerID = ?");
+    $update_fname->execute([$fname, $user_id]);
+    $redirect_message ='First name updated successfully!';
+}
+
+if(!empty($lname) && $lname != $fetch_user['LastName']){
+    $update_lname = $conn->prepare("UPDATE languagepartners SET LastName = ? WHERE PartnerID = ?");
+    $update_lname->execute([$lname, $user_id]);
+    $redirect_message = 'Last name updated successfully!';
+}
+
+$city = $_POST['City'];
+if (!empty($city) && $city != $fetch_user['City']) {
+    // Perform any necessary sanitization or validation of the input data
+
+    // Prepare and execute SQL query to update the city in the database
+    $update_city = $conn->prepare("UPDATE languagepartners SET City = ? WHERE PartnerID = ?");
+    $update_city->execute([$city, $user_id]);
+    $redirect_message = 'City updated successfully!';
+    
+} 
+
+
+$bio = $_POST['Bio'];
+if (!empty($bio) && $bio != $fetch_user['Bio']) {
+
+    $update_bio = $conn->prepare("UPDATE languagepartners SET Bio = ? WHERE PartnerID = ?");
+    $update_bio->execute([$bio, $user_id]);
+    $redirect_message  = 'Bio updated successfully!';
+    
+} 
+
+
+$email = $_POST['Email'];
+$email = filter_var($email, FILTER_SANITIZE_EMAIL);
+
+if (!empty($email) && $email != $fetch_user['Email']) {
+    $email_regex = '/^[^\s@]+@[^\s@]+\.[^\s@]+$/';
+    if (!preg_match($email_regex, $email)) {
+        $message[] = 'Invalid email format';
+    } else {
+        $update_email = $conn->prepare("UPDATE languagepartners SET Email = ? WHERE PartnerID = ?");
+        $update_email->execute([$email, $user_id]);
+        $redirect_message  = 'Email updated successfully!';
+    }
+}
+
+$phone = $_POST['Phone'];
+if (!empty($phone) && $phone != $fetch_user['Phone']) {
+    // Perform any necessary sanitization or validation of the input data
+    if (ctype_digit($phone)) {
+        // Prepare and execute SQL query to update the phone number in the database
+        $update_phone = $conn->prepare("UPDATE languagepartners SET Phone = ? WHERE PartnerID = ?");
+        $update_phone->execute([$phone, $user_id]);
+        $redirect_message = 'Phone updated successfully!';
+    } else {
+        // Render a message if the phone number contains non-numeric characters
+        $message[] = 'Please enter a valid phone number!';
+    }
+}  
+
+$age = $_POST['Age'];
+if (!empty($age) && $age != $fetch_user['Age']) {
+    // Check if the entered age is a non-negative number
+    if ($age >= 0) {
+        // Prepare and execute SQL query to update the age in the database
+        $update_age = $conn->prepare("UPDATE languagepartners SET Age = ? WHERE PartnerID = ?");
+        $update_age->execute([$age, $user_id]);
+        $redirect_message = 'Age updated successfully!';
+    } else {
+        // Render a message if the age is negative
+        $message[]= 'Age cannot be negative!';
+    }
+}
+$new_gender = $_POST['Gender'];
+$current_gender = $fetch_user['Gender'];
+
+if ($new_gender === 'Male' || $new_gender === 'Female') {
+    if ($new_gender !== $current_gender) {
+        // Prepare and execute SQL query to update the gender in the database
+        $update_gender = $conn->prepare("UPDATE languagepartners SET Gender = ? WHERE PartnerID = ?");
+        $update_gender->execute([$new_gender, $user_id]);
+        $redirect_message = 'Gender updated successfully!';
+    } 
+} else {
+    // Render a message if the provided gender is invalid
+    $message[] = 'Invalid gender provided!';
+}
+
+
+   $Photo = $_FILES['Photo']['name'];//fetches the name of the uploaded image file.
+   $Photo = filter_var($Photo, FILTER_SANITIZE_STRING);
+   $ext = pathinfo($Photo, PATHINFO_EXTENSION);
+   $rename = unique_id().'.'.$ext;
+   $Photo_size = $_FILES['Photo']['size'];
+   $Photo_tmp_name = $_FILES['Photo']['tmp_name'];
+   $Photo_folder = 'uploaded_files/'.$rename;if(!empty($Photo  && $Photo != $fetch_user['Photo'])){
+      if($Photo_size > 2000000){
+         $message[] = 'photo size too large!';
+      }else{
+         $update_Photo = $conn->prepare("UPDATE languagepartners SET Photo = ? WHERE PartnerID= ?");
+         $update_Photo->execute([$rename, $user_id]);
+         move_uploaded_file($Photo_tmp_name, $Photo_folder);
+         if($prev_Photo != '' AND $prev_Photo != $rename){
+            unlink('uploaded_files/'.$prev_Photo);
+         }
+         $redirect_message  = 'Photo updated successfully!';
+      }
+   }
+   $old_pass = $_POST['old_pass']; // Assuming the password is sent in plaintext
+   $old_pass = filter_var($old_pass, FILTER_SANITIZE_STRING);
+   $new_pass = $_POST['new_pass']; // Assuming the password is sent in plaintext
+   $new_pass = filter_var($new_pass, FILTER_SANITIZE_STRING);
+   $cpass = $_POST['cpass']; // Assuming the password is sent in plaintext
+   $cpass = filter_var($cpass, FILTER_SANITIZE_STRING);
+   if (!empty($old_pass) && !empty($new_pass)){
+   if($old_pass !== $prev_pass ){
+       $message[] = 'Old password not matched!'; // Inform the user that the old password is incorrect
+   }elseif($new_pass !== $cpass){
+       $message[] = 'Confirm password not matched!'; // Inform the user that the new passwords do not match
+   }else{
+       if($new_pass !== ''){
+           $update_pass = $conn->prepare("UPDATE languagepartners SET Password = ? WHERE PartnerID = ?");
+           $update_pass->execute([$new_pass, $user_id]);
+           $redirect_message = 'Password updated successfully!';
+       }else{
+           $message[] = 'Please enter a new password!'; // Inform the user to enter a new password
+       }
+   }
+
+}
+}
+
+if($redirect_message !== '') {
+   // Set the success message in a session variable
+   $_SESSION['redirect_message'] = $redirect_message;
+   // Redirect to profileLearner.php
+  header('Location: profileLearner.php');
+   exit;
+
+   }
+?>
+
+
+
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -28,7 +205,16 @@
    </style>
 </head>
 <body>
+<script>
+    // Check if the redirect message session variable is set
+    <?php if(isset($_SESSION['redirect_message'])): ?>
+        // Display the redirect message as an alert
+        alert("<?php echo $_SESSION['redirect_message']; ?>");
+        // Unset the session variable to prevent it from being displayed again
+        <?php unset($_SESSION['redirect_message']); ?>
+    <?php endif; ?>
 
+</script>
    <header class="header">
    
       <div class="flex">
@@ -55,8 +241,8 @@
       </div>
    
       <div class="profile">
-         <img src="images/pic-1.jpg" class="image" alt="">
-         <h3 class="name">Richard Murphy</h3>
+         <img src="uploaded_files/<?= $fetch_user['Photo']; ?>" class="image" alt="">
+         <h3 class="name"><?= $fetch_user['FirstName'] . ' ' . $fetch_user['LastName']; ?></h3>
          <p class="role">Partner</p>
       </div>
    
@@ -79,42 +265,37 @@
    <form id="profile-form" method="post" enctype="multipart/form-data">
       <h3>Edit profile</h3>
       <p>edit first name</p>
-      <input id="first-name-input" type="text" name="name" placeholder="Richard" maxlength="50" class="box">
+      <input id="first-name-input" type="text" name="FirstName" value="<?= $fetch_user['FirstName']; ?>" placeholder="Enter your first name" maxlength="50" class="box">
       <p>edit last name</p>
-      <input id="last-name-input" type="text" name="name" placeholder="Murphy" maxlength="50" class="box">
+      <input id="last-name-input" type="text" name="LastName" value="<?= $fetch_user['LastName']; ?>" placeholder="Enter your last name" maxlength="50" class="box">
       <p>edit bio</p>
-      <input id="bio-input" type="text" name="name" placeholder="I am a native English speaker from England! I am a TEFL/TESOL-certified English language teacher." size="30" maxlength="100" class="box">
+      <input id="bio-input" type="text" name="Bio" value="<?= $fetch_user['Bio']; ?>" placeholder="Enter your bio" size="30" maxlength="100" class="box">
       <p>edit city</p>
-      <input id="city-input" type="text" name="name" placeholder="Manchester" maxlength="50" class="box">
+      <input id="city-input" type="text" name="City" value="<?= $fetch_user['City']; ?>" placeholder="Enter your city" maxlength="50" class="box">
       <p>edit email</p>
-      <input id="email-input" type="email" name="email" placeholder="Richard@gmail.come" maxlength="50" class="box">
+      <input id="email-input" type="email" name="Email" value="<?= $fetch_user['Email']; ?>" placeholder="Enter your email" maxlength="50" class="box">
       <p>edit phone</p>
-      <input id="phone-input" type="text" name="phone" placeholder="+966" maxlength="10" class="box">
+      <input id="phone-input" type="text" name="Phone" value="<?= $fetch_user['Phone']; ?>" placeholder="Enter your Phone" maxlength="10" class="box">
       <p>edit gender</p>
-      <select id="gender-input" name="gender" class="box">
-         <option value="male">Male</option>
-         <option value="female">Female</option>
-      </select>
+      <select id="gender-input" name="Gender" class="box">
+    <option value="Male" <?= ($fetch_user['Gender'] === 'Male') ? 'selected' : ''; ?>>Male</option>
+    <option value="Female" <?= ($fetch_user['Gender'] === 'Female') ? 'selected' : ''; ?>>Female</option>
+</select>
       <p>edit age</p>
-      <input id="age-input" type="number" name="age" required class="box" value="34">
+      <input id="age-input" type="number" name="Age" value="<?= $fetch_user['Age']; ?>" required class="box" value="34">
       <p>previous password</p>
       <input id="previous-pass-input" type="password" name="old_pass" placeholder="enter your old password" maxlength="20" class="box">
       <p>new password</p>
       <input id="new-pass-input" type="password" name="new_pass" placeholder="enter your old password" maxlength="20" class="box">
       <p>confirm password</p>
-      <input id="confirm-pass-input" type="password" name="c_pass" placeholder="confirm your new password" maxlength="20" class="box">
+      <input id="confirm-pass-input" type="password" name="cpass" placeholder="confirm your new password" maxlength="20" class="box">
       <p>edit pic</p>
-      <input id="pic-input" type="file" accept="image/*" class="box">
+      <input name = "Photo" id="pic-input" type="file" accept="image/*" class="box">
          <!-- Span elements for displaying validation messages -->
-<span id="email-error" class="error-message"></span>
-<span id="password-error" class="error-message"></span>
-<span id="firstName-error" class="error-message"></span>
-<span id="lastName-error" class="error-message"></span>
-<span id="city-error" class="error-message"></span>
-<span id="phone-error" class="error-message"></span>
-<span id="age-error" class="error-message"></span>
-
-
+         <?php foreach ($message as $msg) {
+   echo '<span class="error-message">' . $msg . '</span>';
+}
+?>
       <input type="submit" id="cancel-btn"  value="cancel" name="submit" class="option-btn">
       <input type="submit" id="update-btn" value="update" name="submit" class="btn">
       <input type="submit" id="delete-btn" value="delete account" name="submit" class="delete-btn">
@@ -129,6 +310,7 @@
 </footer>
 
 <script>
+   /*
    // JavaScript code for handling form submission and button clicks
    // Event listener for form submission
    document.getElementById('profile-form').addEventListener('submit', function(event) {
@@ -321,6 +503,7 @@
           alert('Deletion canceled');  // Example: Show an alert message
       }
    });
+   */
    </script>
 <!-- custom js file link  -->
 <script src="script.js"></script>
