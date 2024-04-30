@@ -2,7 +2,7 @@
 
 include 'connect.php';
 
-$select_user = $conn->prepare("SELECT * FROM `languagelearners` WHERE LearnerID = ? LIMIT 1");
+$select_user = $conn->prepare("SELECT * FROM `languagelearners` WHERE LearnerID = ? LIMIT 1"); 
 $select_user->execute([$user_id]);
 $fetch_user = $select_user->fetch(PDO::FETCH_ASSOC);
 

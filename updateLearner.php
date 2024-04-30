@@ -203,7 +203,7 @@ if($redirect_message !== '') {
       </div>
    
       <div class="profile">
-         <img src="images/pic-1.jpg" class="image" alt="">
+         <img src="uploaded_files/<?= $fetch_user['Photo']; ?>" class="image" alt="">
          <h3 class="name"><?= $fetch_user['FirstName'] . ' ' . $fetch_user['LastName']; ?></h3>
          <p class="role">Learner</p>
       </div>

@@ -1,3 +1,44 @@
+<?php
+
+include 'connect.php';
+/*
+if(isset($_COOKIE['user_id'])){
+   $user_id = $_COOKIE['user_id'];
+}else{
+   $user_id = '';
+   header('location:login.php');
+}
+*/
+$user_id = 1;
+$select_user = $conn->prepare("SELECT * FROM `languagepartners` WHERE PartnerID = ? LIMIT 1"); 
+$select_user->execute([$user_id]);
+$fetch_user = $select_user->fetch(PDO::FETCH_ASSOC);
+
+// Check if the query was successful
+if ($fetch_user) {
+    // Get the 'name' attribute from the fetched row
+    $name = $fetch_user['FirstName'];
+} else {
+    // Default name if the query fails or no data is found
+    $name = "Guest";
+}
+$select_requests= $conn->prepare("SELECT * FROM `learningrequests`");
+$select_requests->execute();
+$total_requests = $select_requests->rowCount();
+
+$select_reviews = $conn->prepare("SELECT * FROM `reviewsratings` WHERE ReviewID = ?");//check
+$select_reviews->execute([$user_id]);
+$total_reviews = $select_reviews->rowCount();
+
+$select_sessions = $conn->prepare("SELECT * FROM `learningsessions` WHERE PartnerID = ?");
+$select_sessions->execute([$user_id]);
+$total_sessions = $select_sessions->rowCount();
+/*
+$select_partners = $conn->prepare("SELECT * FROM `languagepartners` WHERE LearnerID = ?"); //must insert new table 
+$select_partners->execute([$user_id]);
+$total_partners = $select_partners->rowCount();
+*/
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -41,8 +82,8 @@
       </div>
    
       <div class="profile">
-         <img src="images/pic-1.jpg" class="image" alt="">
-         <h3 class="name">Richard Murphy</h3>
+         <img src="uploaded_files/<?$fetch_user['Photo'];?>" class="image" alt="" >
+         <h3 class="name"><?= $fetch_user['FirstName'] . ' ' . $fetch_user['LastName']; ?></h3>
          <p class="role">Partner</p>
       </div>
    
@@ -62,17 +103,17 @@
 
 <section class="user-profile">
 
-   <h1 class="heading">Welcome Richard !</h1>
+   <h1 class="heading"> Welcome <?= $fetch_user['FirstName']; ?>!</h1>
 
    <div class="info">
 
       <div class="user">
-         <img src="images/pic-1.jpg" alt="">
-         <h3>Richard Murphy</h3>
+         <img src="uploaded_files/<?= $fetch_user['Photo']; ?>" alt="">
+         <h3><?= $fetch_user['FirstName'] . ' ' . $fetch_user['LastName']; ?></h3>
          <p>Partner</p>
-         <p>I am a native English speaker from England! I am a TEFL/TESOL-certified English language teacher.</p>
-         <p>Manchester</p>
-         <a href="updatePartner.html" class="inline-btn">edit profile</a>
+         <p><? $fetch_user['Bio']; ?></p>
+         <p><?= $fetch_user['City']; ?></p>
+         <a href="updatePartner.php" class="inline-btn">edit profile</a>
       </div>
    
       <div class="box-container">
@@ -81,18 +122,18 @@
           <div class="flex">
             <img src="images/request.png"  alt="requests" style="width: 30px; height: 30px;">
              <div>
-                <span>3</span>
+                <span><?= $total_requests; ?></span>
                 <p>requests</p>
              </div>
           </div>
-          <a href="learner_requests.html" class="inline-btn">view requests</a>
+          <a href="learner_requests.php" class="inline-btn">view requests</a>
        </div>
 
        <div class="box">
           <div class="flex">
             <img src="images/rating.png" alt="reviews" style="width: 35px; height: 35px;">
              <div>
-                <span>9</span>
+                <span><?= $total_reviews; ?></span>
                 <p>reviews</p> 
              </div>
           </div>
@@ -103,7 +144,7 @@
         <div class="flex">
          <img src="images/session.png" alt="sessions" style="width: 25px; height: 25px;">
            <div>
-              <span>1</span>
+              <span><?= $total_sessions; ?></span>
               <p>sessions</p>
                </div>
             </div>
