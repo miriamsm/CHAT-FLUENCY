@@ -69,7 +69,9 @@ CREATE TABLE LanguagePartners (
     Phone VARCHAR(15),
     City VARCHAR(20),
     Bio TEXT,
-    User_Role ENUM('learner', 'partner') DEFAULT 'partner', 
+    User_Role ENUM('learner', 'partner') DEFAULT 'partner',
+    Languages TEXT, 
+    Rating Float,
     -- SignUpDate TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     -- LastLogin TIMESTAMP,
     -- Ensuring unique combination of first and last name

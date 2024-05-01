@@ -9,6 +9,7 @@ if(isset($_COOKIE['user_id'])){
   header('location:login.php');
 }
 */
+session_start();
 $user_id = 1;
 $select_user = $conn->prepare("SELECT * FROM languagepartners WHERE PartnerID = ? LIMIT 1");
 $select_user->execute([$user_id]);
@@ -143,26 +144,61 @@ if ($new_gender === 'Male' || $new_gender === 'Female') {
    $new_pass = filter_var($new_pass, FILTER_SANITIZE_STRING);
    $cpass = $_POST['cpass']; // Assuming the password is sent in plaintext
    $cpass = filter_var($cpass, FILTER_SANITIZE_STRING);
-   if (!empty($old_pass) && !empty($new_pass)){
-   if($old_pass !== $prev_pass ){
-       $message[] = 'Old password not matched!'; // Inform the user that the old password is incorrect
-   }elseif($new_pass !== $cpass){
-       $message[] = 'Confirm password not matched!'; // Inform the user that the new passwords do not match
-   }else{
-       if($new_pass !== ''){
-           $update_pass = $conn->prepare("UPDATE languagepartners SET Password = ? WHERE PartnerID = ?");
-           $update_pass->execute([$new_pass, $user_id]);
-           $redirect_message = 'Password updated successfully!';
-       }else{
-           $message[] = 'Please enter a new password!'; // Inform the user to enter a new password
-       }
-   }
+   if (!empty($old_pass)) {
+      if ($old_pass !== $prev_pass) {
+          $message[] = 'Old password not matched!'; // Inform the user that the old password is incorrect
+      } elseif (!empty($new_pass) && $new_pass !== $cpass) {
+          $message[] = 'Confirm password not matched!'; // Inform the user that the new passwords do not match
+      } else {
+          if (!empty($new_pass)) {
+              $update_pass = $conn->prepare("UPDATE languagepartners SET Password = ? WHERE PartnerID = ?");
+              $update_pass->execute([$new_pass, $user_id]);
+              $redirect_message = 'Password updated successfully!';
+          } else {
+              $message[] = 'Please enter a new password!'; // Inform the user to enter a new password
+          }
+      }
+  
+  }
+  
+}
+$cancel_button_clicked = isset($_POST['cancel']); // Check if the cancel button was clicked
 
+if ($cancel_button_clicked) {
+    // If the cancel button was clicked, set a redirect message and redirect to the profile page
+    header('Location: profilePartner.php');
+    exit;
 }
+
+
+
+if(isset($_POST['deleteacc'])) {
+   // Display a confirmation dialog using JavaScript
+   echo '<script>
+           var confirmed = confirm("Are you sure you want to delete your account?");
+           if (confirmed) {
+               // If the user confirms, submit the form
+               document.getElementById("deleteacc-confirm-btn").click();
+           } else {
+               // If the user cancels, do nothing
+           }
+         </script>';
+         }
+
+// Check if the "deleteacc" form was submitted
+if(isset($_POST['deleteacc-confirm'])) {
+   // Delete the user's account
+   $delete_user = $conn->prepare("DELETE FROM `languagelearners` WHERE LearnerID = ?");
+   $delete_user->execute([$user_id]);
+   // Redirect the user to a confirmation page or perform any other action
+   header('Location: login.php');
+   exit;
 }
+
 
 if($redirect_message !== '') {
    // Set the success message in a session variable
+   
    $_SESSION['redirect_message'] = $redirect_message;
    // Redirect to profileLearner.php
   header('Location: profilePartner.php');
@@ -205,16 +241,7 @@ if($redirect_message !== '') {
    </style>
 </head>
 <body>
-<script>
-    // Check if the redirect message session variable is set
-    <?php if(isset($_SESSION['redirect_message'])): ?>
-        // Display the redirect message as an alert
-        alert("<?php echo $_SESSION['redirect_message']; ?>");
-        // Unset the session variable to prevent it from being displayed again
-        <?php unset($_SESSION['redirect_message']); ?>
-    <?php endif; ?>
 
-</script>
    <header class="header">
    
       <div class="flex">
@@ -291,16 +318,20 @@ if($redirect_message !== '') {
       <input id="confirm-pass-input" type="password" name="cpass" placeholder="confirm your new password" maxlength="20" class="box">
       <p>edit pic</p>
       <input name = "Photo" id="pic-input" type="file" accept="image/*" class="box">
+
          <!-- Span elements for displaying validation messages -->
          <?php foreach ($message as $msg) {
    echo '<span class="error-message">' . $msg . '</span>';
 }
 ?>
-      <input type="submit" id="cancel-btn"  value="cancel" name="submit" class="option-btn">
+      <input type="submit" id="cancel-btn"  value="cancel" name="cancel" class="option-btn">
       <input type="submit" id="update-btn" value="update" name="submit" class="btn">
-      <input type="submit" id="delete-btn" value="delete account" name="submit" class="delete-btn">
+      <input type="submit" id="delete-btn" value="delete account" name="deleteacc" class="delete-btn">
+      <input type="submit" id="deleteacc-confirm-btn" value="Confirm Delete" name="deleteacc-confirm" class="option-btn"
+        style="display: none;">
    </section>
 </div>
+
 
 <footer class="footer">
 
