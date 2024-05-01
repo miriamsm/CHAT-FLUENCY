@@ -37,7 +37,10 @@ if(isset($_GET['request_id'])) {
     }
 
     // Fetch request details based on the request ID
-    $sql = "SELECT * FROM LearningRequests WHERE RequestID = :request_id";
+    $sql = "SELECT lr.*, ll.FirstName AS LearnerFirstName, ll.LastName AS LearnerLastName 
+            FROM LearningRequests lr
+            INNER JOIN LanguageLearners ll ON lr.LearnerID = ll.LearnerID
+            WHERE lr.RequestID = :request_id";
     $stmt = $conn->prepare($sql);
     $stmt->bindParam(':request_id', $request_id);
     $stmt->execute();
@@ -45,7 +48,7 @@ if(isset($_GET['request_id'])) {
     if ($stmt && $stmt->rowCount() > 0) {
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
         // Display the request details
-        $learner_name = $row["LearnerID"]; // Update this to the correct column name
+        $learner_name = $row["LearnerFirstName"] . ' ' . $row["LearnerLastName"];
         $request_date = $row["RequestDate"];
         $goals = $row["LanguageToLearn"]; // Assuming this is the column containing learner's goals
         $proficiency = $row["ProficiencyLevel"]; // Assuming this is the column containing learner's proficiency
