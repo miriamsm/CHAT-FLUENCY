@@ -171,30 +171,15 @@ if ($cancel_button_clicked) {
 }
 
 
-
-if(isset($_POST['deleteacc'])) {
-   // Display a confirmation dialog using JavaScript
-   echo '<script>
-           var confirmed = confirm("Are you sure you want to delete your account?");
-           if (confirmed) {
-               // If the user confirms, submit the form
-               document.getElementById("deleteacc-confirm-btn").click();
-           } else {
-               // If the user cancels, do nothing
-           }
-         </script>';
-         }
-
-// Check if the "deleteacc" form was submitted
-if(isset($_POST['deleteacc-confirm'])) {
-   // Delete the user's account
+if (isset($_POST['deleteacc-confirm'])) {
+   // Perform the deletion action here
    $delete_user = $conn->prepare("DELETE FROM `languagelearners` WHERE LearnerID = ?");
    $delete_user->execute([$user_id]);
    // Redirect the user to a confirmation page or perform any other action
    header('Location: login.php');
    exit;
 }
-
+//does not delete  only redirect);
 
 if($redirect_message !== '') {
    // Set the success message in a session variable
@@ -241,7 +226,26 @@ if($redirect_message !== '') {
    </style>
 </head>
 <body>
+<script>
+    function ConfirmDelete() {
+        var confirmed = confirm("Are you sure you want to delete?");
+        if (confirmed) {
+            // If confirmed, submit the form with deleteacc-confirm set to true
+            document.getElementById("profile-form").submit();
+        }
+    }
+</script>
 
+<script>
+    // Check if the redirect message session variable is set
+    <?php if(isset($_SESSION['redirect_message'])): ?>
+        // Display the redirect message as an alert
+        alert("<?php echo $_SESSION['redirect_message']; ?>");
+        // Unset the session variable to prevent it from being displayed again
+        <?php unset($_SESSION['redirect_message']); ?>
+    <?php endif; ?>
+
+</script>
    <header class="header">
    
       <div class="flex">
@@ -326,9 +330,9 @@ if($redirect_message !== '') {
 ?>
       <input type="submit" id="cancel-btn"  value="cancel" name="cancel" class="option-btn">
       <input type="submit" id="update-btn" value="update" name="submit" class="btn">
-      <input type="submit" id="delete-btn" value="delete account" name="deleteacc" class="delete-btn">
-      <input type="submit" id="deleteacc-confirm-btn" value="Confirm Delete" name="deleteacc-confirm" class="option-btn"
-        style="display: none;">
+      <input type="submit" id="delete-btn" onclick="ConfirmDelete()" value="delete account" name="deleteacc" class="delete-btn">
+      <input type="hidden" name="deleteacc-confirm" value="true">
+        
    </section>
 </div>
 
