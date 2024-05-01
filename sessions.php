@@ -1,11 +1,15 @@
 <?php
 include 'connect.php';
+include 'sidebar.php';
+
+$user_role = ''; 
 
 if(isset($_COOKIE['user_id'])){
     $user_id = $_COOKIE['user_id'];
  }else{
     $user_id = '';
  }
+ generateSidebar($user_role, $conn); 
  
 // Fetching scheduled sessions from LearningSessions table
 $sqlCurrent = "SELECT LearningSessions.SessionID, LearningSessions.SessionDate, LearningSessions.SessionDuration, LanguageLearners.FirstName AS LearnerFirstName, LanguageLearners.LastName AS LearnerLastName, LanguagePartners.FirstName AS PartnerFirstName, LanguagePartners.LastName AS PartnerLastName
@@ -88,6 +92,7 @@ $resultPrevious = $conn->query($sqlPrevious); // Execute query for completed or 
 </nav>
 
 </div>
+<div style="display: flex;">
 
 
 
@@ -97,12 +102,13 @@ $resultPrevious = $conn->query($sqlPrevious); // Execute query for completed or 
 
       <div class="box-container">
          <?php
+         if($user_role=="partner"){
          if ($resultCurrent->rowCount() > 0) {
              // Output data of each row
              while ($row = $resultCurrent->fetch(PDO::FETCH_ASSOC)) {
                  echo "<a class='box2'>";
                  echo "<div class='student'>";
-                 echo "<img src='images/pic-2.jpg' alt=''>";
+                 echo "<img src='" . $row['Photo'] . "' alt=''>";
                  echo "<div class='info'>";
                  echo "<h3>" . $row['LearnerFirstName'] . " " . $row['LearnerLastName'] . "</h3>";
                  echo "<span>" . date('d-m-Y', strtotime($row['SessionDate'])) . "</span>";
@@ -112,8 +118,26 @@ $resultPrevious = $conn->query($sqlPrevious); // Execute query for completed or 
                  echo "</a>";
              }
          } else {
-             echo "<p>No sessions scheduled.</p>";
-         }
+            echo "<p>No sessions scheduled</p>";
+         }}
+         else{
+            if ($resultCurrent->rowCount() > 0) {
+               // Output data of each row
+               while ($row = $resultCurrent->fetch(PDO::FETCH_ASSOC)) {
+                   echo "<a class='box2'href='partner_profile.html'>";
+                   echo "<div class='student'>";
+                   echo "<img src='" . $row['Photo'] . "' alt=''>";
+                   echo "<div class='info'>";
+                   echo "<h3>" . $row['PartnerFirstName'] . " " . $row['PartnerLastName'] . "</h3>";
+                   echo "<span>" . date('d-m-Y', strtotime($row['SessionDate'])) . "</span>";
+                   echo "</div>";
+                   echo "</div>";
+                   echo "<h3>" . $row['SessionID'] . "</h3>"; // Displaying session ID
+                   echo "</a>";
+               }
+           } else {
+              echo "<p>No sessions scheduled</p>";
+         }}
          ?>
       </div>
 
@@ -126,6 +150,7 @@ $resultPrevious = $conn->query($sqlPrevious); // Execute query for completed or 
 <div class="box-container">
 
 <?php
+         if($user_role=="partner"){
          if ($resultPrevious->rowCount() > 0) {
              // Output data of each row for completed or canceled sessions
              while ($row = $resultPrevious->fetch(PDO::FETCH_ASSOC)) {
@@ -133,7 +158,7 @@ $resultPrevious = $conn->query($sqlPrevious); // Execute query for completed or 
                  echo "<div class='tutor'>";
                  echo "<img src='images/pic-2.jpg' alt=''>";
                  echo "<div class='info'>";
-                 echo "<h3>" . $row['PartnerFirstName'] . " " . $row['PartnerLastName'] . "</h3>";
+                 echo "<h3>" . $row['LearnerFirstName'] . " " . $row['LearnerLastName'] . "</h3>";
                  echo "<span>" . date('d-m-Y', strtotime($row['SessionDate'])) . "</span>";
                  echo "</div>";
                  echo "</div>";
@@ -142,11 +167,31 @@ $resultPrevious = $conn->query($sqlPrevious); // Execute query for completed or 
              }
          } else {
              echo "<p>No previous sessions found.</p>";
+         }}
+         else{
+            if ($resultPrevious->rowCount() > 0) {
+               // Output data of each row for completed or canceled sessions
+               while ($row = $resultPrevious->fetch(PDO::FETCH_ASSOC)) {
+                   echo "<a class='box'href='partner_profile.html'>";
+                   echo "<div class='tutor'>";
+                   echo "<img src='images/pic-2.jpg' alt=''>";
+                   echo "<div class='info'>";
+                   echo "<h3>" . $row['PartnerFirstName'] . " " . $row['PartnerLastName'] . "</h3>";
+                   echo "<span>" . date('d-m-Y', strtotime($row['SessionDate'])) . "</span>";
+                   echo "</div>";
+                   echo "</div>";
+                   echo "<h3>" . $row['SessionID'] . "</h3>"; // Displaying session ID
+                   echo "</a>";
+               }
+           } else {
+               echo "<p>No previous sessions found.</p>";
+           }
          }
          ?>
 </div>
 
 </section>
+</div>
 
    <footer class="footer">
 
