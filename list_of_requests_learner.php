@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head> 
@@ -67,59 +68,69 @@
     <h1 class="heading">your list of requests</h1>
  
     <div class="box-container">
- 
-       <div class="box">
-          <div class="tutor">
-             <!-- <img src="images/pic-2.jpg" alt=""> -->
-             <div class="info">
-                <h3>request #1</h3>
-                <span>21-1-2024</span>
-             </div>
-          </div>
-          <div class="thumb">
-             <!-- <img src="images/thumb-1.png" alt=""> -->
-             <span style="background-color: lightcoral ;">Rejected</span>
-             <br><br><br>
-          </div>
-          <!-- <h3 class="title">complete HTML tutorial</h3> -->
-          <a href="view_request_learner.html" class="inline-btn">view request details</a>
-       </div>
- 
+    <?php
+$db_name = 'mysql:host=localhost;dbname=chatfluency';
+$user_name = 'root';
+$user_password = '';
 
-       
-       <div class="box">
-        <div class="tutor">
-           <!-- <img src="images/pic-2.jpg" alt=""> -->
-           <div class="info">
-              <h3>request #2</h3>
-              <span>2-2-2024</span>
-           </div>
-        </div>
-        <div class="thumb">
-           <!-- <img src="images/thumb-1.png" alt=""> -->
-           <span> Wait for respond </span>
-           <br><br><br>
-        </div>
-        <!-- <h3 class="title">complete HTML tutorial</h3> -->
-        <a href="view_request_learner.html" class="inline-btn"> view request details </a>
-     </div>
-     
-     <div class="box">
-        <div class="tutor">
-           <!-- <img src="images/pic-2.jpg" alt=""> -->
-           <div class="info">
-              <h3>request #3</h3>
-              <span>17-2-2024</span>
-           </div>
-        </div>
-        <div class="thumb">
-           <!-- <img src="images/thumb-1.png" alt=""> -->
-           <span style="background-color: rgb(97, 195, 151) ;">Accepted</span>
-           <br><br><br>
-        </div>
-        <!-- <h3 class="title">complete HTML tutorial</h3> -->
-        <a href="view_request_learner_accepted.html" class="inline-btn">view request details</a>
-     </div>
+try {
+    // Create a PDO connection
+    $conn = new PDO($db_name, $user_name, $user_password);
+    $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+    // Assuming you have a way to get the LearnerID, replace 1 with the actual LearnerID value
+    $learnerID = 1;
+
+    // Prepare and execute the query to fetch specific columns from LearningRequests table
+    $stmt = $conn->prepare("SELECT RequestID, RequestDate, Status FROM LearningRequests WHERE LearnerID = ?");
+    $stmt->execute([$learnerID]);
+    $requests = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    // Display the fetched requests without grouping them into rows
+   //  echo "<h1 class='heading'>Your list of requests</h1>";
+    echo "<div class='box-container'>";
+
+    foreach ($requests as $row) {
+        // Determine the background color based on the status
+        $backgroundColor = '';
+        switch ($row["Status"]) {
+            case 'Rejected':
+                $backgroundColor = 'lightcoral';
+                break;
+            case 'Accepted':
+                $backgroundColor = 'rgb(97, 195, 151)';
+                break;
+            case 'Pending':
+            default:
+                $backgroundColor = 'grey';
+                break;
+        }
+
+        // Display each request here with the background color
+        echo "<div class='box'>";
+        echo "<div class='tutor'>";
+        echo "<div class='info'>";
+        echo "<h3>Request #" . $row["RequestID"] . "</h3>";
+        echo "<span>{$row['RequestDate']}</span>";
+        echo "</div>";
+        echo "</div>";
+        echo "<div class='thumb'>";
+        echo "<span style='background-color: $backgroundColor;'>{$row['Status']}</span>  <br><br><br>";
+        echo "</div>";
+        echo "<a href='view_request_learner.php?request_id=" . $row["RequestID"] . "' class='inline-btn'>View Request Details</a>";
+
+        echo "</div>";
+    }
+
+    echo "</div>"; // Close the box-container
+} catch(PDOException $e) {
+    // Handle PDO exceptions
+    echo "Connection failed: " . $e->getMessage();
+}
+
+// Close the PDO connection
+$conn = null;
+?>
 
     </div>
 </section>
