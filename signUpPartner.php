@@ -1,59 +1,41 @@
 <?php
-
+// Include the connect.php file
 include 'connect.php';
 
+// Create a new instance of the Connect class
+$db = new Connect();
+
+// Check if the form is submitted
 if(isset($_POST['submit'])){
+    // Retrieve form data
+    $firstName = $_POST['first_name'];
+    $lastName = $_POST['last_name'];
+    $age = $_POST['age'];
+    $gender = $_POST['gender'];
+    $email = $_POST['email'];
+    $password = $_POST['password'];
+    $phone = $_POST['phone'];
+    $city = $_POST['city'];
+    $shortBio = $_POST['short_bio'];
+    $photo = ""; // Placeholder for photo, you'll need to handle file upload separately
 
-   $partner_id = unique_id();
-   $first_name = $_POST['first_name'];
-   $first_name = filter_var($first_name, FILTER_SANITIZE_STRING);
-   $last_name = $_POST['last_name'];
-   $last_name = filter_var($last_name, FILTER_SANITIZE_STRING);
-   $age = $_POST['age'];
-   $age = filter_var($age, FILTER_SANITIZE_NUMBER_INT);
-   $gender = $_POST['gender'];
-   $gender = filter_var($gender, FILTER_SANITIZE_STRING);
-   $email = $_POST['email'];
-   $email = filter_var($email, FILTER_SANITIZE_STRING);
-   $password = sha1($_POST['password']);
-   $password = filter_var($password, FILTER_SANITIZE_STRING);
-   $phone = $_POST['phone'];
-   $phone = filter_var($phone, FILTER_SANITIZE_STRING);
-   $city = $_POST['city'];
-   $city = filter_var($city, FILTER_SANITIZE_STRING);
-   $short_bio = $_POST['short_bio'];
-   $short_bio = filter_var($short_bio, FILTER_SANITIZE_STRING);
+    // SQL query to insert data into languagepartners table
+    $query = "INSERT INTO languagepartners (FirstName, LastName, Age, Gender, Email, Password, Phone, City, Bio, Photo) 
+              VALUES ('$firstName', '$lastName', '$age', '$gender', '$email', '$password', '$phone', '$city', '$shortBio', '$photo')";
 
-   $image = $_FILES['photo']['name'];
-   $image = filter_var($image, FILTER_SANITIZE_STRING);
-   $ext = pathinfo($image, PATHINFO_EXTENSION);
-   $rename = unique_id().'.'.$ext;
-   $image_size = $_FILES['photo']['size'];
-   $image_tmp_name = $_FILES['photo']['tmp_name'];
-   $image_folder = 'uploaded_files/'.$rename;
+    // Execute the query
+    $result = $db->conn->query($query);
 
-   $select_partner = $conn->prepare("SELECT * FROM `languagepartners` WHERE email = ?");
-   $select_partner->execute([$email]);
-   
-   if($select_partner->rowCount() > 0){
-      $message[] = 'Email already taken!';
-   }else{
-      $insert_partner = $conn->prepare("INSERT INTO `languagepartners`(partner_id, first_name, last_name, age, gender, email, photo, password, phone, city, bio) VALUES(?,?,?,?,?,?,?,?,?,?,?)");
-      $insert_partner->execute([$partner_id, $first_name, $last_name, $age, $gender, $email, $rename, $password, $phone, $city, $short_bio]);
-      move_uploaded_file($image_tmp_name, $image_folder);
-      
-      $verify_partner = $conn->prepare("SELECT * FROM `languagepartners` WHERE email = ? AND password = ? LIMIT 1");
-      $verify_partner->execute([$email, $password]);
-      $row = $verify_partner->fetch(PDO::FETCH_ASSOC);
-      
-      if($verify_partner->rowCount() > 0){
-         setcookie('partner_id', $row['partner_id'], time() + 60*60*24*30, '/');
-         header('location:partner_home.php');
-      }
-   }
-
+    // Check if the query was successful
+    if($result){
+        echo "Partner signed up successfully!";
+        // Redirect to profilePartner.php or any other page
+        // header("Location: profilePartner.php");
+        // exit();
+    } else {
+        echo "Error: " . $db->conn->error;
+    }
 }
-
 ?>
 <!DOCTYPE html> 
 <html lang="en"> 
@@ -89,7 +71,7 @@ if(isset($_POST['submit'])){
    </header>    
 
 <section class="form-container">
-   <form name="signupForm" action="profilePartner.html" method="post" enctype="multipart/form-data" onsubmit="return validateForm()"> 
+<form name="signupForm" action="SignUpPartner.php" method="post" enctype="multipart/form-data" onsubmit="return validateForm()"> 
        <h3>Sign Up</h3>
       <p>Your first name <span>*</span></p> 
       <input type="text" name="first_name" placeholder="enter your first name" required maxlength="50" class="box"> 
@@ -110,8 +92,7 @@ if(isset($_POST['submit'])){
       <input type="email" name="email" placeholder="enter your email" required maxlength="50" class="box"> 
       
       <p>Your password <span>*</span></p> 
-      <input type="password" name="pass" placeholder="enter your password" required maxlength="20" class="box"> 
-
+      <input type="password" name="password" placeholder="enter your password" required maxlength="20" class="box">
       <p>Your phone <span>*</span></p> 
       <input type="tel" name="phone" placeholder="enter your phone" required maxlength="15" class="box"> 
 
@@ -143,14 +124,13 @@ if(isset($_POST['submit'])){
       var lastName = document.forms["signupForm"]["last_name"].value;
       var age = document.forms["signupForm"]["age"].value;
       var email = document.forms["signupForm"]["email"].value;
-      var password = document.forms["signupForm"]["pass"].value;
+      var password = document.forms["signupForm"]["password"].value;
       var phone = document.forms["signupForm"]["phone"].value;
       var city = document.forms["signupForm"]["city"].value;
       var shortBio = document.forms["signupForm"]["short_bio"].value;
 
       if (firstName == "" || lastName == "" || age == "" || email == "" || password == "" || phone == "" || city == "" || shortBio == "") {
          alert("All fields must be filled out");
-         return false;
       }
    }
 </script>

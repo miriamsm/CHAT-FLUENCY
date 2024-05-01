@@ -11,6 +11,9 @@ if(isset($_POST['submit'])) {
     $city = $_POST['city'];
     $location = $_POST['location'];
 
+    // Hash the password
+    $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
+
     // Upload photo
     $photo = '';
     if(isset($_FILES['photo']) && $_FILES['photo']['error'] == 0) {
@@ -46,18 +49,22 @@ if(isset($_POST['submit'])) {
         }
     }
 
-    // Insert data into database
+    // Insert data into database using prepared statement
     $sql = "INSERT INTO languagelearners (FirstName, LastName, Email, Password, Photo, City, Location)
-            VALUES ('$firstName', '$lastName', '$email', '$password', '$photo', '$city', '$location')";
+            VALUES (?, ?, ?, ?, ?, ?, ?)";
 
-    if (mysqli_query($conn, $sql)) {
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("sssssss", $firstName, $lastName, $email, $hashedPassword, $photo, $city, $location);
+
+    if ($stmt->execute()) {
         echo "New record created successfully";
     } else {
-        echo "Error: " . $sql . "<br>" . mysqli_error($conn);
+        echo "Error: " . $sql . "<br>" . $conn->error;
     }
 
-    // Close connection
-    mysqli_close($conn);
+    // Close statement and connection
+    $stmt->close();
+    $conn->close();
 }
 ?>
 
