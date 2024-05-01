@@ -1423,16 +1423,16 @@ section{
 }
 
 .pending {
-   background-color: grey;
+   background-color: rgb(133, 130, 130);
    color: white;
 }
 
 .accepted {
-   background-color: green;
+   background-color: rgb(91, 171, 91);
    color: white;
 }
 
 .rejected {
-   background-color: red;
+   background-color: rgb(208, 75, 75);
    color: white;
 }

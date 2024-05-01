@@ -22,6 +22,8 @@ if(isset($_GET['request_id'])) {
             $status = "Accepted";
         } elseif($action == "reject") {
             $status = "Rejected";
+        } else {
+         $status = "Pending";
         }
 
         // Update the status in the database
@@ -50,9 +52,12 @@ if(isset($_GET['request_id'])) {
         // Display the request details
         $learner_name = $row["LearnerFirstName"] . ' ' . $row["LearnerLastName"];
         $request_date = $row["RequestDate"];
-        $goals = $row["LanguageToLearn"]; // Assuming this is the column containing learner's goals
+        $goals = $row["LearnerGoals"]; // Assuming this is the column containing learner's goals
         $proficiency = $row["ProficiencyLevel"]; // Assuming this is the column containing learner's proficiency
         $status = $row["Status"]; // Assuming this is the column containing request status
+        $Language = $row["LanguageToLearn"];
+        $Duration = $row["SessionDuration"];
+        $Schedule= $row["PreferredSchedule"];
     } else {
         // No request found with the provided ID
         // Redirect back to learner requests page
@@ -158,18 +163,38 @@ if(isset($_GET['request_id'])) {
       </div>
    
       <div class="box-container">
-         <div class="box">
-            <!-- Display learner goals -->
-            <span>My goals:</span>
-            <p><?php echo $goals; ?></p>
-         </div>
-   
-         <div class="box">
-            <!-- Display learner proficiency -->
-            <span>Proficiency:</span>
-            <p><?php echo $proficiency; ?></p>
-         </div>
-      </div>
+      <div class="box">
+        <!-- Display learner Session duration -->
+        <span style="font-size: 1.5em;">Session Duration:</span>
+        <p style="font-size: 1.5em;"><?php echo $Duration; ?></p>
+    </div>
+
+    <div class="box">
+        <!-- Display learner proficiency -->
+        <span style="font-size: 1.5em;">Proficiency:</span>
+        <p style="font-size: 1.5em;"><?php echo $proficiency; ?></p>
+    </div>
+
+    <div class="box">
+        <!-- Display learner language -->
+        <span style="font-size: 1.5em;">Language to learn:</span>
+        <p style="font-size: 1.5em;"><?php echo $Language; ?></p>
+    </div>
+
+    <div class="box">
+        <!-- Display learner Preferred schedule -->
+        <span style="font-size: 1.5em;">Preferred Schedule:</span>
+        <p style="font-size: 1.5em;"><?php echo $Schedule; ?></p>
+    </div>
+
+    <div class="box">
+        <!-- Display learner goals -->
+        <span style="font-size: 1.5em;">My goals:</span>
+        <p style="font-size: 1.5em;"><?php echo $goals; ?></p>
+    </div>
+    
+</div>
+
 
       <div style="text-align: center; margin-top: 20px;">
          <!-- Buttons to accept or reject request -->

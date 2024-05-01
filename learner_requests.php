@@ -13,6 +13,24 @@ $sql = "SELECT lr.*, ll.FirstName AS LearnerFirstName, ll.LastName AS LearnerLas
         FROM LearningRequests lr
         INNER JOIN LanguageLearners ll ON lr.LearnerID = ll.LearnerID";
 $stmt = $conn->query($sql); // Use PDO query method
+
+function getStatusColor($status) {
+   switch ($status) {
+       case 'Accepted':
+           return 'accepted';
+           break;
+       case 'Rejected':
+           return 'rejected';
+           break;
+       case 'Pending':
+           return 'pending';
+           break;
+       default:
+           return '';
+           break;
+   }
+}
+
 ?>
 
 
@@ -109,7 +127,8 @@ $stmt = $conn->query($sql); // Use PDO query method
             echo '<h3 class="title">' . $learner_name . ' Wants to take a session with you!</h3>';
             echo '<a href="Request_Details.php?request_id=' . $row["RequestID"] . '" class="inline-btn">Request Details</a>';
             echo '<div class="box">';
-            echo '<div class="request-status pending">Pending</div>';
+            $status = $row["Status"]; // Assigning value to $status variable
+            echo '<div class="request-status ' . getStatusColor($status) . '">' . $status . ' </div>';
             echo '</div>';
             echo '</div>';
          }
