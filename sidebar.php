@@ -19,7 +19,7 @@ function generateSidebar($user_role, $conn) {
         </div>
      
         <div class="profile">
-           <img src="images/pic-1.jpg" class="image" alt="">
+           <img src="images/pic-1.jpg" class="image" alt="profile picture">
            <h3 class="name">' . $learner_row['FirstName'] . ' ' . $learner_row['LastName'] . '</h3>
            <p class="role">Learner</p>
         </div>
@@ -74,7 +74,7 @@ function generateSidebar($user_role, $conn) {
      </div>';
     } else {
         // Default sidebar content if user role is not defined
-        echo ''; // You can customize this based on your requirements
+        echo "Page not found."; // You can customize this based on your requirements
     }
 }
 ?>
