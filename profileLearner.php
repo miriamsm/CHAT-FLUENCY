@@ -1,18 +1,26 @@
 <?php
 
 include 'connect.php';
-
+/*
+if(isset($_COOKIE['user_id'])){
+   $user_id = $_COOKIE['user_id'];
+}else{
+   $user_id = '';
+   header('location:login.php');
+}
+*/
+$user_id = 1;
 $select_user = $conn->prepare("SELECT * FROM `languagelearners` WHERE LearnerID = ? LIMIT 1"); 
 $select_user->execute([$user_id]);
 $fetch_user = $select_user->fetch(PDO::FETCH_ASSOC);
 
 // Check if the query was successful
-if ($fetch) {
-    // Get the 'name' attribute from the fetched row
-    $name = $fetch['name'];
+if ($fetch_user) {
+   // Get the 'name' attribute from the fetched row
+   $name = $fetch_user['FirstName'];
 } else {
-    // Default name if the query fails or no data is found
-    $name = "Guest";
+   // Default name if the query fails or no data is found
+   $name = "Guest";
 }
 $select_sessions = $conn->prepare("SELECT * FROM `learningsessions` WHERE LearnerID = ?");
 $select_sessions->execute([$user_id]);
@@ -22,7 +30,7 @@ $select_requests = $conn->prepare("SELECT * FROM `learningrequests` WHERE Learne
 $select_requests->execute([$user_id]);
 $total_requests = $select_requests->rowCount();
 
-$select_partners = $conn->prepare("SELECT * FROM `languagepartners` WHERE LearnerID = ?"); //must insert new table 
+$select_partners = $conn->prepare("SELECT * FROM `languagelearners` WHERE LearnerID = ?"); //must insert new table 
 $select_partners->execute([$user_id]);
 $total_partners = $select_partners->rowCount();
 
