@@ -106,7 +106,7 @@ $total_partners = $select_partners->rowCount();
 
       <div class="user">
          <img src="uploaded_files/<?= $fetch_user['Photo']; ?>" alt="">
-         <h3><?= $fetch_user['FirstName']. ', ' . $fetch_user['LastName'];  ?></h3>
+         <h3><?= $fetch_user['FirstName']. ' ' . $fetch_user['LastName'];  ?></h3>
          <p>Learner</p>
          <p><?= $fetch_user['City'] . ', ' . $fetch_user['Location']; ?></p>
          <a href="updateLearner.php" class="inline-btn">edit profile</a>
