@@ -83,10 +83,10 @@ $total_partners = $select_partners->rowCount();
       </div>
    
       <nav class="navbar">
-         <a href="profileLearner.html"><i class="fas fa-home"></i><span>home</span></a>
-         <a href="SesssionsLearner.html"><i><img src="images/session.png" alt="sessions"></i><span>sessions</span></a>
-         <a href="partners.html"><i class="fas fa-chalkboard-user"></i><span>partners</span></a>
-         <a href="about_learner.html"><i class="fas fa-question"></i><span>about</span></a>
+         <a href="profileLearner.php"><i class="fas fa-home"></i><span>home</span></a>
+         <a href="SesssionsLearner.php"><i><img src="images/session.png" alt="sessions"></i><span>sessions</span></a>
+         <a href="partners.php"><i class="fas fa-chalkboard-user"></i><span>partners</span></a>
+         <a href="about_learner.php"><i class="fas fa-question"></i><span>about</span></a>
       </nav>
       <nav>
          <div style="text-align: center; margin-top: 20px; margin-bottom: 150px;">
@@ -106,7 +106,7 @@ $total_partners = $select_partners->rowCount();
 
       <div class="user">
          <img src="uploaded_files/<?= $fetch_user['Photo']; ?>" alt="">
-         <h3><?= $fetch_user['FirstName']; ?></h3>
+         <h3><?= $fetch_user['FirstName']. ', ' . $fetch_user['LastName'];  ?></h3>
          <p>Learner</p>
          <p><?= $fetch_user['City'] . ', ' . $fetch_user['Location']; ?></p>
          <a href="updateLearner.php" class="inline-btn">edit profile</a>
@@ -123,7 +123,7 @@ $total_partners = $select_partners->rowCount();
                 <p>sessions</p>
              </div>
           </div>
-          <a href="SesssionsLearner.html" class="inline-btn">view sessions</a>
+          <a href="SesssionsLearner.php" class="inline-btn">view sessions</a>
        </div>
 
        <div class="box">
@@ -145,7 +145,7 @@ $total_partners = $select_partners->rowCount();
               <p>partners</p>
                </div>
             </div>
-            <a href="partners.html" class="inline-btn">view partners</a>
+            <a href="partners.php" class="inline-btn">view partners</a>
          </div>
    
       </div>
@@ -156,7 +156,7 @@ $total_partners = $select_partners->rowCount();
 <footer style="margin-top : 80px;" class="footer">
 
    &copy; copyright @ 2024 by <span>CHAT FLUENCY</span> | all rights reserved!
-   <a href="contact_learner.html"><i class="fas fa-headset"></i><span> contact us</span></a>
+   <a href="contact_learner.php"><i class="fas fa-headset"></i><span> contact us</span></a>
 
 </footer>
 

@@ -88,13 +88,13 @@ $total_partners = $select_partners->rowCount();
       </div>
    
       <nav class="navbar">
-         <a href="profilePartner.html"><i class="fas fa-home"></i><span>home</span></a>
-         <a href="SessionsPartner.html"><i><img src="images/session.png" alt="sessions"></i><span>sessions</span></a>
-         <a href="about_partner.html"><i class="fas fa-question"></i><span>about</span></a>
+         <a href="profilePartner.php"><i class="fas fa-home"></i><span>home</span></a>
+         <a href="SessionsPartner.php"><i><img src="images/session.png" alt="sessions"></i><span>sessions</span></a>
+         <a href="about_partner.php"><i class="fas fa-question"></i><span>about</span></a>
       </nav>
       <nav>
          <div style="text-align: center; margin-top: 20px; margin-bottom: 150px;">
-         <a href="home.html"  class="inline-btn" >Sign out</a>
+         <a href="home.php"  class="inline-btn" >Sign out</a>
       </div>
       </nav>
    
@@ -137,7 +137,7 @@ $total_partners = $select_partners->rowCount();
                 <p>reviews</p> 
              </div>
           </div>
-          <a href="reviews_partner.html" class="inline-btn">view reviews</a>
+          <a href="reviews_partner.php" class="inline-btn">view reviews</a>
        </div>
    
        <div class="box">
@@ -148,7 +148,7 @@ $total_partners = $select_partners->rowCount();
               <p>sessions</p>
                </div>
             </div>
-            <a href="SessionsPartner.html" class="inline-btn">view sessions</a>
+            <a href="SessionsPartner.php" class="inline-btn">view sessions</a>
          </div>
    
       </div>
