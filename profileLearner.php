@@ -1,17 +1,22 @@
 <?php
 
 include 'connect.php';
-
+$connection = new connect();
+/*
 if(isset($_COOKIE['user_id'])){
    $user_id = $_COOKIE['user_id'];
 }else{
    $user_id = '';
    header('location:login.php');
 }
+*/
 
-$select_user = $conn->prepare("SELECT * FROM `languagelearners` WHERE LearnerID = ? LIMIT 1"); 
-$select_user->execute([$user_id]);
-$fetch_user = $select_user->fetch(PDO::FETCH_ASSOC);
+$user_id = 123456789;
+
+$select_user = $connection->conn->prepare("SELECT * FROM languagelearners WHERE LearnerID = ? LIMIT 1"); 
+$select_user->bind_param("i", $user_id);
+$select_user->execute();
+$fetch_user = $select_user->get_result()->fetch_assoc();
 
 // Check if the query was successful
 if ($fetch_user) {
@@ -21,20 +26,22 @@ if ($fetch_user) {
    // Default name if the query fails or no data is found
    $name = "Guest";
 }
-$select_sessions = $conn->prepare("SELECT * FROM `learningsessions` WHERE LearnerID = ?");
-$select_sessions->execute([$user_id]);
-$total_sessions = $select_sessions->rowCount();
 
-$select_requests = $conn->prepare("SELECT * FROM `learningrequests` WHERE LearnerID = ?");
-$select_requests->execute([$user_id]);
-$total_requests = $select_requests->rowCount();
+$select_sessions = $connection->conn->prepare("SELECT * FROM learningsessions WHERE LearnerID = ?");
+$select_sessions->bind_param("i", $user_id);
+$select_sessions->execute();
+$total_sessions = $select_sessions->get_result()->num_rows;
 
-$select_partners = $conn->prepare("SELECT * FROM `languagelearners` WHERE LearnerID = ?"); //must insert new table 
-$select_partners->execute([$user_id]);
-$total_partners = $select_partners->rowCount();
+$select_requests = $connection->conn->prepare("SELECT * FROM learningrequests WHERE LearnerID = ?");
+$select_requests->bind_param("i", $user_id);
+$select_requests->execute();
+$total_requests = $select_requests->get_result()->num_rows;
 
+$select_partners = $connection->conn->prepare("SELECT * FROM languagelearners WHERE LearnerID = ?");
+$select_partners->bind_param("i", $user_id);
+$select_partners->execute();
+$total_partners = $select_partners->get_result()->num_rows;
 ?>
-
 
 
 <!DOCTYPE html>

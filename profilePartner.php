@@ -1,17 +1,21 @@
 <?php
 
 include 'connect.php';
-
+$connection = new connect();
+/*
 if(isset($_COOKIE['user_id'])){
    $user_id = $_COOKIE['user_id'];
 }else{
    $user_id = '';
    header('location:login.php');
 }
+*/
+$user_id = 12;
 
-$select_user = $conn->prepare("SELECT * FROM `languagepartners` WHERE PartnerID = ? LIMIT 1"); 
-$select_user->execute([$user_id]);
-$fetch_user = $select_user->fetch(PDO::FETCH_ASSOC);
+$select_user = $connection->conn->prepare("SELECT * FROM languagepartners WHERE PartnerID = ? LIMIT 1"); 
+$select_user->bind_param("i", $user_id);
+$select_user->execute();
+$fetch_user = $select_user->get_result()->fetch_assoc();
 
 // Check if the query was successful
 if ($fetch_user) {
@@ -21,17 +25,23 @@ if ($fetch_user) {
     // Default name if the query fails or no data is found
     $name = "Guest";
 }
-$select_requests= $conn->prepare("SELECT * FROM `learningrequests`");
+
+$select_requests = $connection->conn->prepare("SELECT * FROM learningrequests WHERE PartnerID = ?");
+$select_requests->bind_param("i", $user_id);
 $select_requests->execute();
-$total_requests = $select_requests->rowCount();
+$total_requests = $select_requests->get_result()->num_rows;
 
-$select_reviews = $conn->prepare("SELECT * FROM `reviewsratings` WHERE ReviewID = ?");//check
-$select_reviews->execute([$user_id]);
-$total_reviews = $select_reviews->rowCount();
+$select_reviews = $connection->conn->prepare("SELECT * FROM reviewsratings WHERE PartnerID = ?");
+$select_reviews->bind_param("i", $user_id);
+$select_reviews->execute();
+$total_reviews = $select_reviews->get_result()->num_rows;
 
-$select_sessions = $conn->prepare("SELECT * FROM `learningsessions` WHERE PartnerID = ?");
-$select_sessions->execute([$user_id]);
-$total_sessions = $select_sessions->rowCount();
+$select_sessions = $connection->conn->prepare("SELECT * FROM learningsessions WHERE PartnerID = ?");
+$select_sessions->bind_param("i", $user_id);
+$select_sessions->execute();
+$total_sessions = $select_sessions->get_result()->num_rows;
+
+
 /*
 $select_partners = $conn->prepare("SELECT * FROM `languagepartners` WHERE LearnerID = ?"); //must insert new table 
 $select_partners->execute([$user_id]);
