@@ -1,7 +1,6 @@
 <?php
 // Database connection
 include 'connect.php';
-include 'sidebar.php';
 $connection = new Connect();
 
 $user_role = ''; 

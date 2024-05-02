@@ -1,10 +1,14 @@
 <?php
 // Sidebar content based on user role and database connection
 function generateSidebar($user_role, $conn) {
+      $db = new Connect(); // Create a new instance of the Connect class
+  
+      // Get the database connection from the Connect instance
+      $connection = $db->conn;
     if ($user_role === 'learner') {
         // Query the database to get learner information
         $sql = "SELECT * FROM LanguageLearners WHERE FirstName = ?";
-        $stmt = $conn->prepare($sql);
+        $stmt =  $connection->prepare($sql);
         $stmt->bind_param("s", $user_role);
         $stmt->execute();
         $learner_result = $stmt->get_result();
@@ -40,7 +44,7 @@ function generateSidebar($user_role, $conn) {
     } elseif ($user_role === 'partner') {
         // Query the database to get partner information
         $sql = "SELECT * FROM LanguagePartners WHERE FirstName = ?";
-        $stmt = $conn->prepare($sql);
+        $stmt =  $connection->prepare($sql);
         $stmt->bind_param("s", $user_role);
         $stmt->execute();
         $partner_result = $stmt->get_result();
@@ -72,9 +76,6 @@ function generateSidebar($user_role, $conn) {
         </nav>
      
      </div>';
-    } else {
-        // Default sidebar content if user role is not defined
-        echo ''; // You can customize this based on your requirements
-    }
+    } 
 }
 ?>
