@@ -12,6 +12,8 @@ if(isset($_COOKIE['user_id'])){
 */
 $user_id = 12;
 
+
+
 $select_user = $connection->conn->prepare("SELECT * FROM languagepartners WHERE PartnerID = ? LIMIT 1"); 
 $select_user->bind_param("i", $user_id);
 $select_user->execute();
@@ -64,6 +66,7 @@ $total_partners = $select_partners->rowCount();
 
 </head>
 <body>
+   
 
    <header class="header">
    

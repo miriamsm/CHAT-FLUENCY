@@ -1,6 +1,7 @@
 <?php
 
 include 'connect.php';
+$connection = new connect();
 /*
 if(isset($_COOKIE['user_id'])){
    $user_id = $_COOKIE['user_id'];
@@ -9,11 +10,12 @@ if(isset($_COOKIE['user_id'])){
   header('location:login.php');
 }
 */
-$user_id=123456789
-;
-$select_user = $conn->prepare("SELECT * FROM `languagelearners` WHERE LearnerID = ? LIMIT 1");
-$select_user->execute([$user_id]);
-$fetch_user = $select_user->fetch(PDO::FETCH_ASSOC);
+$user_id=123456791;
+
+$select_user = $connection->conn->prepare("SELECT * FROM languagelearners WHERE LearnerID = ? LIMIT 1"); 
+$select_user->bind_param("i", $user_id);
+$select_user->execute();
+$fetch_user = $select_user->get_result()->fetch_assoc();
 $message = [];
 $redirect_message = '';
 if(isset($_POST['submit'])){ //checks if a form with a submit button named 'submit' has been submitted.
@@ -29,14 +31,16 @@ $lname = $_POST['LastName'];
 $lname = filter_var($lname, FILTER_SANITIZE_STRING);
 
 if(!empty($fname) && $fname != $fetch_user['FirstName']){
-    $update_fname = $conn->prepare("UPDATE `languagelearners` SET FirstName = ? WHERE LearnerID = ?");
-    $update_fname->execute([$fname, $user_id]);
+    $update_fname = $connection->conn->prepare("UPDATE `languagelearners` SET FirstName = ? WHERE LearnerID = ?");
+    $update_fname->bind_param("si", $fname, $user_id);
+    $update_fname->execute();
     $redirect_message ='First name updated successfully!';
 }
 
 if(!empty($lname) && $lname != $fetch_user['LastName']){
-    $update_lname = $conn->prepare("UPDATE `languagelearners` SET LastName = ? WHERE LearnerID = ?");
-    $update_lname->execute([$lname, $user_id]);
+    $update_lname = $connection->conn->prepare("UPDATE `languagelearners` SET LastName = ? WHERE LearnerID = ?");
+    $update_lname->bind_param("si", $lname, $user_id);
+    $update_lname->execute();
     $redirect_message = 'Last name updated successfully!';
 }
 
@@ -45,8 +49,9 @@ if (!empty($city) && $city != $fetch_user['City']) {
     // Perform any necessary sanitization or validation of the input data
 
     // Prepare and execute SQL query to update the city in the database
-    $update_city = $conn->prepare("UPDATE `languagelearners` SET City = ? WHERE LearnerID = ?");
-    $update_city->execute([$city, $user_id]);
+    $update_city = $connection->conn->prepare("UPDATE `languagelearners` SET City = ? WHERE LearnerID = ?");
+    $update_city->bind_param("si", $city, $user_id);
+    $update_city->execute();
     $redirect_message = 'City updated successfully!';
     
 } 
@@ -57,8 +62,9 @@ if (!empty($location) && $location != $fetch_user['Location']) {
     // Perform any necessary sanitization or validation of the input data
 
     // Prepare and execute SQL query to update the location in the database
-    $update_location = $conn->prepare("UPDATE `languagelearners` SET Location = ? WHERE LearnerID = ?");
-    $update_location->execute([$location, $user_id]);
+    $update_location = $connection->conn->prepare("UPDATE `languagelearners` SET Location = ? WHERE LearnerID = ?");
+    $update_location->bind_param("si", $location, $user_id);
+    $update_location->execute();
     $redirect_message  = 'Location updated successfully!';
     
 } 
@@ -72,25 +78,28 @@ if (!empty($email) && $email != $fetch_user['Email']) {
     if (!preg_match($email_regex, $email)) {
         $message[] = 'Invalid email format';
     } else {
-        $update_email = $conn->prepare("UPDATE `languagelearners` SET Email = ? WHERE LearnerID = ?");
+        $update_email = $connection->conn->prepare("UPDATE `languagelearners` SET Email = ? WHERE LearnerID = ?");
         $update_email->execute([$email, $user_id]);
+        $update_email->bind_param("si", $email, $user_id);
+        $update_email->execute();
         $redirect_message  = 'Email updated successfully!';
     }
 }
 
-   $Photo = $_FILES['Photo']['name'];//fetches the name of the uploaded image file.
-   $Photo = filter_var($Photo, FILTER_SANITIZE_STRING);
-   $ext = pathinfo($Photo, PATHINFO_EXTENSION);
-   $rename = unique_id().'.'.$ext;
-   $Photo_size = $_FILES['Photo']['size'];
-   $Photo_tmp_name = $_FILES['Photo']['tmp_name'];
-   $Photo_folder = 'uploaded_files/'.$rename;
+$Photo = $_FILES['Photo']['name']; // Fetch the name of the uploaded image file
+$Photo = filter_var($Photo, FILTER_SANITIZE_STRING);
+$ext = pathinfo($Photo, PATHINFO_EXTENSION);
+$rename = uniqid() . '.' . $ext; // Generate a unique identifier and append the file extension
+$Photo_size = $_FILES['Photo']['size'];
+$Photo_tmp_name = $_FILES['Photo']['tmp_name'];
+$Photo_folder = 'uploaded_files/' . $rename;
+
 
    if(!empty($Photo  && $Photo != $fetch_user['Photo'])){
       if($Photo_size > 2000000){
          $message[] = 'photo size too large!';
       }else{
-         $update_Photo = $conn->prepare("UPDATE `languagelearners` SET `Photo` = ? WHERE LearnerID= ?");
+         $update_Photo = $connection->conn->prepare("UPDATE `languagelearners` SET `Photo` = ? WHERE LearnerID= ?");
          $update_Photo->execute([$rename, $user_id]);
          move_uploaded_file($Photo_tmp_name, $Photo_folder);
          if($prev_Photo != '' AND $prev_Photo != $rename){
@@ -112,8 +121,9 @@ if (!empty($email) && $email != $fetch_user['Email']) {
           $message[] = 'Confirm password not matched!'; // Inform the user that the new passwords do not match
       } else {
           if (!empty($new_pass)) {
-              $update_pass = $conn->prepare("UPDATE languagepartners SET Password = ? WHERE PartnerID = ?");
-              $update_pass->execute([$new_pass, $user_id]);
+              $update_pass = $connection->conn->prepare("UPDATE languagelearners SET Password = ? WHERE LearnerID = ?");
+              $update_pass->bind_param("si", $new_pass, $user_id);
+              $update_pass->execute();
               $redirect_message = 'Password updated successfully!';
           } else {
               $message[] = 'Please enter a new password!'; // Inform the user to enter a new password
@@ -132,15 +142,15 @@ if ($cancel_button_clicked) {
 }
 
 
-if (isset($_POST['deleteacc-confirm'])) {
+if ( isset($_POST['deleteacc-confirm']) && $_POST['deleteacc-confirm'] === "true") {
    // Perform the deletion action here
-   $delete_user = $conn->prepare("DELETE FROM `languagelearners` WHERE LearnerID = ?");
-   $delete_user->execute([$user_id]);
+   $delete_user = $connection->conn->prepare("DELETE FROM `languagelearners` WHERE LearnerID = ?");
+   $delete_user->bind_param("i", $user_id);
+   $delete_user->execute();
    // Redirect the user to a confirmation page or perform any other action
    header('Location: login.php');
    exit;
 }
-
 
 if($redirect_message !== '') {
    // Set the success message in a session variable
@@ -190,14 +200,20 @@ if($redirect_message !== '') {
 
 <body>
 <script>
-    function ConfirmDelete() {
-        var confirmed = confirm("Are you sure you want to delete?");
-        if (confirmed) {
-            // If confirmed, submit the form with deleteacc-confirm set to true
-            document.getElementById("profile-form").submit();
-        }
+   function ConfirmDelete() {
+    var confirmed = confirm("Are you sure you want to delete?");
+    if (confirmed==true) {
+        // Set the value of the hidden input field to indicate confirmation
+        document.getElementById("delete-confirm-input").value = "true";
+    } else {
+        // If canceled, reset the hidden input field value
+        document.getElementById("delete-confirm-input").value = "";
     }
+    // Submit the form regardless of confirmation status
+    document.getElementById("profile-form").submit();
+}
 </script>
+
 
 <script>
     // Check if the redirect message session variable is set
@@ -273,7 +289,7 @@ if($redirect_message !== '') {
       <p>confirm password</p>
       <input id="confirm-pass-input" type="password" name="cpass" placeholder="confirm your new password" maxlength="20" class="box">
       <p>edit pic</p>
-      <input id="pic-input" name="Photo" type="file" accept="image/*" class="box">
+      <input id="pic-input" value="<?= $fetch_user['Photo']; ?>" name="Photo" type="file" accept="image/*" class="box">
       <?php foreach ($message as $msg) {
    echo '<span class="error-message">' . $msg . '</span>';
 }
@@ -288,7 +304,7 @@ if($redirect_message !== '') {
       <input  type="submit" id="cancel-btn" value="cancel" name="cancel" class="option-btn">
       <input type="submit" id="update-btn" value="update" name="submit" class="btn">
       <input type="submit" id="delete-btn" onclick="ConfirmDelete()" value="delete account" name="deleteacc" class="delete-btn">
-      <input type="hidden" name="deleteacc-confirm" value="true">
+      <input type="hidden" id="delete-confirm-input" name="deleteacc-confirm" value="">
    </form>
 </section>
 

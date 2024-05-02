@@ -11,7 +11,7 @@ if(isset($_COOKIE['user_id'])){
 }
 */
 
-$user_id = 123456789;
+$user_id = 123456791;
 
 $select_user = $connection->conn->prepare("SELECT * FROM languagelearners WHERE LearnerID = ? LIMIT 1"); 
 $select_user->bind_param("i", $user_id);
@@ -83,7 +83,7 @@ $total_partners = $select_partners->get_result()->num_rows;
       </div>
    
       <div class="profile">
-         <img src="images/pic-1.jpg" class="image" alt="">
+      <img src="uploaded_files/<?= $fetch_user['Photo']; ?>" class="image" alt="">
          <h3 class="name"><?= $fetch_user['FirstName'] . ' ' . $fetch_user['LastName']; ?></h3>
          <p class="role">Learner</p>
       </div>

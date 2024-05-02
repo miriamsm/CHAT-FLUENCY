@@ -1,6 +1,7 @@
 <?php
 
 include 'connect.php';
+$connection = new connect();
 /*
 if(isset($_COOKIE['user_id'])){
    $user_id = $_COOKIE['user_id'];
@@ -9,12 +10,13 @@ if(isset($_COOKIE['user_id'])){
   header('location:login.php');
 }
 */
-$user_id=12;
+$user_id= 12;
 session_start();
 
-$select_user = $conn->prepare("SELECT * FROM languagepartners WHERE PartnerID = ? LIMIT 1");
-$select_user->execute([$user_id]);
-$fetch_user = $select_user->fetch(PDO::FETCH_ASSOC);
+$select_user = $connection->conn->prepare("SELECT * FROM languagepartners WHERE PartnerID = ? LIMIT 1"); 
+$select_user->bind_param("i", $user_id);
+$select_user->execute();
+$fetch_user = $select_user->get_result()->fetch_assoc();
 $message = [];
 $redirect_message = '';
 if(isset($_POST['submit'])){ //checks if a form with a submit button named 'submit' has been submitted.
@@ -30,14 +32,16 @@ $lname = $_POST['LastName'];
 $lname = filter_var($lname, FILTER_SANITIZE_STRING);
 
 if(!empty($fname) && $fname != $fetch_user['FirstName']){
-    $update_fname = $conn->prepare("UPDATE languagepartners SET FirstName = ? WHERE PartnerID = ?");
-    $update_fname->execute([$fname, $user_id]);
+    $update_fname = $connection->conn->prepare("UPDATE languagepartners SET FirstName = ? WHERE PartnerID = ?");
+    $update_fname->bind_param("si", $fname, $user_id);
+    $update_fname->execute();
     $redirect_message ='First name updated successfully!';
 }
 
 if(!empty($lname) && $lname != $fetch_user['LastName']){
-    $update_lname = $conn->prepare("UPDATE languagepartners SET LastName = ? WHERE PartnerID = ?");
-    $update_lname->execute([$lname, $user_id]);
+    $update_lname = $connection->conn->prepare("UPDATE languagepartners SET LastName = ? WHERE PartnerID = ?");
+    $update_lname->bind_param("si", $lname, $user_id);
+    $update_lname->execute();
     $redirect_message = 'Last name updated successfully!';
 }
 
@@ -46,8 +50,9 @@ if (!empty($city) && $city != $fetch_user['City']) {
     // Perform any necessary sanitization or validation of the input data
 
     // Prepare and execute SQL query to update the city in the database
-    $update_city = $conn->prepare("UPDATE languagepartners SET City = ? WHERE PartnerID = ?");
-    $update_city->execute([$city, $user_id]);
+    $update_city = $connection->conn->prepare("UPDATE languagepartners SET City = ? WHERE PartnerID = ?");
+    $update_city->bind_param("si", $city, $user_id);
+    $update_city->execute();
     $redirect_message = 'City updated successfully!';
     
 } 
@@ -56,8 +61,9 @@ if (!empty($city) && $city != $fetch_user['City']) {
 $bio = $_POST['Bio'];
 if (!empty($bio) && $bio != $fetch_user['Bio']) {
 
-    $update_bio = $conn->prepare("UPDATE languagepartners SET Bio = ? WHERE PartnerID = ?");
-    $update_bio->execute([$bio, $user_id]);
+    $update_bio = $connection->conn->prepare("UPDATE languagepartners SET Bio = ? WHERE PartnerID = ?");
+    $update_bio->bind_param("si", $bio, $user_id);
+    $update_bio->execute();
     $redirect_message  = 'Bio updated successfully!';
     
 } 
@@ -71,8 +77,9 @@ if (!empty($email) && $email != $fetch_user['Email']) {
     if (!preg_match($email_regex, $email)) {
         $message[] = 'Invalid email format';
     } else {
-        $update_email = $conn->prepare("UPDATE languagepartners SET Email = ? WHERE PartnerID = ?");
-        $update_email->execute([$email, $user_id]);
+        $update_email = $connection->conn->prepare("UPDATE languagepartners SET Email = ? WHERE PartnerID = ?");
+        $update_email->bind_param("si", $email, $user_id);
+        $update_email->execute();
         $redirect_message  = 'Email updated successfully!';
     }
 }
@@ -82,8 +89,9 @@ if (!empty($phone) && $phone != $fetch_user['Phone']) {
     // Perform any necessary sanitization or validation of the input data
     if (ctype_digit($phone)) {
         // Prepare and execute SQL query to update the phone number in the database
-        $update_phone = $conn->prepare("UPDATE languagepartners SET Phone = ? WHERE PartnerID = ?");
-        $update_phone->execute([$phone, $user_id]);
+        $update_phone = $connection->conn->prepare("UPDATE languagepartners SET Phone = ? WHERE PartnerID = ?");
+        $update_phone->bind_param("si", $phone, $user_id);
+        $update_phone->execute();
         $redirect_message = 'Phone updated successfully!';
     } else {
         // Render a message if the phone number contains non-numeric characters
@@ -96,8 +104,9 @@ if (!empty($age) && $age != $fetch_user['Age']) {
     // Check if the entered age is a non-negative number
     if ($age >= 0) {
         // Prepare and execute SQL query to update the age in the database
-        $update_age = $conn->prepare("UPDATE languagepartners SET Age = ? WHERE PartnerID = ?");
-        $update_age->execute([$age, $user_id]);
+        $update_age = $connection->conn->prepare("UPDATE languagepartners SET Age = ? WHERE PartnerID = ?");
+        $update_age->bind_param("ii", $age, $user_id);
+        $update_age->execute();
         $redirect_message = 'Age updated successfully!';
     } else {
         // Render a message if the age is negative
@@ -110,8 +119,9 @@ $current_gender = $fetch_user['Gender'];
 if ($new_gender === 'Male' || $new_gender === 'Female') {
     if ($new_gender !== $current_gender) {
         // Prepare and execute SQL query to update the gender in the database
-        $update_gender = $conn->prepare("UPDATE languagepartners SET Gender = ? WHERE PartnerID = ?");
-        $update_gender->execute([$new_gender, $user_id]);
+        $update_gender = $connection->conn->prepare("UPDATE languagepartners SET Gender = ? WHERE PartnerID = ?");
+        $update_gender->bind_param("si", $new_gender, $user_id);
+        $update_gender->execute();
         $redirect_message = 'Gender updated successfully!';
     } 
 } else {
@@ -120,17 +130,20 @@ if ($new_gender === 'Male' || $new_gender === 'Female') {
 }
 
 
-   $Photo = $_FILES['Photo']['name'];//fetches the name of the uploaded image file.
-   $Photo = filter_var($Photo, FILTER_SANITIZE_STRING);
-   $ext = pathinfo($Photo, PATHINFO_EXTENSION);
-   $rename = unique_id().'.'.$ext;
-   $Photo_size = $_FILES['Photo']['size'];
-   $Photo_tmp_name = $_FILES['Photo']['tmp_name'];
-   $Photo_folder = 'uploaded_files/'.$rename;if(!empty($Photo  && $Photo != $fetch_user['Photo'])){
+$Photo = $_FILES['Photo']['name']; // Fetch the name of the uploaded image file
+$Photo = filter_var($Photo, FILTER_SANITIZE_STRING);
+$ext = pathinfo($Photo, PATHINFO_EXTENSION);
+$rename = uniqid() . '.' . $ext; // Generate a unique identifier and append the file extension
+$Photo_size = $_FILES['Photo']['size'];
+$Photo_tmp_name = $_FILES['Photo']['tmp_name'];
+$Photo_folder = 'uploaded_files/' . $rename;
+
+
+   if(!empty($Photo  && $Photo != $fetch_user['Photo'])){
       if($Photo_size > 2000000){
          $message[] = 'photo size too large!';
       }else{
-         $update_Photo = $conn->prepare("UPDATE languagepartners SET Photo = ? WHERE PartnerID= ?");
+         $update_Photo = $connection->conn->prepare("UPDATE `languagepartners` SET `Photo` = ? WHERE PartnerID= ?");
          $update_Photo->execute([$rename, $user_id]);
          move_uploaded_file($Photo_tmp_name, $Photo_folder);
          if($prev_Photo != '' AND $prev_Photo != $rename){
@@ -152,8 +165,9 @@ if ($new_gender === 'Male' || $new_gender === 'Female') {
           $message[] = 'Confirm password not matched!'; // Inform the user that the new passwords do not match
       } else {
           if (!empty($new_pass)) {
-              $update_pass = $conn->prepare("UPDATE languagepartners SET Password = ? WHERE PartnerID = ?");
-              $update_pass->execute([$new_pass, $user_id]);
+              $update_pass = $connection->conn->prepare("UPDATE languagepartners SET Password = ? WHERE PartnerID = ?");
+              $update_pass->bind_param("si", $new_pass, $user_id);
+              $update_pass->execute();
               $redirect_message = 'Password updated successfully!';
           } else {
               $message[] = 'Please enter a new password!'; // Inform the user to enter a new password
@@ -171,16 +185,16 @@ if ($cancel_button_clicked) {
     exit;
 }
 
-
-if (isset($_POST['deleteacc-confirm'])) {
+if ( isset($_POST['deleteacc-confirm']) && $_POST['deleteacc-confirm'] === "true") {
    // Perform the deletion action here
-   $delete_user = $conn->prepare("DELETE FROM `languagepartners` WHERE PartnerID = ?");
-   $delete_user->execute([$user_id]);
+   $delete_user = $connection->conn->prepare("DELETE FROM `languagelearners` WHERE LearnerID = ?");
+   $delete_user->bind_param("i", $user_id);
+   $delete_user->execute();
    // Redirect the user to a confirmation page or perform any other action
    header('Location: login.php');
    exit;
 }
-//does not delete  only redirect);
+
 
 if($redirect_message !== '') {
    // Set the success message in a session variable
@@ -228,14 +242,20 @@ if($redirect_message !== '') {
 </head>
 <body>
 <script>
-    function ConfirmDelete() {
-        var confirmed = confirm("Are you sure you want to delete?");
-        if (confirmed) {
-            // If confirmed, submit the form with deleteacc-confirm set to true
-            document.getElementById("profile-form").submit();
-        }
+   function ConfirmDelete() {
+    var confirmed = confirm("Are you sure you want to delete?");
+    if (confirmed==true) {
+        // Set the value of the hidden input field to indicate confirmation
+        document.getElementById("delete-confirm-input").value = "true";
+    } else {
+        // If canceled, reset the hidden input field value
+        document.getElementById("delete-confirm-input").value = "";
     }
+    // Submit the form regardless of confirmation status
+    document.getElementById("profile-form").submit();
+}
 </script>
+
 
 <script>
     // Check if the redirect message session variable is set
@@ -332,7 +352,7 @@ if($redirect_message !== '') {
       <input type="submit" id="cancel-btn"  value="cancel" name="cancel" class="option-btn">
       <input type="submit" id="update-btn" value="update" name="submit" class="btn">
       <input type="submit" id="delete-btn" onclick="ConfirmDelete()" value="delete account" name="deleteacc" class="delete-btn">
-      <input type="hidden" name="deleteacc-confirm" value="true">
+      <input type="hidden" id="delete-confirm-input" name="deleteacc-confirm" value="">
         
    </section>
 </div>
