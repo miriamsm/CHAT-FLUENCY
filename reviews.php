@@ -2,8 +2,13 @@
 // Database connection
 include 'connect.php';
 $connection = new Connect();
+if(isset($_COOKIE['user_id'])){
+   $user_id = $_COOKIE['user_id'];
+}else{
+   $user_id = '';
+   header('location:login.php');
+}
 
-$user_role = ''; 
 
 // Fetch reviews for a specific partner
 $partnerID = 1; // Assuming the partner ID is 1 for example
