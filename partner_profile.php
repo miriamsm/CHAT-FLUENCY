@@ -4,12 +4,26 @@ include 'connect.php';
 if(isset($_GET['partnerID'])){
     $partnerID = $_GET['partnerID'];
 
+    // Create an instance of the Connect class
+    $connection = new Connect();
+
     // Retrieve partner details from the database
-    $sql = "SELECT * FROM LanguagePartners WHERE PartnerID = :partnerID";
-    $stmt = $conn->prepare($sql);
-    $stmt->bindParam(':partnerID', $partnerID);
+    $sql = "SELECT * FROM LanguagePartners WHERE PartnerID = ?";
+    $stmt = $connection->conn->prepare($sql);
+    $stmt->bind_param('s', $partnerID);
     $stmt->execute();
-    $partner = $stmt->fetch(PDO::FETCH_ASSOC);
+    $result = $stmt->get_result();
+
+    if($result->num_rows > 0) {
+        $partner = $result->fetch_assoc();
+    } else {
+        echo "Partner not found.";
+    }
+
+    $stmt->close();
+    $connection->conn->close();
+} else {
+    echo "Partner ID not provided.";
 }
 ?>
 

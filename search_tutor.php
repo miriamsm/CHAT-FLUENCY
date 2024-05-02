@@ -1,5 +1,4 @@
 <?php
-
 include 'connect.php';
 
 if(isset($_COOKIE['user_id'])){
@@ -8,22 +7,27 @@ if(isset($_COOKIE['user_id'])){
    $user_id = '';
 }
 
+// Create an instance of the Connect class
+$connection = new Connect();
+
 // Check if the search_box is set
 if(isset($_POST['search_tutor']) && !empty($_POST['search_box'])) {
     // Sanitize the input to prevent SQL injection
     $search_term = $_POST['search_box'];
     // SQL query to search for tutors by first name or first and last name
-    $sql = "SELECT * FROM LanguagePartners WHERE FirstName LIKE :search OR CONCAT(FirstName, ' ', LastName) LIKE :search";
+    $sql = "SELECT * FROM LanguagePartners WHERE FirstName LIKE ? OR CONCAT(FirstName, ' ', LastName) LIKE ?";
     // Prepare the statement
-    $stmt = $conn->prepare($sql);
+    $stmt = $connection->conn->prepare($sql);
     // Bind parameters
-    $stmt->bindParam(':search', $search_term, PDO::PARAM_STR);
+    $stmt->bind_param('ss', $search_term, $search_term);
     // Execute the query
     $stmt->execute();
+    // Get the result
+    $result = $stmt->get_result();
 } else {
     // If search_box is empty or not set, retrieve all partners
     $sql = "SELECT * FROM LanguagePartners";
-    $stmt = $conn->query($sql);
+    $result = $connection->conn->query($sql);
 }
 
 ?>
@@ -81,37 +85,33 @@ if(isset($_POST['search_tutor']) && !empty($_POST['search_box'])) {
 
 </div>
 <section class="teachers">
+      <h1 class="heading">Search Partner Results</h1>
 
-   <h1 class="heading">expert tutors</h1>
-
-
-   <div class="box-container">
-
-      <?php
-         if ($stmt->rowCount() > 0) {
-            while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-                echo '<div class="box">';
-                echo '<div class="tutor">';
-                echo '<img src="images/' . $row["Photo"] . '" alt="">';
-                echo '<div>';
-                echo '<h3>' . $row["FirstName"] . ' ' . $row["LastName"] . '</h3>';
-                echo '<span>Native Speaker</span>';
-                echo '</div>';
-                echo '</div>';
-                echo '<p>Spoken Languages : <span>' . $row["Languages"] . '</span></p>';
-                echo '<p><img alt="star icon" src="https://static.cambly.com/_next/static/media/star.57929b94.svg" style="color: transparent;">  <span>' . $row["Rating"] . '</span></p>';
-                echo '<p><a href="partner_profile.php?partnerID=' . $row["PartnerID"] . '" class="inline-btn">View partner details</a></p>';
-                echo '<p><a href="mailto:' . $row["Email"] . '" class="inline-btn">Arrange meeting</a></p>';
-                echo '<p><a href="post_request_learner.php" class="inline-btn">Send request</a></p>';
-                echo '</div>';
+      <div class="box-container">
+         <?php
+            if ($result->num_rows > 0) {
+               while ($row = $result->fetch_assoc()) {
+                  echo '<div class="box">';
+                  echo '<div class="tutor">';
+                  echo '<img src="images/' . $row["Photo"] . '" alt="">';
+                  echo '<div>';
+                  echo '<h3>' . $row["FirstName"] . ' ' . $row["LastName"] . '</h3>';
+                  echo '<span>Native Speaker</span>';
+                  echo '</div>';
+                  echo '</div>';
+                  echo '<p>Spoken Languages : <span>' . $row["Languages"] . '</span></p>';
+                  echo '<p><img alt="star icon" src="https://static.cambly.com/_next/static/media/star.57929b94.svg" style="color: transparent;">  <span>' . $row["Rating"] . '</span></p>';
+                  echo '<p><a href="partner_profile.php?partnerID=' . $row["PartnerID"] . '" class="inline-btn">View partner details</a></p>';
+                  echo '<p><a href="mailto:' . $row["Email"] . '" class="inline-btn">Arrange meeting</a></p>';
+                  echo '<p><a href="post_request_learner.php" class="inline-btn">Send request</a></p>';
+                  echo '</div>';
+               }
+            } else {
+               echo '<p style="font-size: 20px;">No partners found</p>';
             }
-        } else {
-            echo '<p style="font-size: 20px;">No partners found</p>';
-        }
-    ?>
-   </div>
-
-</section>
+         ?>
+      </div>
+   </section>
 
 <!-- teachers section ends -->
 

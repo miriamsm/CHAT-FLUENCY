@@ -1,9 +1,13 @@
 <?php
+// Include the connect.php file
 include 'connect.php';
 
-// Retrieve partners data
+// Create an instance of the Connect class
+$connection = new Connect();
+
+// Retrieve partners data using the connection object
 $sql = "SELECT * FROM LanguagePartners";
-$result = $conn->query($sql);
+$result = $connection->conn->query($sql);
 ?>
 
 <!DOCTYPE html>
@@ -55,37 +59,37 @@ $result = $conn->query($sql);
 </div>
 
 <section class="teachers">
-    <h1 class="heading">Language Partner List</h1>
-    <form action="search_tutor.php" method="post" class="search-tutor">
-        <input type="text" name="search_box" maxlength="100" placeholder="Search partners..." required>
-        <button type="submit" class="fas fa-search" name="search_tutor"></button>
-    </form>
+        <h1 class="heading">Language Partner List</h1>
+        <form action="search_tutor.php" method="post" class="search-tutor">
+            <input type="text" name="search_box" maxlength="100" placeholder="Search partners..." required>
+            <button type="submit" class="fas fa-search" name="search_tutor"></button>
+        </form>
 
-    <div class="box-container">
-        <?php
-        if ($result->rowCount() > 0) {
-            while ($row = $result->fetch(PDO::FETCH_ASSOC)) {
-                echo '<div class="box">';
-                echo '<div class="tutor">';
-                echo '<img src="images/' . $row["Photo"] . '" alt="">';
-                echo '<div>';
-                echo '<h3>' . $row["FirstName"] . ' ' . $row["LastName"] . '</h3>';
-                echo '<span>Native Speaker</span>';
-                echo '</div>';
-                echo '</div>';
-                echo '<p>Spoken Languages : <span>' . $row["Languages"] . '</span></p>';
-                echo '<p><img alt="star icon" src="https://static.cambly.com/_next/static/media/star.57929b94.svg" style="color: transparent;">  <span>' . $row["Rating"] . '</span></p>';
-                echo '<p><a href="partner_profile.php?partnerID=' . $row["PartnerID"] . '" class="inline-btn">View partner details</a></p>';
-                echo '<p><a href="mailto:' . $row["Email"] . '" class="inline-btn">Arrange meeting</a></p>';
-                echo '<p><a href="post_request_learner.php" class="inline-btn">Send request</a></p>';
-                echo '</div>';
+        <div class="box-container">
+            <?php
+            if ($result->num_rows > 0) {
+                while ($row = $result->fetch_assoc()) {
+                    echo '<div class="box">';
+                    echo '<div class="tutor">';
+                    echo '<img src="images/' . $row["Photo"] . '" alt="">';
+                    echo '<div>';
+                    echo '<h3>' . $row["FirstName"] . ' ' . $row["LastName"] . '</h3>';
+                    echo '<span>Native Speaker</span>';
+                    echo '</div>';
+                    echo '</div>';
+                    echo '<p>Spoken Languages : <span>' . $row["Languages"] . '</span></p>';
+                    echo '<p><img alt="star icon" src="https://static.cambly.com/_next/static/media/star.57929b94.svg" style="color: transparent;">  <span>' . $row["Rating"] . '</span></p>';
+                    echo '<p><a href="partner_profile.php?partnerID=' . $row["PartnerID"] . '" class="inline-btn">View partner details</a></p>';
+                    echo '<p><a href="mailto:' . $row["Email"] . '" class="inline-btn">Arrange meeting</a></p>';
+                    echo '<p><a href="post_request_learner.php" class="inline-btn">Send request</a></p>';
+                    echo '</div>';
+                }
+            } else {
+                echo '<p style="font-size: 20px;">No partners found</p>';
             }
-        } else {
-         echo '<p style="font-size: 20px;">No partners found</p>';
-        }
-        ?>
-    </div>
-</section>
+            ?>
+        </div>
+    </section>
 
 <footer class="footer">
     &copy; copyright @ 2024 by <span>CHAT FLUENCY</span> | all rights reserved!
