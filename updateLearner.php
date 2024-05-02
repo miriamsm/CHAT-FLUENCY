@@ -1,15 +1,14 @@
 <?php
 
 include 'connect.php';
-/*
+
 if(isset($_COOKIE['user_id'])){
    $user_id = $_COOKIE['user_id'];
 }else{
    $user_id = '';
   header('location:login.php');
 }
-*/
-$user_id = 1;
+
 $select_user = $conn->prepare("SELECT * FROM `languagelearners` WHERE LearnerID = ? LIMIT 1");
 $select_user->execute([$user_id]);
 $fetch_user = $select_user->fetch(PDO::FETCH_ASSOC);
@@ -104,22 +103,42 @@ if (!empty($email) && $email != $fetch_user['Email']) {
    $new_pass = filter_var($new_pass, FILTER_SANITIZE_STRING);
    $cpass = $_POST['cpass']; // Assuming the password is sent in plaintext
    $cpass = filter_var($cpass, FILTER_SANITIZE_STRING);
-   
-   if($old_pass !== $prev_pass){
-       $message[] = 'Old password not matched!'; // Inform the user that the old password is incorrect
-   }elseif($new_pass !== $cpass){
-       $message[] = 'Confirm password not matched!'; // Inform the user that the new passwords do not match
-   }else{
-       if($new_pass !== ''){
-           $update_pass = $conn->prepare("UPDATE `languagelearners` SET Password = ? WHERE LearnerID = ?");
-           $update_pass->execute([$new_pass, $user_id]);
-           $redirect_message = 'Password updated successfully!';
-       }else{
-           $message[] = 'Please enter a new password!'; // Inform the user to enter a new password
-       }
-   }
+   if (!empty($old_pass)) {
+      if ($old_pass !== $prev_pass) {
+          $message[] = 'Old password not matched!'; // Inform the user that the old password is incorrect
+      } elseif (!empty($new_pass) && $new_pass !== $cpass) {
+          $message[] = 'Confirm password not matched!'; // Inform the user that the new passwords do not match
+      } else {
+          if (!empty($new_pass)) {
+              $update_pass = $conn->prepare("UPDATE languagepartners SET Password = ? WHERE PartnerID = ?");
+              $update_pass->execute([$new_pass, $user_id]);
+              $redirect_message = 'Password updated successfully!';
+          } else {
+              $message[] = 'Please enter a new password!'; // Inform the user to enter a new password
+          }
+      }
+  
+  }
 
 }
+$cancel_button_clicked = isset($_POST['cancel']); // Check if the cancel button was clicked
+
+if ($cancel_button_clicked) {
+    // If the cancel button was clicked, set a redirect message and redirect to the profile page
+    header('Location: profileLearner.php');
+    exit;
+}
+
+
+if (isset($_POST['deleteacc-confirm'])) {
+   // Perform the deletion action here
+   $delete_user = $conn->prepare("DELETE FROM `languagelearners` WHERE LearnerID = ?");
+   $delete_user->execute([$user_id]);
+   // Redirect the user to a confirmation page or perform any other action
+   header('Location: login.php');
+   exit;
+}
+
 
 if($redirect_message !== '') {
    // Set the success message in a session variable
@@ -168,6 +187,15 @@ if($redirect_message !== '') {
 
 
 <body>
+<script>
+    function ConfirmDelete() {
+        var confirmed = confirm("Are you sure you want to delete?");
+        if (confirmed) {
+            // If confirmed, submit the form with deleteacc-confirm set to true
+            document.getElementById("profile-form").submit();
+        }
+    }
+</script>
 
 <script>
     // Check if the redirect message session variable is set
@@ -203,16 +231,16 @@ if($redirect_message !== '') {
       </div>
    
       <div class="profile">
-         <img src="uploaded_files/<?= $fetch_user['Photo']; ?>" class="image" alt="">
+         <img src="images/pic-1.jpg" class="image" alt="">
          <h3 class="name"><?= $fetch_user['FirstName'] . ' ' . $fetch_user['LastName']; ?></h3>
          <p class="role">Learner</p>
       </div>
    
       <nav class="navbar">
          <a href="profileLearner.php"><i class="fas fa-home"></i><span>home</span></a>
-         <a href="SesssionsLearner.html"><i><img src="images/session.png" alt="sessions"></i><span>sessions</span></a>
-         <a href="partners.html"><i class="fas fa-chalkboard-user"></i><span>partners</span></a>
-         <a href="about_learner.html"><i class="fas fa-question"></i><span>about</span></a>
+         <a href="SesssionsLearner.php"><i><img src="images/session.png" alt="sessions"></i><span>sessions</span></a>
+         <a href="partners.php"><i class="fas fa-chalkboard-user"></i><span>partners</span></a>
+         <a href="about_learner.php"><i class="fas fa-question"></i><span>about</span></a>
       </nav>
       <nav>
          <div style="text-align: center; margin-top: 20px; margin-bottom: 150px;">
@@ -255,9 +283,10 @@ if($redirect_message !== '') {
 <span id="lastName-error" class="error-message"></span>
 <span id="city-error" class="error-message"></span>
 <span id="location-error" class="error-message"></span> -->
-      <input  type="submit" id="cancel-btn" value="cancel" name="submit" class="option-btn">
+      <input  type="submit" id="cancel-btn" value="cancel" name="cancel" class="option-btn">
       <input type="submit" id="update-btn" value="update" name="submit" class="btn">
-      <input type="submit" id= "delete-btn" value="delete account" name="submit" class="delete-btn">
+      <input type="submit" id="delete-btn" onclick="ConfirmDelete()" value="delete account" name="deleteacc" class="delete-btn">
+      <input type="hidden" name="deleteacc-confirm" value="true">
    </form>
 </section>
 
@@ -265,7 +294,7 @@ if($redirect_message !== '') {
 <footer class="footer">
 
    &copy; copyright @ 2024 by <span>CHAT FLUENCY</span> | all rights reserved!
-   <a href="contact_learner.html"><i class="fas fa-headset"></i><span> contact us</span></a>
+   <a href="contact_learner.php"><i class="fas fa-headset"></i><span> contact us</span></a>
 
 </footer>
 

@@ -1,15 +1,14 @@
 <?php
 
 include 'connect.php';
-/*
+
 if(isset($_COOKIE['user_id'])){
    $user_id = $_COOKIE['user_id'];
 }else{
    $user_id = '';
    header('location:login.php');
 }
-*/
-$user_id = 1;
+
 $select_user = $conn->prepare("SELECT * FROM `languagepartners` WHERE PartnerID = ? LIMIT 1"); 
 $select_user->execute([$user_id]);
 $fetch_user = $select_user->fetch(PDO::FETCH_ASSOC);
