@@ -1,22 +1,50 @@
 <?php
+
 include 'connect.php';
 
-// Retrieve partners data
-$sql = "SELECT * FROM LanguagePartners";
-$result = $conn->query($sql);
+if(isset($_COOKIE['user_id'])){
+   $user_id = $_COOKIE['user_id'];
+}else{
+   $user_id = '';
+}
+
+// Check if the search_box is set
+if(isset($_POST['search_tutor']) && !empty($_POST['search_box'])) {
+    // Sanitize the input to prevent SQL injection
+    $search_term = $_POST['search_box'];
+    // SQL query to search for tutors by first name or first and last name
+    $sql = "SELECT * FROM LanguagePartners WHERE FirstName LIKE :search OR CONCAT(FirstName, ' ', LastName) LIKE :search";
+    // Prepare the statement
+    $stmt = $conn->prepare($sql);
+    // Bind parameters
+    $stmt->bindParam(':search', $search_term, PDO::PARAM_STR);
+    // Execute the query
+    $stmt->execute();
+} else {
+    // If search_box is empty or not set, retrieve all partners
+    $sql = "SELECT * FROM LanguagePartners";
+    $stmt = $conn->query($sql);
+}
+
 ?>
 
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Partners</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.2/css/all.min.css">
-    <link rel="stylesheet" href="style.css">
+   <meta charset="UTF-8">
+   <meta http-equiv="X-UA-Compatible" content="IE=edge">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <title>Tutors</title>
+
+   <!-- font awesome cdn link  -->
+   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css">
+
+   <!-- custom css file link  -->
+   <link rel="stylesheet" href="style.css">
+
 </head>
 <body>
+
 <header class="header">
     <div class="flex">
         <a href="profileLearner.html" class="logo"> <img src="images/logo.jpg" width="210" height="60" alt="logo"></a>
@@ -52,18 +80,16 @@ $result = $conn->query($sql);
    </nav>
 
 </div>
-
 <section class="teachers">
-    <h1 class="heading">Language Partner List</h1>
-    <form action="search_tutor.php" method="post" class="search-tutor">
-        <input type="text" name="search_box" maxlength="100" placeholder="Search partners..." required>
-        <button type="submit" class="fas fa-search" name="search_tutor"></button>
-    </form>
 
-    <div class="box-container">
-        <?php
-        if ($result->rowCount() > 0) {
-            while ($row = $result->fetch(PDO::FETCH_ASSOC)) {
+   <h1 class="heading">expert tutors</h1>
+
+
+   <div class="box-container">
+
+      <?php
+         if ($stmt->rowCount() > 0) {
+            while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
                 echo '<div class="box">';
                 echo '<div class="tutor">';
                 echo '<img src="images/' . $row["Photo"] . '" alt="">';
@@ -80,17 +106,22 @@ $result = $conn->query($sql);
                 echo '</div>';
             }
         } else {
-         echo '<p style="font-size: 20px;">No partners found</p>';
+            echo '<p style="font-size: 20px;">No partners found</p>';
         }
-        ?>
-    </div>
+    ?>
+   </div>
+
 </section>
+
+<!-- teachers section ends -->
 
 <footer class="footer">
     &copy; copyright @ 2024 by <span>CHAT FLUENCY</span> | all rights reserved!
     <a href="contact_learner.html"><i class="fas fa-headset"></i><span> contact us</span></a>
 </footer>
 
+<!-- custom js file link  -->
 <script src="script.js"></script>
+   
 </body>
 </html>
