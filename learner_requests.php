@@ -7,12 +7,14 @@ if(isset($_COOKIE['user_id'])){
    $user_id = '';
 }
 
-global $conn;
+// Create an instance of the Connect class
+$connection = new Connect();
+
 // Fetch learner requests from the database along with learner names
 $sql = "SELECT lr.*, ll.FirstName AS LearnerFirstName, ll.LastName AS LearnerLastName 
         FROM LearningRequests lr
         INNER JOIN LanguageLearners ll ON lr.LearnerID = ll.LearnerID";
-$stmt = $conn->query($sql); // Use PDO query method
+$stmt = $connection->conn->query($sql); // Use the connection object's query method
 
 function getStatusColor($status) {
    switch ($status) {
@@ -106,14 +108,13 @@ function getStatusColor($status) {
 </div>
 
 <section class="courses">
-
    <h1 class="heading">Student Requests</h1>
 
    <div class="box-container">
       <?php
       // Display learner requests
-      if ($stmt && $stmt->rowCount() > 0) {
-         while($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+      if ($stmt && $stmt->num_rows > 0) {
+         while($row = $stmt->fetch_assoc()) {
             echo '<div class="box">';
             echo '<div class="tutor">';
             echo '<img src="images/pic-9.jpg" alt="">'; // Assuming static image for now
@@ -137,7 +138,6 @@ function getStatusColor($status) {
       }
       ?>
    </div>
-
 </section>
 <script src="script.js"></script>
 <footer style="margin-top : 80px;" class="footer">

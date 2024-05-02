@@ -7,9 +7,10 @@ if(isset($_COOKIE['user_id'])){
    $user_id = '';
 }
 
-global $conn;
+// Create an instance of the Connect class
+$connection = new Connect();
 
-// Check if a request ID is provided in the URL
+// Fetch request details based on the request ID
 if(isset($_GET['request_id'])) {
     $request_id = $_GET['request_id'];
 
@@ -23,14 +24,13 @@ if(isset($_GET['request_id'])) {
         } elseif($action == "reject") {
             $status = "Rejected";
         } else {
-         $status = "Pending";
+            $status = "Pending";
         }
 
         // Update the status in the database
-        $update_sql = "UPDATE LearningRequests SET Status = :status WHERE RequestID = :request_id";
-        $stmt = $conn->prepare($update_sql);
-        $stmt->bindParam(':status', $status);
-        $stmt->bindParam(':request_id', $request_id);
+        $update_sql = "UPDATE LearningRequests SET Status = ? WHERE RequestID = ?";
+        $stmt = $connection->conn->prepare($update_sql);
+        $stmt->bind_param('si', $status, $request_id);
         $stmt->execute();
         
         // Redirect back to learner requests page
@@ -38,17 +38,19 @@ if(isset($_GET['request_id'])) {
         exit();
     }
 
-    // Fetch request details based on the request ID
+    // Fetch request details from the database
     $sql = "SELECT lr.*, ll.FirstName AS LearnerFirstName, ll.LastName AS LearnerLastName, ll.Photo
-        FROM LearningRequests lr
-        INNER JOIN LanguageLearners ll ON lr.LearnerID = ll.LearnerID
-        WHERE lr.RequestID = :request_id";
-    $stmt = $conn->prepare($sql);
-    $stmt->bindParam(':request_id', $request_id);
+            FROM LearningRequests lr
+            INNER JOIN LanguageLearners ll ON lr.LearnerID = ll.LearnerID
+            WHERE lr.RequestID = ?";
+    $stmt = $connection->conn->prepare($sql);
+    $stmt->bind_param('i', $request_id);
     $stmt->execute();
 
-    if ($stmt && $stmt->rowCount() > 0) {
-        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+    $result = $stmt->get_result();
+    
+    if ($result && $result->num_rows > 0) {
+        $row = $result->fetch_assoc();
         // Display the request details
         $learner_name = $row["LearnerFirstName"] . ' ' . $row["LearnerLastName"];
         $request_date = $row["RequestDate"];
