@@ -36,7 +36,7 @@ function generateSidebar($user_role, $conn) {
         </nav>
         <nav>
            <div style="text-align: center; margin-top: 20px; margin-bottom: 150px;">
-           <a href="home.html"  class="inline-btn" >Sign out</a>
+           <a href="admin_logout.php"  class="inline-btn" >Sign out</a>
         </div>
         </nav>
      
@@ -71,7 +71,7 @@ function generateSidebar($user_role, $conn) {
         </nav>
         <nav>
            <div style="text-align: center; margin-top: 20px; margin-bottom: 150px;">
-              <a href="home.html"  class="inline-btn" >Sign out</a>
+              <a href="user_logout.php"  class="inline-btn" >Sign out</a>
         </div>
         </nav>
      
