@@ -87,6 +87,4 @@ if(isset($_GET['partnerID'])){
 </body>
 </html>
 
-<?php
-$conn->close();
-?>
+
