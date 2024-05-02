@@ -23,15 +23,15 @@ function generateSidebar($user_role, $conn) {
         </div>
      
         <div class="profile">
-           <img src="images/pic-1.jpg" class="image" alt="profile picture">
+           <img src="' . $learner_row['Photo'] . '" class="image" alt="profile picture">
            <h3 class="name">' . $learner_row['FirstName'] . ' ' . $learner_row['LastName'] . '</h3>
            <p class="role">Learner</p>
         </div>
      
         <nav class="navbar">
-           <a href="profileLearner.html"><i class="fas fa-home"></i><span>home</span></a>
-           <a href="SesssionsLearner.html"><i><img src="images/session.png" alt="sessions"></i><span>sessions</span></a>
-           <a href="partners.html"><i class="fas fa-chalkboard-user"></i><span>partners</span></a>
+           <a href="profileLearner.php"><i class="fas fa-home"></i><span>home</span></a>
+           <a href="Sesssions.php"><i><img src="images/session.png" alt="sessions"></i><span>sessions</span></a>
+           <a href="partners.php"><i class="fas fa-chalkboard-user"></i><span>partners</span></a>
            <a href="about_learner.html"><i class="fas fa-question"></i><span>about</span></a>
         </nav>
         <nav>
@@ -59,14 +59,14 @@ function generateSidebar($user_role, $conn) {
         </div>
      
         <div class="profile">
-           <img src="images/pic-1.jpg" class="image" alt="">
+           <img src="' . $partner_row['Photo'] . '" class="image" alt="">
            <h3 class="name">' . $partner_row['FirstName'] . ' ' . $partner_row['LastName'] . '</h3>
            <p class="role">Partner</p>
         </div>
      
         <nav class="navbar">
-           <a href="profilePartner.html"><i class="fas fa-home"></i><span>home</span></a>
-           <a href="SessionsPartner.html"><i><img src="images/session.png" alt="sessions"></i><span>sessions</span></a>
+           <a href="profilePartner.php"><i class="fas fa-home"></i><span>home</span></a>
+           <a href="Sessions.php"><i><img src="images/session.png" alt="sessions"></i><span>sessions</span></a>
            <a href="about_partner.html"><i class="fas fa-question"></i><span>about</span></a>
         </nav>
         <nav>
