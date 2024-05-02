@@ -187,7 +187,7 @@ if ($cancel_button_clicked) {
 
 if ( isset($_POST['deleteacc-confirm']) && $_POST['deleteacc-confirm'] === "true") {
    // Perform the deletion action here
-   $delete_user = $connection->conn->prepare("DELETE FROM `languagelearners` WHERE LearnerID = ?");
+   $delete_user = $connection->conn->prepare("DELETE FROM `languagepartners` WHERE PartnerID = ?");
    $delete_user->bind_param("i", $user_id);
    $delete_user->execute();
    // Redirect the user to a confirmation page or perform any other action
