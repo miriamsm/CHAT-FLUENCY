@@ -39,10 +39,10 @@ if(isset($_GET['request_id'])) {
     }
 
     // Fetch request details based on the request ID
-    $sql = "SELECT lr.*, ll.FirstName AS LearnerFirstName, ll.LastName AS LearnerLastName 
-            FROM LearningRequests lr
-            INNER JOIN LanguageLearners ll ON lr.LearnerID = ll.LearnerID
-            WHERE lr.RequestID = :request_id";
+    $sql = "SELECT lr.*, ll.FirstName AS LearnerFirstName, ll.LastName AS LearnerLastName, ll.Photo
+        FROM LearningRequests lr
+        INNER JOIN LanguageLearners ll ON lr.LearnerID = ll.LearnerID
+        WHERE lr.RequestID = :request_id";
     $stmt = $conn->prepare($sql);
     $stmt->bindParam(':request_id', $request_id);
     $stmt->execute();
@@ -58,6 +58,7 @@ if(isset($_GET['request_id'])) {
         $Language = $row["LanguageToLearn"];
         $Duration = $row["SessionDuration"];
         $Schedule= $row["PreferredSchedule"];
+        $Photo = $row["Photo"] ;
     } else {
         // No request found with the provided ID
         // Redirect back to learner requests page
@@ -157,6 +158,8 @@ if(isset($_GET['request_id'])) {
 
    <div class="info">
       <div class="user">
+
+      <img src="images/<?php echo $Photo; ?>" alt="Learner Photo">
          <!-- Display learner information -->
          <h3><?php echo $learner_name; ?></h3>
          <p>Learner</p>
@@ -165,31 +168,31 @@ if(isset($_GET['request_id'])) {
       <div class="box-container">
       <div class="box">
         <!-- Display learner Session duration -->
-        <span style="font-size: 1.5em;">Session Duration:</span>
+        <span style="font-size: 1.5em;"><Strong>Session Duration:</Strong></span>
         <p style="font-size: 1.5em;"><?php echo $Duration; ?></p>
     </div>
 
     <div class="box">
         <!-- Display learner proficiency -->
-        <span style="font-size: 1.5em;">Proficiency:</span>
+        <span style="font-size: 1.5em;"><Strong>Proficiency:</Strong></span>
         <p style="font-size: 1.5em;"><?php echo $proficiency; ?></p>
     </div>
 
     <div class="box">
         <!-- Display learner language -->
-        <span style="font-size: 1.5em;">Language to learn:</span>
+        <span style="font-size: 1.5em;"><Strong>Language to learn:</Strong></span>
         <p style="font-size: 1.5em;"><?php echo $Language; ?></p>
     </div>
 
     <div class="box">
         <!-- Display learner Preferred schedule -->
-        <span style="font-size: 1.5em;">Preferred Schedule:</span>
+        <span style="font-size: 1.5em;"><Strong>Preferred Schedule:</Strong></span>
         <p style="font-size: 1.5em;"><?php echo $Schedule; ?></p>
     </div>
 
     <div class="box">
         <!-- Display learner goals -->
-        <span style="font-size: 1.5em;">My goals:</span>
+        <span style="font-size: 1.5em;"><Strong>My goals:</Strong></span>
         <p style="font-size: 1.5em;"><?php echo $goals; ?></p>
     </div>
     
@@ -203,7 +206,7 @@ if(isset($_GET['request_id'])) {
       </div>
    </div>
 </section>
-
+<script src="script.js"></script>
 <footer class="footer">
    &copy; copyright @ 2024 by <span>CHAT FLUENCY</span> | all rights reserved!
    <a href="contact_partner.html"><i class="fas fa-headset"></i><span> contact us</span></a>
