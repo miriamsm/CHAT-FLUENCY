@@ -237,10 +237,10 @@ if($redirect_message !== '') {
       </div>
    
       <nav class="navbar">
-         <a href="profileLearner.html"><i class="fas fa-home"></i><span>home</span></a>
-         <a href="SesssionsLearner.html"><i><img src="images/session.png" alt="sessions"></i><span>sessions</span></a>
-         <a href="partners.html"><i class="fas fa-chalkboard-user"></i><span>partners</span></a>
-         <a href="about_learner.html"><i class="fas fa-question"></i><span>about</span></a>
+         <a href="profileLearner.php"><i class="fas fa-home"></i><span>home</span></a>
+         <a href="SesssionsLearner.php"><i><img src="images/session.png" alt="sessions"></i><span>sessions</span></a>
+         <a href="partners.php"><i class="fas fa-chalkboard-user"></i><span>partners</span></a>
+         <a href="about_learner.php"><i class="fas fa-question"></i><span>about</span></a>
       </nav>
       <nav>
          <div style="text-align: center; margin-top: 20px; margin-bottom: 150px;">
@@ -294,7 +294,7 @@ if($redirect_message !== '') {
 <footer class="footer">
 
    &copy; copyright @ 2024 by <span>CHAT FLUENCY</span> | all rights reserved!
-   <a href="contact_learner.html"><i class="fas fa-headset"></i><span> contact us</span></a>
+   <a href="contact_learner.php"><i class="fas fa-headset"></i><span> contact us</span></a>
 
 </footer>
 
