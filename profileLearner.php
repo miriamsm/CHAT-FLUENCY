@@ -64,8 +64,22 @@ $total_partners = $select_partners->get_result()->num_rows;
    
       <div class="flex">
    
-         <a href="profileLearner.html" class="logo"> <img src = "images/logo.jpg" width="210" height="60" alt="logo"></a> 
-   
+         <a href="profileLearner.html" class="logo"> <img src = "images/logo.jpg" width="210" height="60" alt="logo"></a>
+          
+         <?php
+session_start(); // Start the session
+
+// Check if the session variable is set and not empty
+if (isset($_SESSION['redirect_message']) && !empty($_SESSION['redirect_message'])) {
+    $redirect_message = $_SESSION['redirect_message'];
+
+    // Echo or display the message where needed in your HTML
+    echo '<script>alert("' . $redirect_message . '");</script>';
+
+    // Clear the session variable
+    unset($_SESSION['redirect_message']);
+}
+?>
          <div class="icons">
             <div id="menu-btn" class="fas fa-bars"></div>
             <div id="toggle-btn" class="fas fa-sun"></div>
