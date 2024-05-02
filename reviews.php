@@ -2,6 +2,7 @@
 // Database connection
 include 'connect.php';
 include 'sidebar.php';
+$connection = new Connect();
 
 $user_role = ''; 
 
@@ -12,8 +13,11 @@ $sql = "SELECT ReviewsRatings.ReviewID, ReviewsRatings.Rating, ReviewsRatings.Re
         INNER JOIN LearningSessions ON ReviewsRatings.SessionID = LearningSessions.SessionID
         INNER JOIN LanguageLearners ON LearningSessions.LearnerID = LanguageLearners.LearnerID
         WHERE LearningSessions.PartnerID = $partnerID";
-$result = $conn->query($sql);
-generateSidebar($user_role, $conn); 
+$result = $connection->conn->query($sql);
+if (!$result) {
+   die("Query failed: " . $conn->error); // Output error message if query fails
+}
+// generateSidebar($user_role, $conn); 
 
 ?>
 
@@ -52,9 +56,9 @@ generateSidebar($user_role, $conn);
       <h1 class="heading">Reviews</h1>
       <div class="box-container">
          <?php
-         if ($result->rowCount() > 0) {
+         if ($result->num_rows > 0) {
             // Output data of each row
-            while ($row = $result->fetch(PDO::FETCH_ASSOC)) {
+            while ($row = $result->fetch_assoc()) {
                echo '<div class="box">';
                echo '<p>' . $row['ReviewText'] . '</p>';
                echo '<div class="student">';

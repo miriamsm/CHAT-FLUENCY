@@ -74,7 +74,7 @@ function generateSidebar($user_role, $conn) {
      </div>';
     } else {
         // Default sidebar content if user role is not defined
-        echo "Page not found."; // You can customize this based on your requirements
+        echo ''; // You can customize this based on your requirements
     }
 }
 ?>
