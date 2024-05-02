@@ -85,7 +85,7 @@ if(isset($_POST['search_tutor']) && !empty($_POST['search_box'])) {
 
 </div>
 <section class="teachers">
-      <h1 class="heading">Expert Tutors</h1>
+      <h1 class="heading">Search Partner Results</h1>
 
       <div class="box-container">
          <?php
