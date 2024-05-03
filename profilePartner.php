@@ -10,7 +10,7 @@ if(isset($_COOKIE['user_id'])){
    header('location:login.php');
 }
 */
-$user_id = 12;
+$user_id = 123456789;
 
 
 
@@ -72,7 +72,7 @@ $total_partners = $select_partners->rowCount();
    
       <div class="flex">
    
-         <a href="profilePartner.html" class="logo"><img src = "images/logo.jpg" width="210" height="60" alt="logo"></a>
+         <a href="profilePartner.php" class="logo"><img src = "images/logo.jpg" width="210" height="60" alt="logo"></a>
    
          <?php
 session_start(); // Start the session
@@ -108,7 +108,7 @@ if (isset($_SESSION['redirect_message']) && !empty($_SESSION['redirect_message']
       </div>
    
       <div class="profile">
-         <img src="images/<?$fetch_user['Photo'];?>" class="image" alt="" >
+      <img src="images/<?= $fetch_user['Photo']; ?>" class="image" alt="">
          <h3 class="name"><?= $fetch_user['FirstName'] . ' ' . $fetch_user['LastName']; ?></h3>
          <p class="role">Partner</p>
       </div>

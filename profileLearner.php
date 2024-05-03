@@ -11,7 +11,7 @@ if(isset($_COOKIE['user_id'])){
 }
 */
 
-$user_id = 123456792;
+$user_id = 123456793;
 
 $select_user = $connection->conn->prepare("SELECT * FROM languagelearners WHERE LearnerID = ? LIMIT 1"); 
 $select_user->bind_param("i", $user_id);
@@ -64,8 +64,9 @@ $total_partners = $select_partners->get_result()->num_rows;
    
       <div class="flex">
    
-         <a href="profileLearner.html" class="logo"> <img src = "images/logo.jpg" width="210" height="60" alt="logo"></a>
+         <a href="profileLearner.php" class="logo"> <img src = "images/logo.jpg" width="210" height="60" alt="logo"></a>
           
+   
          <?php
 session_start(); // Start the session
 
@@ -80,6 +81,7 @@ if (isset($_SESSION['redirect_message']) && !empty($_SESSION['redirect_message']
     unset($_SESSION['redirect_message']);
 }
 ?>
+
          <div class="icons">
             <div id="menu-btn" class="fas fa-bars"></div>
             <div id="toggle-btn" class="fas fa-sun"></div>

@@ -10,8 +10,8 @@ if(isset($_COOKIE['user_id'])){
   header('location:login.php');
 }
 */
-$user_id=123456792;
-
+$user_id= 123456793;
+session_start();
 $select_user = $connection->conn->prepare("SELECT * FROM languagelearners WHERE LearnerID = ? LIMIT 1"); 
 $select_user->bind_param("i", $user_id);
 $select_user->execute();
@@ -85,10 +85,9 @@ if (!empty($email) && $email != $fetch_user['Email']) {
         $redirect_message  = 'Email updated successfully!';
     }
 }
-$allowed_extensions = array('jpg', 'jpeg', 'png', 'gif');
+
 $Photo = $_FILES['Photo']['name']; // Fetch the name of the uploaded image file
 $Photo = filter_var($Photo, FILTER_SANITIZE_STRING);
-$ext = strtolower(pathinfo($Photo, PATHINFO_EXTENSION)); // Get the file extension and convert it to lowercase
 $Photo_tmp_name = $_FILES['Photo']['tmp_name'];
 $Photo_folder = 'images/' . $Photo; // Path to the images directory
 
@@ -96,19 +95,17 @@ $Photo_folder = 'images/' . $Photo; // Path to the images directory
 if (isset($_POST['remove_photo']) && $_POST['remove_photo'] == 'on') {
     // Remove photo from the database
     $default_photo = "profile.png";
-
-// Prepare the SQL statement
-$update_Photo = $connection->conn->prepare("UPDATE `languagelearners` SET `Photo` = ? WHERE LearnerID = ?");
-
-// Bind parameters and execute the statement
-$update_Photo->bind_param("si", $default_photo, $user_id);
-$update_Photo->execute();
+    // Prepare the SQL statement
+    $update_Photo = $connection->conn->prepare("UPDATE `languagelearners` SET `Photo` = ? WHERE LearnerID = ?");
+    // Bind parameters and execute the statement
+    $update_Photo->bind_param("si", $default_photo, $user_id);
+    $update_Photo->execute();
     // Remove photo file from the server
-    
     $redirect_message = 'Photo removed successfully!';
-} else {
+    } 
+    else {
     // Upload and update photo if not removing
-    if (!empty($Photo) && $Photo != $fetch_user['Photo'] && in_array($ext, $allowed_extensions)) {
+    if (!empty($Photo) && $Photo != $fetch_user['Photo']) {
         $update_Photo = $connection->conn->prepare("UPDATE `languagelearners` SET `Photo` = ? WHERE LearnerID= ?");
         $update_Photo->execute([$Photo, $user_id]);
         move_uploaded_file($Photo_tmp_name, $Photo_folder);
@@ -118,10 +115,10 @@ $update_Photo->execute();
         }
 
         $redirect_message = 'Photo updated successfully!';
-    } else {
-        $message[] = 'Invalid file format. Please upload a JPEG, JPG, PNG, or GIF image.';
     }
 }
+
+   
 
 
    $old_pass = $_POST['old_pass']; // Assuming the password is sent in plaintext
@@ -145,10 +142,11 @@ $update_Photo->execute();
               $message[] = 'Please enter a new password!'; // Inform the user to enter a new password
           }
       }
-  
   }
 
 }
+
+
 $cancel_button_clicked = isset($_POST['cancel']); // Check if the cancel button was clicked
 
 if ($cancel_button_clicked) {
@@ -168,12 +166,15 @@ if ( isset($_POST['deleteacc-confirm']) && $_POST['deleteacc-confirm'] === "true
    exit;
 }
 
+
 if($redirect_message !== '') {
    // Set the success message in a session variable
+   
    $_SESSION['redirect_message'] = $redirect_message;
    // Redirect to profileLearner.php
-   header('Location: profileLearner.php');
+  header('Location: profileLearner.php');
    exit;
+
    }
 ?>
 
