@@ -108,7 +108,7 @@ if (isset($_SESSION['redirect_message']) && !empty($_SESSION['redirect_message']
       </div>
    
       <div class="profile">
-         <img src="uploaded_files/<?$fetch_user['Photo'];?>" class="image" alt="" >
+         <img src="images/<?$fetch_user['Photo'];?>" class="image" alt="" >
          <h3 class="name"><?= $fetch_user['FirstName'] . ' ' . $fetch_user['LastName']; ?></h3>
          <p class="role">Partner</p>
       </div>
@@ -134,7 +134,7 @@ if (isset($_SESSION['redirect_message']) && !empty($_SESSION['redirect_message']
    <div class="info">
 
       <div class="user">
-         <img src="uploaded_files/<?= $fetch_user['Photo']; ?>" alt="">
+         <img src="images/<?= $fetch_user['Photo']; ?>" alt="">
          <h3><?= $fetch_user['FirstName'] . ' ' . $fetch_user['LastName']; ?></h3>
          <p>Partner</p>
          <p><? $fetch_user['Bio']; ?></p>

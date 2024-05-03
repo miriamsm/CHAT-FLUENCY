@@ -11,7 +11,7 @@ if(isset($_COOKIE['user_id'])){
 }
 */
 
-$user_id = 123456791;
+$user_id = 123456792;
 
 $select_user = $connection->conn->prepare("SELECT * FROM languagelearners WHERE LearnerID = ? LIMIT 1"); 
 $select_user->bind_param("i", $user_id);
@@ -97,7 +97,7 @@ if (isset($_SESSION['redirect_message']) && !empty($_SESSION['redirect_message']
       </div>
    
       <div class="profile">
-      <img src="uploaded_files/<?= $fetch_user['Photo']; ?>" class="image" alt="">
+      <img src="images/<?= $fetch_user['Photo']; ?>" class="image" alt="">
          <h3 class="name"><?= $fetch_user['FirstName'] . ' ' . $fetch_user['LastName']; ?></h3>
          <p class="role">Learner</p>
       </div>
@@ -125,7 +125,7 @@ if (isset($_SESSION['redirect_message']) && !empty($_SESSION['redirect_message']
    <div class="info">
 
       <div class="user">
-         <img src="uploaded_files/<?= $fetch_user['Photo']; ?>" alt="">
+         <img src="images/<?= $fetch_user['Photo']; ?>" alt="">
          <h3><?= $fetch_user['FirstName']. ' ' . $fetch_user['LastName'];  ?></h3>
          <p>Learner</p>
          <p><?= $fetch_user['City'] . ', ' . $fetch_user['Location']; ?></p>

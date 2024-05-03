@@ -10,7 +10,7 @@ if(isset($_COOKIE['user_id'])){
   header('location:login.php');
 }
 */
-$user_id=123456791;
+$user_id=123456792;
 
 $select_user = $connection->conn->prepare("SELECT * FROM languagelearners WHERE LearnerID = ? LIMIT 1"); 
 $select_user->bind_param("i", $user_id);
@@ -86,28 +86,27 @@ if (!empty($email) && $email != $fetch_user['Email']) {
     }
 }
 
+$allowed_extensions = array('jpg', 'jpeg', 'png', 'gif');
 $Photo = $_FILES['Photo']['name']; // Fetch the name of the uploaded image file
 $Photo = filter_var($Photo, FILTER_SANITIZE_STRING);
-$ext = pathinfo($Photo, PATHINFO_EXTENSION);
-$rename = uniqid() . '.' . $ext; // Generate a unique identifier and append the file extension
-$Photo_size = $_FILES['Photo']['size'];
+$ext = strtolower(pathinfo($Photo, PATHINFO_EXTENSION)); // Get the file extension and convert it to lowercase
 $Photo_tmp_name = $_FILES['Photo']['tmp_name'];
-$Photo_folder = 'uploaded_files/' . $rename;
+$Photo_folder = 'images/' . $Photo; // Path to the images directory
 
+if (!empty($Photo) && $Photo != $fetch_user['Photo'] && in_array($ext, $allowed_extensions)) {
+    $update_Photo = $connection->conn->prepare("UPDATE `languagelearners` SET `Photo` = ? WHERE LearnerID= ?");
+    $update_Photo->execute([$Photo, $user_id]);
+    move_uploaded_file($Photo_tmp_name, $Photo_folder);
+    
+    if ($prev_Photo != '' && $prev_Photo != $Photo) {
+        unlink('images/' . $prev_Photo);
+    }
+    
+    $redirect_message = 'Photo updated successfully!';
+} else {
+    $message[] = 'Invalid file format. Please upload a JPEG, JPG, PNG, or GIF image.';
+}
 
-   if(!empty($Photo  && $Photo != $fetch_user['Photo'])){
-      if($Photo_size > 2000000){
-         $message[] = 'photo size too large!';
-      }else{
-         $update_Photo = $connection->conn->prepare("UPDATE `languagelearners` SET `Photo` = ? WHERE LearnerID= ?");
-         $update_Photo->execute([$rename, $user_id]);
-         move_uploaded_file($Photo_tmp_name, $Photo_folder);
-         if($prev_Photo != '' AND $prev_Photo != $rename){
-            unlink('uploaded_files/'.$prev_Photo);
-         }
-         $redirect_message  = 'Photo updated successfully!';
-      }
-   }
    $old_pass = $_POST['old_pass']; // Assuming the password is sent in plaintext
    $old_pass = filter_var($old_pass, FILTER_SANITIZE_STRING);
    $new_pass = $_POST['new_pass']; // Assuming the password is sent in plaintext
@@ -249,7 +248,7 @@ if($redirect_message !== '') {
       </div>
    
       <div class="profile">
-         <img src="images/pic-1.jpg" class="image" alt="">
+      <img src="images/<?= $fetch_user['Photo']; ?>" class="image" alt="">
          <h3 class="name"><?= $fetch_user['FirstName'] . ' ' . $fetch_user['LastName']; ?></h3>
          <p class="role">Learner</p>
       </div>
