@@ -146,9 +146,6 @@ $update_Photo = $connection->conn->prepare("UPDATE `languagelearners` SET `Photo
 // Bind parameters and execute the statement
 $update_Photo->bind_param("si", $default_photo, $user_id);
 $update_Photo->execute();
-    // Remove photo file from the server
-    if ($fetch_user['Photo']) {
-        unlink('images/' . $fetch_user['Photo']);
     }
     $redirect_message = 'Photo removed successfully!';
 } else {
