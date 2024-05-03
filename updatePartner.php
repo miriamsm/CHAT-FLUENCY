@@ -2,15 +2,14 @@
 
 include 'connect.php';
 $connection = new connect();
-/*
+
 if(isset($_COOKIE['user_id'])){
    $user_id = $_COOKIE['user_id'];
 }else{
    $user_id = '';
   header('location:login.php');
 }
-*/
-$user_id= 123456789;
+
 session_start();
 
 $select_user = $connection->conn->prepare("SELECT * FROM languagepartners WHERE PartnerID = ? LIMIT 1"); 
