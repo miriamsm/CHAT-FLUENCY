@@ -128,7 +128,6 @@ if ($new_gender === 'Male' || $new_gender === 'Female') {
     // Render a message if the provided gender is invalid
     $message[] = 'Invalid gender provided!';
 }
-
 $allowed_extensions = array('jpg', 'jpeg', 'png', 'gif');
 $Photo = $_FILES['Photo']['name']; // Fetch the name of the uploaded image file
 $Photo = filter_var($Photo, FILTER_SANITIZE_STRING);
@@ -136,19 +135,39 @@ $ext = strtolower(pathinfo($Photo, PATHINFO_EXTENSION)); // Get the file extensi
 $Photo_tmp_name = $_FILES['Photo']['tmp_name'];
 $Photo_folder = 'images/' . $Photo; // Path to the images directory
 
-if (!empty($Photo) && $Photo != $fetch_user['Photo'] && in_array($ext, $allowed_extensions)) {
-    $update_Photo = $connection->conn->prepare("UPDATE `languagelearners` SET `Photo` = ? WHERE LearnerID= ?");
-    $update_Photo->execute([$Photo, $user_id]);
-    move_uploaded_file($Photo_tmp_name, $Photo_folder);
-    
-    if ($prev_Photo != '' && $prev_Photo != $Photo) {
-        unlink('images/' . $prev_Photo);
+// Check if the "Remove Photo" checkbox is checked
+if (isset($_POST['remove_photo']) && $_POST['remove_photo'] == 'on') {
+    // Remove photo from the database
+    $default_photo = "profile.png";
+
+// Prepare the SQL statement
+$update_Photo = $connection->conn->prepare("UPDATE `languagelearners` SET `Photo` = ? WHERE LearnerID = ?");
+
+// Bind parameters and execute the statement
+$update_Photo->bind_param("si", $default_photo, $user_id);
+$update_Photo->execute();
+    // Remove photo file from the server
+    if ($fetch_user['Photo']) {
+        unlink('images/' . $fetch_user['Photo']);
     }
-    
-    $redirect_message = 'Photo updated successfully!';
+    $redirect_message = 'Photo removed successfully!';
 } else {
-    $message[] = 'Invalid file format. Please upload a JPEG, JPG, PNG, or GIF image.';
+    // Upload and update photo if not removing
+    if (!empty($Photo) && $Photo != $fetch_user['Photo'] && in_array($ext, $allowed_extensions)) {
+        $update_Photo = $connection->conn->prepare("UPDATE `languagelearners` SET `Photo` = ? WHERE LearnerID= ?");
+        $update_Photo->execute([$Photo, $user_id]);
+        move_uploaded_file($Photo_tmp_name, $Photo_folder);
+
+        if ($prev_Photo != '' && $prev_Photo != $Photo) {
+            unlink('images/' . $prev_Photo);
+        }
+
+        $redirect_message = 'Photo updated successfully!';
+    } else {
+        $message[] = 'Invalid file format. Please upload a JPEG, JPG, PNG, or GIF image.';
+    }
 }
+
    $old_pass = $_POST['old_pass']; // Assuming the password is sent in plaintext
    $old_pass = filter_var($old_pass, FILTER_SANITIZE_STRING);
    $new_pass = $_POST['new_pass']; // Assuming the password is sent in plaintext
@@ -340,7 +359,10 @@ if($redirect_message !== '') {
       <input id="confirm-pass-input" type="password" name="cpass" placeholder="confirm your new password" maxlength="20" class="box">
       <p>edit pic</p>
       <input name = "Photo" id="pic-input" type="file" accept="image/*" class="box">
-
+      <p>
+    <input id="remove-photo" type="checkbox" name="remove_photo">
+    <label for="remove-photo">Remove Photo</label>
+    </p>
          <!-- Span elements for displaying validation messages -->
          <?php foreach ($message as $msg) {
    echo '<span class="error-message">' . $msg . '</span>';
