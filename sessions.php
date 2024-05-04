@@ -38,9 +38,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
    // Retrieve rating and review data from the POST request
    $reviewText = $_POST["reviewText"];
    $rating = $_POST["rating"];
+   $sessionId = $_POST["sessionId"]; // Assuming you're also submitting the session ID
    
    // Perform SQL insertion into the reviewsratings table
-   $sql = "INSERT INTO reviewsratings (ReviewText, Rating) VALUES ('$reviewText', '$rating')";
+   $partnerId = $_COOKIE['user_id']; // Assuming partner ID is stored in the session
+   $sql = "INSERT INTO reviewsratings (SessionID, PartnerID, ReviewText, Rating) VALUES ('$sessionId', '$partnerId', '$reviewText', '$rating')";
    
    if ($connection->conn->query($sql) === TRUE) {
       echo "Rating and review submitted successfully.";
