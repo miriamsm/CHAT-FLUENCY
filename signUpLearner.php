@@ -28,9 +28,12 @@ if (isset($_POST['submit'])) {
 
     // Check if the query was successful
     if ($result) {
-        // Redirect to profileLearner.php or any other page
-        header("Location: profileLearner.php");
-        exit();
+               // Retrieve the user ID from the inserted row
+               $user_id = mysqli_insert_id($db->conn);
+        
+               // Redirect to profileLearner.php with user ID as query parameter
+               header("Location: profileLearner.php?id=$user_id");
+               exit();
     } else {
         echo "Error: " . mysqli_error($db->conn);
     }

@@ -2,14 +2,16 @@
 
 include 'connect.php';
 $connection = new connect();
-
-if(isset($_COOKIE['user_id'])){
-   $user_id = $_COOKIE['user_id'];
+// Retrieve user ID from URL query parameter
+if(isset($_GET['id'])){
+   $user_id = $_GET['id'];
 }else{
-   $user_id = '';
-   header('location:login.php');
+   // Redirect to login page if user ID is not provided
+   header('location: login.php');
 }
 
+// Your existing code to fetch user data using the $user_id
+// Make sure to validate and sanitize the user ID to prevent security issues
 
 
 

@@ -10,7 +10,6 @@ class Login {
         $connect = new Connect(); // Create an instance of the Connect class
         $this->conn = $connect->conn; // Get the database connection from the Connect class
     }
-
     public function loginUser($email, $password, $role) {
       // Query based on role
       if($role == "learner") {
@@ -41,8 +40,12 @@ class Login {
   
       if ($result->num_rows > 0) {
           // Login successful
-          // Redirect to the appropriate profile page
-          header("Location: $profilePage");
+          // Get the user ID from the fetched row
+          $user = $result->fetch_assoc();
+          $user_id = $user['PartnerID']; // Assuming the column name is 'PartnerID'
+  
+          // Redirect to the appropriate profile page with user ID as query parameter
+          header("Location: $profilePage?id=$user_id");
           exit;
       } else {
           // Login failed
