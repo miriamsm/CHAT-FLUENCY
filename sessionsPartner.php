@@ -2,7 +2,6 @@
 include 'connect.php';
 $connection = new Connect();
 
-$user_role = '';
 
 if (isset($_COOKIE['user_id'])) {
    $user_id = $_COOKIE['user_id'];
