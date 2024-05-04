@@ -1,7 +1,6 @@
 <?php
 // Database connection
 include 'connect.php';
-include 'sidebar.php';
 $connection = new Connect();
 if(isset($_COOKIE['user_id'])){
    $user_id = $_COOKIE['user_id'];
@@ -28,7 +27,6 @@ if (!$result) {
 }
 $user_role='learner';
 
- generateSidebar($user_role, $connection); 
 
 ?>
 
@@ -61,6 +59,8 @@ $user_role='learner';
    <?php
    // Include the sidebar based on user role
    include 'sidebar.php';
+   generateSidebar($user_role;, $connection); 
+
    ?>
 
    <section class="reviews">
