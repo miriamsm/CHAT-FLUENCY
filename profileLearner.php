@@ -37,8 +37,7 @@ $select_requests->bind_param("i", $user_id);
 $select_requests->execute();
 $total_requests = $select_requests->get_result()->num_rows;
 
-$select_partners = $connection->conn->prepare("SELECT * FROM languagelearners WHERE LearnerID = ?");
-$select_partners->bind_param("i", $user_id);
+$select_partners = $connection->conn->prepare("SELECT * FROM languagepartners");
 $select_partners->execute();
 $total_partners = $select_partners->get_result()->num_rows;
 ?>
