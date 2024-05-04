@@ -174,7 +174,7 @@ $resultPrevious = $connection->conn->query($sqlPrevious); // Execute query for c
                if ($resultCurrent->num_rows > 0) {
                   // Output data of each row
                   while ($row = $resultCurrent->fetch_assoc()) {
-                     echo "<a class='box2'href='partner_profile.html'>";
+                     echo "<a class='box2'href='partner_profile.php'>";
                      echo "<div class='student'>";
                      echo "<img src='" . $row['Photo'] . "' alt='profile photo'>";
                      echo "<div class='info'>";
@@ -223,7 +223,49 @@ $resultPrevious = $connection->conn->query($sqlPrevious); // Execute query for c
                if ($resultPrevious->num_rows > 0) {
                   // Output data of each row for completed or canceled sessions
                   while ($row = $resultPrevious->fetch_assoc()) {
-                     echo "<a class='box'>";
+                     if ($row['Status'] === 'Completed') {
+                        echo "<a class='box'>";
+
+                        echo '<div class="box" onclick="showRating(this)">
+                        <div class="tutor">
+                           <img src="images/pic-2.jpg" alt="">
+                           <div class="info">';
+                           echo "<h3>" . $row['PartnerFirstName'] . " " . $row['PartnerLastName'] . "</h3>";
+                           echo "<span>" . date('d-m-Y', strtotime($row['SessionDate'])) . "</span>";
+                           echo'</div>
+                        </div>';
+                        echo "<h3>SessionId:" . $row['SessionID'] . "</h3>"; 
+                        echo'<button class="inline-btn">Rate</button>
+                        <div class="rating-section" style="display: none;">
+                           <form>
+                           
+                           <div class="rate">
+                           <textarea class="review-text" placeholder="Write your review..." style="
+                           resize: none;
+                         "></textarea>
+                              <input type="radio" id="star5" name="rate" value="5" />
+                              
+                              <label for="star5" title="text">5 stars</label>
+                              <input type="radio" id="star4" name="rate" value="4" />
+                              <label for="star4" title="text">4 stars</label>
+                              <input type="radio" id="star3" name="rate" value="3" />
+                              <label for="star3" title="text">3 stars</label>
+                              <input type="radio" id="star2" name="rate" value="2" />
+                              <label for="star2" title="text">2 stars</label>
+                              <input type="radio" id="star1" name="rate" value="1" />
+                              <label for="star1" title="text">1 star</label>
+
+                           </div>
+                           <button class="inline-btn" onclick="submitRating(this)">Submit</button>
+
+                        </div>
+                     </div>
+                     </form>';
+                     echo "</a>";
+                  }else{
+            
+
+                     echo "<a class='box' href='partner_profile.php'>";
                      echo "<div class='tutor'>";
                      echo "<img src='images/pic-2.jpg' alt=''>";
                      echo "<div class='info'>";
@@ -232,40 +274,11 @@ $resultPrevious = $connection->conn->query($sqlPrevious); // Execute query for c
                      echo "</div>";
                      echo "</div>";
                      echo "<h3>SessionId:" . $row['SessionID'] . "</h3>"; // Displaying session ID
-                     if ($row['Status'] === 'Completed') {
-                        echo '<div class="box">
-         
-                     <form method="post" enctype="multipart/form-data">
-                        <h2>Rate and write a review</h2>
-                        <div class="student">
-                        
-                     <div class="rate">
-                     <input type="radio" id="star5" name="rate" value="5" />
-                     <label for="star5" title="text">5 stars</label>
-                     <input type="radio" id="star4" name="rate" value="4" />
-                     <label for="star4" title="text">4 stars</label>
-                     <input type="radio" id="star3" name="rate" value="3" />
-                     <label for="star3" title="text">3 stars</label>
-                     <input type="radio" id="star2" name="rate" value="2" />
-                     <label for="star2" title="text">2 stars</label>
-                     <input type="radio" id="star1" name="rate" value="1" />
-                     <label for="star1" title="text">1 star</label>
-                   </div>
-                        </div>
-                     </div>
-                        <textarea name="textreview" placeholder="Write here" class="box" style="width:300px;
-                        height:182px;
-                        border: 1px solid grey;
-                        border-radius: 10px;
-                        resize: none;
-                      "></textarea>
-                        <input type="submit" value="Send review" name="review" class="inline-btn">
-                     </form>
-                  ';
-                     }
                      echo "</a>";
+                    
+                     }}
                   }
-               } else {
+                else {
                   echo "<p>No previous sessions found.</p>";
                }
             }
@@ -284,7 +297,35 @@ $resultPrevious = $connection->conn->query($sqlPrevious); // Execute query for c
 
    <!-- custom js file link  -->
    <script src="js/script.js"></script>
-
+   <script>
+   function showRating(element) {
+      var ratingSection = element.querySelector('.rating-section');
+      if (ratingSection.style.display === 'none') {
+         ratingSection.style.display = 'block';
+      } else {
+         ratingSection.style.display = 'none';
+      }
+   }
+   function submitRating(button) {
+   var box = button.closest('.box');
+   var reviewText = box.querySelector('.review-text').value;
+   var rating = box.querySelector('input[name="rate"]:checked').value;
+   
+   // Send the reviewText and rating to your backend using AJAX
+   var xhr = new XMLHttpRequest();
+   xhr.open("POST", "submit_rating.php", true);
+   xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+   xhr.onreadystatechange = function() {
+      if (xhr.readyState === 4 && xhr.status === 200) {
+         // Handle the response from the server
+         console.log(xhr.responseText);
+      }
+   };
+   var data = "reviewText=" + encodeURIComponent(reviewText) + "&rating=" + encodeURIComponent(rating);
+   xhr.send(data);
+}
+</script>
+   
 
 </body>
 
