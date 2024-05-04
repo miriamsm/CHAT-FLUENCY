@@ -55,7 +55,30 @@ $user_role='learner';
          </div>
       </div>
    </header>   
+   <div class="side-bar">
 
+<div id="close-btn">
+   <i class="fas fa-times"></i>
+</div>
+
+<div class="profile">
+   <img src="images/<?= $fetch_user['Photo']; ?>" class="image" alt="">
+   <h3 class="name"><?= $fetch_user['FirstName'] . ' ' . $fetch_user['LastName']; ?></h3>
+   <p class="role">Partner</p>
+</div>
+
+<nav class="navbar">
+   <a href="profilePartner.php"><i class="fas fa-home"></i><span>home</span></a>
+   <a href="SessionsPartner.php"><i><img src="images/session.png" alt="sessions"></i><span>sessions</span></a>
+   <a href="about_partner.php"><i class="fas fa-question"></i><span>about</span></a>
+</nav>
+<nav>
+   <div style="text-align: center; margin-top: 20px; margin-bottom: 150px;">
+   <a href="home.html"  class="inline-btn" >Sign out</a>
+</div>
+</nav>
+
+</div>
    <?php
    // Include the sidebar based on user role
    include 'sidebar.php';

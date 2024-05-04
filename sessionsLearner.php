@@ -1,8 +1,24 @@
 <?php
 include 'connect.php';
-include 'sidebar.php';
 $connection = new Connect();
-
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+   // Retrieve rating and review data from the POST request
+   $reviewText = $_POST["reviewText"];
+   $rating = $_POST["rating"];
+   $sessionId = $_POST["sessionId"]; // Assuming you're also submitting the session ID
+   
+   // Perform SQL insertion into the reviewsratings table
+   $partnerId = $_COOKIE['user_id']; // Assuming partner ID is stored in the session
+   $sql = "INSERT INTO reviewsratings (SessionID, PartnerID, ReviewText, Rating) VALUES ('$sessionId', '$partnerId', '$reviewText', '$rating')";
+   
+   if ($connection->conn->query($sql) === TRUE) {
+      echo "Rating and review submitted successfully.";
+   } else {
+      echo "Error: " . $sql . "<br>" . $connection->conn->error;
+   }
+} else {
+   echo "Invalid request.";
+}
 $user_role = '';
 
 if (isset($_COOKIE['user_id'])) {
@@ -11,7 +27,6 @@ if (isset($_COOKIE['user_id'])) {
    $user_id = '';
    header('location:login.php');
 }
-generateSidebar($user_role, $connection);
 
 // Fetching scheduled sessions from LearningSessions table
 $sqlCurrent = "SELECT LearningSessions.SessionID, LearningSessions.SessionDate, LearningSessions.SessionDuration, LanguageLearners.FirstName AS LearnerFirstName, LanguageLearners.LastName AS LearnerLastName, LanguagePartners.FirstName AS PartnerFirstName, LanguagePartners.LastName AS PartnerLastName
@@ -34,24 +49,7 @@ ORDER BY LearningSessions.SessionDate DESC";
 
 $resultCurrent = $connection->conn->query($sqlCurrent); // Execute query for scheduled sessions
 $resultPrevious = $connection->conn->query($sqlPrevious); // Execute query for completed or canceled sessions
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-   // Retrieve rating and review data from the POST request
-   $reviewText = $_POST["reviewText"];
-   $rating = $_POST["rating"];
-   $sessionId = $_POST["sessionId"]; // Assuming you're also submitting the session ID
-   
-   // Perform SQL insertion into the reviewsratings table
-   $partnerId = $_COOKIE['user_id']; // Assuming partner ID is stored in the session
-   $sql = "INSERT INTO reviewsratings (SessionID, PartnerID, ReviewText, Rating) VALUES ('$sessionId', '$partnerId', '$reviewText', '$rating')";
-   
-   if ($connection->conn->query($sql) === TRUE) {
-      echo "Rating and review submitted successfully.";
-   } else {
-      echo "Error: " . $sql . "<br>" . $connection->conn->error;
-   }
-} else {
-   echo "Invalid request.";
-}
+
 ?>
 
 
@@ -137,28 +135,29 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
    <div class="side-bar">
 
-      <div id="close-btn">
-         <i class="fas fa-times"></i>
-      </div>
+<div id="close-btn">
+   <i class="fas fa-times"></i>
+</div>
 
-      <div class="profile">
-         <img src="images/pic-1.jpg" class="image" alt="">
-         <h3 class="name">Richard Murphy</h3>
-         <p class="role">Partner</p>
-      </div>
+<div class="profile">
+<img src="images/<?= $fetch_user['Photo']; ?>" class="image" alt="">
+   <h3 class="name"><?= $fetch_user['FirstName'] . ' ' . $fetch_user['LastName']; ?></h3>
+   <p class="role">Learner</p>
+</div>
 
-      <nav class="navbar">
-         <a href="profilePartner.html"><i class="fas fa-home"></i><span>home</span></a>
-         <a href="SessionsPartner.html"><i><img src="images/session.png" alt="sessions"></i><span>sessions</span></a>
-         <a href="about_partner.html"><i class="fas fa-question"></i><span>about</span></a>
-      </nav>
-      <nav>
-         <div style="text-align: center; margin-top: 20px; margin-bottom: 150px;">
-            <a href="home.html" class="inline-btn">Sign out</a>
-         </div>
-      </nav>
+<nav class="navbar">
+   <a href="profileLearner.php"><i class="fas fa-home"></i><span>home</span></a>
+   <a href="SesssionsLearner.php"><i><img src="images/session.png" alt="sessions"></i><span>sessions</span></a>
+   <a href="partners.php"><i class="fas fa-chalkboard-user"></i><span>partners</span></a>
+   <a href="about_learner.php"><i class="fas fa-question"></i><span>about</span></a>
+</nav>
+<nav>
+   <div style="text-align: center; margin-top: 20px; margin-bottom: 150px;">
+   <a href="home.html"  class="inline-btn" >Sign out</a>
+</div>
+</nav>
 
-   </div>
+</div>
    <div style="display: flex;">
 
 
@@ -169,25 +168,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
          <div class="box-container">
             <?php
-            if ($user_role == "partner") {
-               if ($resultCurrent->num_rows > 0) {
-                  // Output data of each row
-                  while ($row = $resultCurrent->fetch_assoc()) {
-                     echo "<a class='box2'>";
-                     echo "<div class='student'>";
-                     echo "<img src='" . $fetch_user['Photo'] . "' alt=''>";
-                     echo "<div class='info'>";
-                     echo "<h3>" . $row['LearnerFirstName'] . " " . $row['LearnerLastName'] . "</h3>";
-                     echo "<span>" . date('d-m-Y', strtotime($row['SessionDate'])) . "</span>";
-                     echo "</div>";
-                     echo "</div>";
-                     echo "<h3>SessionId:" . $row['SessionID'] . "</h3>"; // Displaying session ID
-                     echo "</a>";
-                  }
-               } else {
-                  echo "<p>No sessions scheduled</p>";
-               }
-            } else {
+            
                if ($resultCurrent->num_rows > 0) {
                   // Output data of each row
                   while ($row = $resultCurrent->fetch_assoc()) {
@@ -205,7 +186,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                } else {
                   echo "<p>No sessions scheduled</p>";
                }
-            }
+            
             ?>
          </div>
 
@@ -218,25 +199,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
          <div class="box-container">
 
             <?php
-            if ($user_role == "partner") {
-               if ($resultPrevious->num_rows > 0) {
-                  // Output data of each row for completed or canceled sessions
-                  while ($row = $resultPrevious->fetch_assoc()) {
-                     echo "<a class='box'>";
-                     echo "<div class='tutor'>";
-                     echo "<img src='images/pic-2.jpg' alt='profile picture'>";
-                     echo "<div class='info'>";
-                     echo "<h3>" . $row['LearnerFirstName'] . " " . $row['LearnerLastName'] . "</h3>";
-                     echo "<span>" . date('d-m-Y', strtotime($row['SessionDate'])) . "</span>";
-                     echo "</div>";
-                     echo "</div>";
-                     echo "<h3>SessionId:" . $row['SessionID'] . "</h3>"; // Displaying session ID
-                     echo "</a>";
-                  }
-               } else {
-                  echo "<p>No previous sessions found.</p>";
-               }
-            } else {
+            
                if ($resultPrevious->num_rows > 0) {
                   // Output data of each row for completed or canceled sessions
                   while ($row = $resultPrevious->fetch_assoc()) {
@@ -273,7 +236,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                               <label for="star1" title="text">1 star</label>
 
                            </div>
-                           <button class="inline-btn" onclick="submitRating(this)">Submit</button>
+                           <input type="submit" value="Send" name="submit" class="inline-btn" >
 
                         </div>
                      </div>
@@ -298,7 +261,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 else {
                   echo "<p>No previous sessions found.</p>";
                }
-            }
+            
             ?>
          </div>
 
@@ -327,18 +290,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
    var reviewText = box.querySelector('.review-text').value;
    var rating = box.querySelector('input[name="rate"]:checked').value;
    
-   // // Send the reviewText and rating to your backend using AJAX
-   // var xhr = new XMLHttpRequest();
-   // xhr.open("POST", "submit_rating.php", true);
-   // xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-   // xhr.onreadystatechange = function() {
-   //    if (xhr.readyState === 4 && xhr.status === 200) {
-   //       // Handle the response from the server
-   //       console.log(xhr.responseText);
-   //    }
-   // };
-   // var data = "reviewText=" + encodeURIComponent(reviewText) + "&rating=" + encodeURIComponent(rating);
-   // xhr.send(data);
+   
 }
 </script>
    
