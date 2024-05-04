@@ -1,39 +1,38 @@
 <?php
 
 include 'connect.php';
-/*
-if(isset($_COOKIE['user_id'])){
-   $user_id = $_COOKIE['user_id'];
+$connection = new connect();
+if(isset($_GET['id'])){
+   $user_id = $_GET['id'];
 }else{
-   $user_id = '';
-   header('location:login.php');
+   // Redirect to login page if user ID is not provided
+   header('location: login.php');
 }
-*/
-$user_id = 1;
-$select_user = $conn->prepare("SELECT * FROM `languagelearners` WHERE LearnerID = ? LIMIT 1"); 
-$select_user->execute([$user_id]);
-$fetch_user = $select_user->fetch(PDO::FETCH_ASSOC);
+
+$select_user = $connection->conn->prepare("SELECT * FROM languagelearners WHERE LearnerID = ? LIMIT 1"); 
+$select_user->bind_param("i", $user_id);
+$select_user->execute();
+$fetch_user = $select_user->get_result()->fetch_assoc();
 
 // Check if the query was successful
 if ($fetch_user) {
-   // Get the 'name' attribute from the fetched row
-   $name = $fetch_user['FirstName'];
-} else {
+	$name = $fetch_user['FirstName'];
    // Default name if the query fails or no data is found
    $name = "Guest";
 }
-$select_sessions = $conn->prepare("SELECT * FROM `learningsessions` WHERE LearnerID = ?");
-$select_sessions->execute([$user_id]);
-$total_sessions = $select_sessions->rowCount();
+$select_sessions = $connection->conn->prepare("SELECT * FROM learningsessions WHERE LearnerID = ?");
+$select_sessions->bind_param("i", $user_id);
+$select_sessions->execute();
+$total_sessions = $select_sessions->get_result()->num_rows;
 
-$select_requests = $conn->prepare("SELECT * FROM `learningrequests` WHERE LearnerID = ?");
-$select_requests->execute([$user_id]);
-$total_requests = $select_requests->rowCount();
+$select_requests = $connection->conn->prepare("SELECT * FROM learningrequests WHERE LearnerID = ?");
+$select_requests->bind_param("i", $user_id);
+$select_requests->execute();
+$total_requests = $select_requests->get_result()->num_rows;
 
-$select_partners = $conn->prepare("SELECT * FROM `languagelearners` WHERE LearnerID = ?"); //must insert new table 
-$select_partners->execute([$user_id]);
-$total_partners = $select_partners->rowCount();
-
+$select_partners = $connection->conn->prepare("SELECT * FROM languagepartners");
+$select_partners->execute();
+$total_partners = $select_partners->get_result()->num_rows;
 ?>
 
 
@@ -58,8 +57,21 @@ $total_partners = $select_partners->rowCount();
    
       <div class="flex">
    
-         <a href="profileLearner.html" class="logo"> <img src = "images/logo.jpg" width="210" height="60" alt="logo"></a> 
-   
+         <a href="profileLearner.php" class="logo"> <img src = "images/logo.jpg" width="210" height="60" alt="logo"></a> 
+         <?php
+session_start(); // Start the session
+
+// Check if the session variable is set and not empty
+if (isset($_SESSION['redirect_message']) && !empty($_SESSION['redirect_message'])) {
+    $redirect_message = $_SESSION['redirect_message'];
+
+    // Echo or display the message where needed in your HTML
+    echo '<script>alert("' . $redirect_message . '");</script>';
+
+    // Clear the session variable
+    unset($_SESSION['redirect_message']);
+}
+?>
          <div class="icons">
             <div id="menu-btn" class="fas fa-bars"></div>
             <div id="toggle-btn" class="fas fa-sun"></div>
@@ -77,16 +89,16 @@ $total_partners = $select_partners->rowCount();
       </div>
    
       <div class="profile">
-         <img src="images/pic-1.jpg" class="image" alt="">
+      <img src="images/<?= $fetch_user['Photo']; ?>" class="image" alt="">
          <h3 class="name"><?= $fetch_user['FirstName'] . ' ' . $fetch_user['LastName']; ?></h3>
          <p class="role">Learner</p>
       </div>
    
       <nav class="navbar">
-         <a href="profileLearner.html"><i class="fas fa-home"></i><span>home</span></a>
-         <a href="SesssionsLearner.html"><i><img src="images/session.png" alt="sessions"></i><span>sessions</span></a>
-         <a href="partners.html"><i class="fas fa-chalkboard-user"></i><span>partners</span></a>
-         <a href="about_learner.html"><i class="fas fa-question"></i><span>about</span></a>
+      <a href="profileLearner.php"><i class="fas fa-home"></i><span>home</span></a>
+         <a href="SesssionsLearner.php"><i><img src="images/session.png" alt="sessions"></i><span>sessions</span></a>
+         <a href="partners.php"><i class="fas fa-chalkboard-user"></i><span>partners</span></a>
+         <a href="about_learner.php"><i class="fas fa-question"></i><span>about</span></a>
       </nav>
       <nav>
          <div style="text-align: center; margin-top: 20px; margin-bottom: 150px;">
@@ -105,8 +117,8 @@ $total_partners = $select_partners->rowCount();
    <div class="info">
 
       <div class="user">
-         <img src="uploaded_files/<?= $fetch_user['Photo']; ?>" alt="">
-         <h3><?= $fetch_user['FirstName']; ?></h3>
+      <img src="images/<?= $fetch_user['Photo']; ?>" alt="">
+         <h3><?= $fetch_user['FirstName']. ' ' . $fetch_user['LastName'];  ?></h3>
          <p>Learner</p>
          <p><?= $fetch_user['City'] . ', ' . $fetch_user['Location']; ?></p>
          <a href="updateLearner.php" class="inline-btn">edit profile</a>
@@ -123,7 +135,7 @@ $total_partners = $select_partners->rowCount();
                 <p>sessions</p>
              </div>
           </div>
-          <a href="SesssionsLearner.html" class="inline-btn">view sessions</a>
+          <a href="SesssionsLearner.php" class="inline-btn">view sessions</a>
        </div>
 
        <div class="box">
@@ -134,7 +146,7 @@ $total_partners = $select_partners->rowCount();
                 <p>requests</p>
              </div>
           </div>
-          <a href="list_of_requests_learner.html" class="inline-btn">view requests</a>
+          <a href="list_of_requests_learner.php" class="inline-btn">view requests</a>
        </div>
    
        <div class="box">
@@ -145,7 +157,7 @@ $total_partners = $select_partners->rowCount();
               <p>partners</p>
                </div>
             </div>
-            <a href="partners.html" class="inline-btn">view partners</a>
+            <a href="partners.php" class="inline-btn">view partners</a>
          </div>
    
       </div>
