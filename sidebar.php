@@ -1,10 +1,6 @@
 <?php
 // Sidebar content based on user role and database connection
-function generateSidebar($user_role, $conn) {
-      $db = new Connect(); // Create a new instance of the Connect class
-  
-      // Get the database connection from the Connect instance
-      $connection = $db->conn;
+function generateSidebar($user_role, $connection) {
     if ($user_role === 'learner') {
         // Query the database to get learner information
         $sql = "SELECT * FROM LanguageLearners WHERE FirstName = ?";
@@ -12,8 +8,8 @@ function generateSidebar($user_role, $conn) {
         $stmt->bind_param("s", $user_role);
         $stmt->execute();
         $learner_result = $stmt->get_result();
-        $learner_row = $learner_result->fetch_assoc();
-
+        if ($learner_result && $learner_result->num_rows > 0) {
+         $learner_row = $learner_result->fetch_assoc();
         // Sidebar content for learners
         echo '
         <div class="side-bar">
@@ -40,7 +36,7 @@ function generateSidebar($user_role, $conn) {
         </div>
         </nav>
      
-     </div>';
+     </div>';}
     } elseif ($user_role === 'partner') {
         // Query the database to get partner information
         $sql = "SELECT * FROM LanguagePartners WHERE FirstName = ?";
@@ -48,8 +44,8 @@ function generateSidebar($user_role, $conn) {
         $stmt->bind_param("s", $user_role);
         $stmt->execute();
         $partner_result = $stmt->get_result();
-        $partner_row = $partner_result->fetch_assoc();
-
+        if ($partner_result && $partner_result->num_rows > 0) {
+         $partner_row = $partner_result->fetch_assoc();
         // Sidebar content for partners
         echo '
         <div class="side-bar">
@@ -76,6 +72,6 @@ function generateSidebar($user_role, $conn) {
         </nav>
      
      </div>';
-    } 
+    } }
 }
 ?>

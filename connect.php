@@ -25,5 +25,8 @@ class Connect {
         }
         return implode($rand);
     }
+    function prepare($sql) {
+        return $this->conn->prepare($sql);
+    }
 }
 ?>

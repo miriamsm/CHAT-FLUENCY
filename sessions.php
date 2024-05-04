@@ -11,7 +11,7 @@ if (isset($_COOKIE['user_id'])) {
    $user_id = '';
    header('location:login.php');
 }
-generateSidebar($user_role, $connection->conn);
+generateSidebar($user_role, $connection);
 
 // Fetching scheduled sessions from LearningSessions table
 $sqlCurrent = "SELECT LearningSessions.SessionID, LearningSessions.SessionDate, LearningSessions.SessionDuration, LanguageLearners.FirstName AS LearnerFirstName, LanguageLearners.LastName AS LearnerLastName, LanguagePartners.FirstName AS PartnerFirstName, LanguagePartners.LastName AS PartnerLastName

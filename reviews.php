@@ -1,6 +1,7 @@
 <?php
 // Database connection
 include 'connect.php';
+include 'sidebar.php';
 $connection = new Connect();
 if(isset($_COOKIE['user_id'])){
    $user_id = $_COOKIE['user_id'];
@@ -25,7 +26,9 @@ $result = $connection->conn->query($sql);
 if (!$result) {
    die("Query failed: " . $conn->error); // Output error message if query fails
 }
-// generateSidebar($user_role, $conn); 
+$user_role='learner';
+
+ generateSidebar($user_role, $connection); 
 
 ?>
 
