@@ -1,6 +1,19 @@
 <?php
 include 'connect.php';
 $connection = new Connect();
+if(isset($_COOKIE['user_id'])){
+   $user_id = $_COOKIE['user_id'];
+}else{
+   header('location:login.php');
+   exit();
+}
+if(isset($_GET['LearnerID'])) {
+   $partnerID = $_GET['LearnerID'];
+} else {
+   // Handle case where partner ID is not provided
+   die("Learner ID not provided.");
+}
+
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
    // Retrieve rating and review data from the POST request
    $reviewText = $_POST["reviewText"];
@@ -19,21 +32,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 } else {
    echo "Invalid request.";
 }
-$user_role = '';
 
-if (isset($_COOKIE['user_id'])) {
-   $user_id = $_COOKIE['user_id'];
-} else {
-   $user_id = '';
-   header('location:login.php');
-}
 
 // Fetching scheduled sessions from LearningSessions table
 $sqlCurrent = "SELECT LearningSessions.SessionID, LearningSessions.SessionDate, LearningSessions.SessionDuration, LanguageLearners.FirstName AS LearnerFirstName, LanguageLearners.LastName AS LearnerLastName, LanguagePartners.FirstName AS PartnerFirstName, LanguagePartners.LastName AS PartnerLastName
                FROM LearningSessions
                INNER JOIN LanguageLearners ON LearningSessions.LearnerID = LanguageLearners.LearnerID
                INNER JOIN LanguagePartners ON LearningSessions.PartnerID = LanguagePartners.PartnerID
-               WHERE LearningSessions.Status = 'Scheduled'
+               WHERE LearningSessions.LearnerID = '$LearnerId' AND LearningSessions.Status = 'Scheduled'
                ORDER BY LearningSessions.SessionDate DESC";
 
 // Fetching completed or canceled sessions from LearningSessions table
@@ -44,7 +50,7 @@ LearningSessions.Status
 FROM LearningSessions
 INNER JOIN LanguageLearners ON LearningSessions.LearnerID = LanguageLearners.LearnerID
 INNER JOIN LanguagePartners ON LearningSessions.PartnerID = LanguagePartners.PartnerID
-WHERE LearningSessions.Status = 'Completed' OR LearningSessions.Status = 'Canceled'
+WHERE  LearningSessions.LearnerID = '$LearnerId' AND (LearningSessions.Status = 'Completed' OR LearningSessions.Status = 'Canceled')
 ORDER BY LearningSessions.SessionDate DESC";
 
 $resultCurrent = $connection->conn->query($sqlCurrent); // Execute query for scheduled sessions

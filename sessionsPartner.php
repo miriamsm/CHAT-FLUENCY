@@ -1,24 +1,7 @@
 <?php
 include 'connect.php';
 $connection = new Connect();
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-   // Retrieve rating and review data from the POST request
-   $reviewText = $_POST["reviewText"];
-   $rating = $_POST["rating"];
-   $sessionId = $_POST["sessionId"]; // Assuming you're also submitting the session ID
-   
-   // Perform SQL insertion into the reviewsratings table
-   $partnerId = $_COOKIE['user_id']; // Assuming partner ID is stored in the session
-   $sql = "INSERT INTO reviewsratings (SessionID, PartnerID, ReviewText, Rating) VALUES ('$sessionId', '$partnerId', '$reviewText', '$rating')";
-   
-   if ($connection->conn->query($sql) === TRUE) {
-      echo "Rating and review submitted successfully.";
-   } else {
-      echo "Error: " . $sql . "<br>" . $connection->conn->error;
-   }
-} else {
-   echo "Invalid request.";
-}
+
 $user_role = '';
 
 if (isset($_COOKIE['user_id'])) {
@@ -26,14 +9,24 @@ if (isset($_COOKIE['user_id'])) {
 } else {
    $user_id = '';
    header('location:login.php');
+   exit();
 }
+
+// Get partner ID from URL parameter
+if(isset($_GET['partnerID'])) {
+   $partnerID = $_GET['partnerID'];
+} else {
+   // Handle case where partner ID is not provided
+   die("Partner ID not provided.");
+}
+
 
 // Fetching scheduled sessions from LearningSessions table
 $sqlCurrent = "SELECT LearningSessions.SessionID, LearningSessions.SessionDate, LearningSessions.SessionDuration, LanguageLearners.FirstName AS LearnerFirstName, LanguageLearners.LastName AS LearnerLastName, LanguagePartners.FirstName AS PartnerFirstName, LanguagePartners.LastName AS PartnerLastName
                FROM LearningSessions
                INNER JOIN LanguageLearners ON LearningSessions.LearnerID = LanguageLearners.LearnerID
                INNER JOIN LanguagePartners ON LearningSessions.PartnerID = LanguagePartners.PartnerID
-               WHERE LearningSessions.Status = 'Scheduled' 
+               WHERE LearningSessions.PartnerID = '$partnerId' AND LearningSessions.Status = 'Scheduled' 
                ORDER BY LearningSessions.SessionDate DESC";
 
 // Fetching completed or canceled sessions from LearningSessions table
@@ -44,7 +37,7 @@ LearningSessions.Status
 FROM LearningSessions
 INNER JOIN LanguageLearners ON LearningSessions.LearnerID = LanguageLearners.LearnerID
 INNER JOIN LanguagePartners ON LearningSessions.PartnerID = LanguagePartners.PartnerID
-WHERE LearningSessions.Status = 'Completed' OR LearningSessions.Status = 'Canceled'
+WHERE LearningSessions.PartnerID = '$partnerId' AND (LearningSessions.Status = 'Completed' OR LearningSessions.Status = 'Canceled')
 ORDER BY LearningSessions.SessionDate DESC";
 
 $resultCurrent = $connection->conn->query($sqlCurrent); // Execute query for scheduled sessions
@@ -158,8 +151,8 @@ $resultPrevious = $connection->conn->query($sqlPrevious); // Execute query for c
                if ($resultPrevious->num_rows > 0) {
                   // Output data of each row for completed or canceled sessions
                   while ($row = $resultPrevious->fetch_assoc()) {
-                     echo "<a class='box'>";
-                     echo "<div class='tutor'>";
+                     echo "<a class='box2'>";
+                     echo "<div class='student'>";
                      echo "<img src='" . $fetch_user['Photo'] . "' alt='profile picture'>";
                      echo "<div class='info'>";
                      echo "<h3>" . $row['LearnerFirstName'] . " " . $row['LearnerLastName'] . "</h3>";
