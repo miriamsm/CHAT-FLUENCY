@@ -1,12 +1,15 @@
 <?php
-// Include the connect.php file
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+
+// Include the connect.php class
 include 'connect.php';
 
-// Create a new instance of the Connect class
+// Create a new instance of the connect class
 $db = new Connect();
 
 // Check if the form is submitted
-if(isset($_POST['submit'])){
+if (isset($_POST['submit'])) {
     // Retrieve form data
     $firstName = $_POST['first_name'];
     $lastName = $_POST['last_name'];
@@ -16,24 +19,23 @@ if(isset($_POST['submit'])){
     $password = $_POST['password'];
     $phone = $_POST['phone'];
     $city = $_POST['city'];
+    $spokenLanguage = $_POST['spoken_language'];
     $shortBio = $_POST['short_bio'];
     $photo = ""; // Placeholder for photo, you'll need to handle file upload separately
 
     // SQL query to insert data into languagepartners table
-    $query = "INSERT INTO languagepartners (FirstName, LastName, Age, Gender, Email, Password, Phone, City, Bio, Photo) 
-              VALUES ('$firstName', '$lastName', '$age', '$gender', '$email', '$password', '$phone', '$city', '$shortBio', '$photo')";
-
+    $query = "INSERT INTO languagepartners (FirstName, LastName, Age, Gender, Email, Password, Phone, City, Bio, Languages, Photo) 
+    VALUES ('$firstName', '$lastName', '$age', '$gender', '$email', '$password', '$phone', '$city', '$shortBio', '$spokenLanguage', '$photo')";
     // Execute the query
-    $result = $db->conn->query($query);
+    $result = mysqli_query($db->conn, $query);
 
     // Check if the query was successful
-    if($result){
-        echo "Partner signed up successfully!";
+    if ($result) {
         // Redirect to profilePartner.php or any other page
-        // header("Location: profilePartner.php");
-        // exit();
+        header("Location: profilePartner.php");
+        exit();
     } else {
-        echo "Error: " . $db->conn->error;
+        echo "Error: " . mysqli_error($db->conn);
     }
 }
 ?>
@@ -71,7 +73,7 @@ if(isset($_POST['submit'])){
    </header>    
 
 <section class="form-container">
-<form name="signupForm" action="SignUpPartner.php" method="post" enctype="multipart/form-data" onsubmit="return validateForm()"> 
+<form name="signupForm" action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post" enctype="multipart/form-data" onsubmit="return validateForm()">
        <h3>Sign Up</h3>
       <p>Your first name <span>*</span></p> 
       <input type="text" name="first_name" placeholder="enter your first name" required maxlength="50" class="box"> 
@@ -98,7 +100,10 @@ if(isset($_POST['submit'])){
 
       <p>Your city <span>*</span></p> 
       <input type="text" name="city" placeholder="enter your city" required maxlength="50" class="box"> 
-
+      
+      <p>Your spoken language <span>*</span></p> 
+      <input type="text" name="spoken_language" placeholder="enter your spoken language" required maxlength="50" class="box"> 
+     
       <p>Your short bio(Spoken language and cultural knowledge) <span>*</span></p> 
       <textarea name="short_bio" placeholder="enter your short bio" required maxlength="200" class="box" rows="3"></textarea> 
 
@@ -120,19 +125,20 @@ if(isset($_POST['submit'])){
 
 <script>
    function validateForm() {
-      var firstName = document.forms["signupForm"]["first_name"].value;
-      var lastName = document.forms["signupForm"]["last_name"].value;
-      var age = document.forms["signupForm"]["age"].value;
-      var email = document.forms["signupForm"]["email"].value;
-      var password = document.forms["signupForm"]["password"].value;
-      var phone = document.forms["signupForm"]["phone"].value;
-      var city = document.forms["signupForm"]["city"].value;
-      var shortBio = document.forms["signupForm"]["short_bio"].value;
+   var firstName = document.forms["signupForm"]["first_name"].value;
+   var lastName = document.forms["signupForm"]["last_name"].value;
+   var age = document.forms["signupForm"]["age"].value;
+   var email = document.forms["signupForm"]["email"].value;
+   var password = document.forms["signupForm"]["password"].value;
+   var phone = document.forms["signupForm"]["phone"].value;
+   var city = document.forms["signupForm"]["city"].value;
+   var shortBio = document.forms["signupForm"]["short_bio"].value;
 
-      if (firstName == "" || lastName == "" || age == "" || email == "" || password == "" || phone == "" || city == "" || shortBio == "") {
-         alert("All fields must be filled out");
-      }
+   if (firstName == "" || lastName == "" || age == "" || email == "" || password == "" || phone == "" || city == "" || shortBio == "") {
+      alert("All fields must be filled out");
+      return false; // Prevent form submission
    }
+}
 </script>
 
 </body> 

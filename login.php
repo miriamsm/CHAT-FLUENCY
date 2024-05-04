@@ -1,42 +1,66 @@
 <?php
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+include 'Connect.php'; // Include the Connect.php file
 
-include 'connect.php';
+class Login {
+    private $conn;
 
-if(isset($_POST['submit'])) {
-   $email = $_POST['email'];
-   $password = sha1($_POST['pass']);
-   
-   // Check if login as learner button is clicked
-   if(isset($_POST['login_learner'])) {
-      $select_learner = $conn->prepare("SELECT * FROM `languagelearners` WHERE email = ? AND password = ?");
-      $select_learner->execute([$email, $password]);
-      
-      if($select_learner->rowCount() > 0) {
-         $row = $select_learner->fetch(PDO::FETCH_ASSOC);
-         setcookie('user_id', $row['learner_id'], time() + 60*60*24*30, '/');
-         header('location:profileLearner.php'); // Redirect to learner profile page
-         exit(); // Stop further execution
-      } else {
-         $message = "Invalid email or password!";
+    public function __construct() {
+        $connect = new Connect(); // Create an instance of the Connect class
+        $this->conn = $connect->conn; // Get the database connection from the Connect class
+    }
+
+    public function loginUser($email, $password, $role) {
+      // Query based on role
+      if($role == "learner") {
+          $sql = "SELECT * FROM languagelearners WHERE Email = ? AND Password = ?";
+          $profilePage = "profileLearner.php"; // Set the profile page for learners
+      } elseif($role == "partner") {
+          $sql = "SELECT * FROM languagepartners WHERE Email = ? AND Password = ?";
+          $profilePage = "profilePartner.php"; // Set the profile page for partners
       }
-   }
-   
-   // Check if login as partner button is clicked
-   if(isset($_POST['login_partner'])) {
-      $select_partner = $conn->prepare("SELECT * FROM `languagepartners` WHERE email = ? AND password = ?");
-      $select_partner->execute([$email, $password]);
+  
+      // Prepare statement
+      $stmt = $this->conn->prepare($sql);
       
-      if($select_partner->rowCount() > 0) {
-         $row = $select_partner->fetch(PDO::FETCH_ASSOC);
-         setcookie('partner_id', $row['partner_id'], time() + 60*60*24*30, '/');
-         header('location:profilePartner.php'); // Redirect to partner profile page
-         exit(); // Stop further execution
-      } else {
-         $message = "Invalid email or password!";
+      if(!$stmt) {
+          // Error handling: Check for SQL syntax errors
+          echo "SQL Error: " . $this->conn->error;
+          return false;
       }
-   }
+  
+      // Bind parameters
+      $stmt->bind_param("ss", $email, $password);
+  
+      // Execute statement
+      $stmt->execute();
+  
+      // Get result
+      $result = $stmt->get_result();
+  
+      if ($result->num_rows > 0) {
+          // Login successful
+          // Redirect to the appropriate profile page
+          header("Location: $profilePage");
+          exit;
+      } else {
+          // Login failed
+          echo "<script>alert('Password or email is wrong');</script>";
+          return false;
+      }
+  }
 }
 
+// Check if form is submitted
+if(isset($_POST['login'])) {
+    $email = $_POST['email'];
+    $password = $_POST['pass'];
+    $role = $_POST['role'];
+
+    $login = new Login(); // Create an instance of the Login class
+    $login->loginUser($email, $password, $role);
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -51,50 +75,61 @@ if(isset($_POST['submit'])) {
 
    <!-- custom css file link  -->
    <link rel="stylesheet" href="style.css">
-
-
 </head>
 <body style="padding-left: 0;">
 
 <header class="header">
    <div class="flex"> 
-      <a href="home.html" class="logo"><img src = "images/logo.jpg" width="210" height="60" alt="logo"></a>
-      
-      
+      <a href="home.html" class="logo"><img src="images/logo.jpg" width="210" height="60" alt="logo"></a>
       <div class="icons">
-         <a href="home.html"> <div id="home-btn" class="fas fa-home"> </div> </a>
+         <a href="home.html"><div id="home-btn" class="fas fa-home"></div></a>
          <div id="toggle-btn" class="fas fa-sun"></div>
-       </div>
- 
-
-      </div> 
-
+      </div>
+   </div> 
 </header>   
 
 <section class="form-container">
-
-   <form method="post" enctype="multipart/form-data">
-      <h3>login now</h3>
-      <p>your email <span>*</span></p>
-      <input type="email" name="email" placeholder="enter your email" required maxlength="50" class="box">
+<form name="loginForm" method="post" enctype="multipart/form-data" action="" onsubmit="return validateForm()"> <h3>Login now</h3>
+      <p>Your email <span>*</span></p>
+      <input type="email" name="email" placeholder="Enter your email" required maxlength="50" class="box">
       
-      <p>your password <span>*</span></p>
-      <input type="password" name="pass" placeholder="enter your password" required maxlength="20" class="box">
-   
-      <button type="submit" name="login_learner" class="btn">Log In As learner</button>
-      <button type="submit" name="login_partner" class="btn">Log In As Partner</button>
+      <p>Your password <span>*</span></p>
+      <input type="password" name="pass" placeholder="Enter your password" required maxlength="20" class="box">
+      
+      <p>Select role <span>*</span></p>
+      <select name="role" required class="box">
+    <option value="" disabled selected>Select role</option>
+    <option value="learner">Learner</option>
+    <option value="partner">Partner</option>
+</select>
+      <button type="submit" name="login" class="btn">Login</button>
    </form>
 </section>
 
-<footer style="margin-top : 80px;" class="footer">
-
+<footer style="margin-top: 80px;" class="footer">
    &copy; copyright @ 2024 by <span>CHAT FLUENCY</span> | all rights reserved!
    <a href="contact_learner.html"><i class="fas fa-headset"></i><span> contact us</span></a>
-
 </footer> 
-<!-- custom js file link  -->
-<script src="js/script.js"></script>
+<script>
+    function validateForm() {
+        var email = document.forms["loginForm"]["email"].value;
+        var password = document.forms["loginForm"]["pass"].value;
+        var role = document.forms["loginForm"]["role"].value;
 
-   
+        if (email == "") {
+            alert("Email must be filled out");
+            return false;
+        }
+        if (password == "") {
+            alert("Password must be filled out");
+            return false;
+        }
+        if (role == "") {
+            alert("Role must be selected");
+            return false;
+        }
+    }
+</script>
+<script src="js/script.js"></script>
 </body>
 </html>

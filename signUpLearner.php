@@ -1,70 +1,39 @@
 <?php
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+
+// Include the connect.php class
 include 'connect.php';
 
+// Create a new instance of the connect class
+$db = new Connect();
+
 // Check if the form is submitted
-if(isset($_POST['submit'])) {
-    // Assign form data to variables
+if (isset($_POST['submit'])) {
+    // Retrieve form data
     $firstName = $_POST['first_name'];
     $lastName = $_POST['last_name'];
     $email = $_POST['email'];
     $password = $_POST['pass'];
     $city = $_POST['city'];
     $location = $_POST['location'];
+    $photo = ""; // Placeholder for photo, you'll need to handle file upload separately
 
-    // Hash the password
-    $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
+    // SQL query to insert data into learners table
+    $query = "INSERT INTO languagelearners (FirstName, LastName, Email, Password, Photo, City, Location) 
+              VALUES ('$firstName', '$lastName', '$email', '$password', '$photo', '$city', '$location')";
 
-    // Upload photo
-    $photo = '';
-    if(isset($_FILES['photo']) && $_FILES['photo']['error'] == 0) {
-        $target_dir = "uploads/";
-        $target_file = $target_dir . basename($_FILES["photo"]["name"]);
-        $uploadOk = 1;
-        $imageFileType = strtolower(pathinfo($target_file,PATHINFO_EXTENSION));
-        // Check if image file is a actual image or fake image
-        $check = getimagesize($_FILES["photo"]["tmp_name"]);
-        if($check !== false) {
-            $uploadOk = 1;
-        } else {
-            $uploadOk = 0;
-        }
-        // Check if file already exists
-        if (file_exists($target_file)) {
-            $uploadOk = 0;
-        }
-        // Check file size
-        if ($_FILES["photo"]["size"] > 500000) {
-            $uploadOk = 0;
-        }
-        // Allow only certain file formats
-        if($imageFileType != "jpg" && $imageFileType != "png" && $imageFileType != "jpeg"
-        && $imageFileType != "gif" ) {
-            $uploadOk = 0;
-        }
-        // Check if $uploadOk is set to 0 by an error
-        if ($uploadOk == 1) {
-            if (move_uploaded_file($_FILES["photo"]["tmp_name"], $target_file)) {
-                $photo = $target_file;
-            }
-        }
-    }
+    // Execute the query
+    $result = mysqli_query($db->conn, $query);
 
-    // Insert data into database using prepared statement
-    $sql = "INSERT INTO languagelearners (FirstName, LastName, Email, Password, Photo, City, Location)
-            VALUES (?, ?, ?, ?, ?, ?, ?)";
-
-    $stmt = $conn->prepare($sql);
-    $stmt->bind_param("sssssss", $firstName, $lastName, $email, $hashedPassword, $photo, $city, $location);
-
-    if ($stmt->execute()) {
-        echo "New record created successfully";
+    // Check if the query was successful
+    if ($result) {
+        // Redirect to profileLearner.php or any other page
+        header("Location: profileLearner.php");
+        exit();
     } else {
-        echo "Error: " . $sql . "<br>" . $conn->error;
+        echo "Error: " . mysqli_error($db->conn);
     }
-
-    // Close statement and connection
-    $stmt->close();
-    $conn->close();
 }
 ?>
 
@@ -102,8 +71,8 @@ if(isset($_POST['submit'])) {
    </header>    
 
 <section class="form-container">
-   <form action="profileLearner.php" method="post" enctype="multipart/form-data" onsubmit="return validateForm()"> 
-       <h3>Sign Up</h3>
+<form name="signupForm" action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post" enctype="multipart/form-data" onsubmit="return validateForm()">
+      <h3>Sign Up</h3>
       <p>Your first name <span>*</span></p> 
       <input type="text" name="first_name" placeholder="enter your first name" required maxlength="50" class="box"> 
 
