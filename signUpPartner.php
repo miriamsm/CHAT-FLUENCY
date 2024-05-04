@@ -39,7 +39,7 @@ if (isset($_POST['submit'])) {
     exit();
   } else {
       echo "Error: " . mysqli_error($db->conn);
-  }
+  }}
 ?>
 <!DOCTYPE html> 
 <html lang="en"> 
