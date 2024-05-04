@@ -9,6 +9,9 @@ if(isset($_COOKIE['user_id'])){
    $user_id = '';
 }
 
+
+
+$message="";
 $select_user = $connection->conn->prepare("SELECT * FROM languagelearners WHERE LearnerID = ? LIMIT 1"); 
 $select_user->bind_param("i", $user_id);
 $select_user->execute();
@@ -25,15 +28,18 @@ if(isset($_POST['submit'])){
    $msg = $_POST['msg']; 
    $msg = filter_var($msg, FILTER_SANITIZE_STRING);
 
-   $select_contact = $conn->prepare("SELECT * FROM `contact` WHERE name = ? AND email = ? AND number = ? AND message = ?");
+   $select_contact = $connection->conn->prepare("SELECT * FROM `contact` WHERE name = ? AND email = ? AND number = ? AND message = ?");
    $select_contact->execute([$name, $email, $number, $msg]);
 
-   if($select_contact->rowCount() > 0){
-      $message[] = 'message sent already!';
+   $select_contact->store_result();
+if($select_contact->num_rows > 0){
+   $message = 'message sent already!';
+   echo "<script>alert('$message');</script>";
    }else{
-      $insert_message = $conn->prepare("INSERT INTO `contact`(name, email, number, message) VALUES(?,?,?,?)");
+      $insert_message = $connection->conn->prepare("INSERT INTO `contact`(name, email, number, message) VALUES(?,?,?,?)");
       $insert_message->execute([$name, $email, $number, $msg]);
-      $message[] = 'message sent successfully!';
+      $message = 'message sent successfully!';
+      echo "<script>alert('$message');</script>";
    }
 
 }

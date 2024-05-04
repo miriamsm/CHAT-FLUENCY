@@ -31,13 +31,15 @@ if (isset($_POST['submit'])) {
 
     // Check if the query was successful
     if ($result) {
-        // Redirect to profilePartner.php or any other page
-        header("Location: profilePartner.php");
-        exit();
-    } else {
-        echo "Error: " . mysqli_error($db->conn);
-    }
-}
+      // Get the ID of the newly inserted user
+    $user_id = mysqli_insert_id($db->conn);
+   
+    // Redirect to profilePartner.php and include the user ID as a query parameter
+    header("Location: profilePartner.php?id=$user_id");
+    exit();
+  } else {
+      echo "Error: " . mysqli_error($db->conn);
+  }}
 ?>
 <!DOCTYPE html> 
 <html lang="en"> 

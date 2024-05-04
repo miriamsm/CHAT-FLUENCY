@@ -5,13 +5,17 @@ $connection = new Connect();
 if(isset($_COOKIE['user_id'])){
    $user_id = $_COOKIE['user_id'];
 }else{
-   $user_id = '';
    header('location:login.php');
 }
 
-
-// Fetch reviews for a specific partner
-$partnerID = 1; // Assuming the partner ID is 1 for example
+// Get partner ID from URL parameter
+if(isset($_GET['partnerID'])) {
+   $partnerID = $_GET['partnerID'];
+} else {
+   // Handle case where partner ID is not provided
+   die("Partner ID not provided.");
+}
+ // Assuming the partner ID is 1 for example
 $sql = "SELECT ReviewsRatings.ReviewID, ReviewsRatings.Rating, ReviewsRatings.ReviewText, LanguageLearners.FirstName, LanguageLearners.LastName
         FROM ReviewsRatings
         INNER JOIN LearningSessions ON ReviewsRatings.SessionID = LearningSessions.SessionID
