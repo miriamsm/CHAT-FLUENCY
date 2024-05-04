@@ -34,7 +34,22 @@ ORDER BY LearningSessions.SessionDate DESC";
 
 $resultCurrent = $connection->conn->query($sqlCurrent); // Execute query for scheduled sessions
 $resultPrevious = $connection->conn->query($sqlPrevious); // Execute query for completed or canceled sessions
-
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+   // Retrieve rating and review data from the POST request
+   $reviewText = $_POST["reviewText"];
+   $rating = $_POST["rating"];
+   
+   // Perform SQL insertion into the reviewsratings table
+   $sql = "INSERT INTO reviewsratings (ReviewText, Rating) VALUES ('$reviewText', '$rating')";
+   
+   if ($connection->conn->query($sql) === TRUE) {
+      echo "Rating and review submitted successfully.";
+   } else {
+      echo "Error: " . $sql . "<br>" . $connection->conn->error;
+   }
+} else {
+   echo "Invalid request.";
+}
 ?>
 
 
@@ -158,7 +173,7 @@ $resultPrevious = $connection->conn->query($sqlPrevious); // Execute query for c
                   while ($row = $resultCurrent->fetch_assoc()) {
                      echo "<a class='box2'>";
                      echo "<div class='student'>";
-                     echo "<img src='" . $row['Photo'] . "' alt=''>";
+                     echo "<img src='" . $fetch_user['Photo'] . "' alt=''>";
                      echo "<div class='info'>";
                      echo "<h3>" . $row['LearnerFirstName'] . " " . $row['LearnerLastName'] . "</h3>";
                      echo "<span>" . date('d-m-Y', strtotime($row['SessionDate'])) . "</span>";
@@ -176,7 +191,7 @@ $resultPrevious = $connection->conn->query($sqlPrevious); // Execute query for c
                   while ($row = $resultCurrent->fetch_assoc()) {
                      echo "<a class='box2'href='partner_profile.php'>";
                      echo "<div class='student'>";
-                     echo "<img src='" . $row['Photo'] . "' alt='profile photo'>";
+                     echo "<img src='" . $fetch_user['Photo'] . "' alt='profile photo'>";
                      echo "<div class='info'>";
                      echo "<h3>" . $row['PartnerFirstName'] . " " . $row['PartnerLastName'] . "</h3>";
                      echo "<span>" . date('d-m-Y', strtotime($row['SessionDate'])) . "</span>";
@@ -236,10 +251,10 @@ $resultPrevious = $connection->conn->query($sqlPrevious); // Execute query for c
                         </div>';
                         echo "<h3>SessionId:" . $row['SessionID'] . "</h3>"; 
                         echo'<button class="inline-btn">Rate</button>
-                        <div class="rating-section" style="display: none;">
-                           <form>
+                        <div class="rating-section" style="display: none;">';
+                           echo'<form name="rate" action='. $_SERVER['PHP_SELF'] . 'method="post" enctype="multipart/form-data" onsubmit="return validateForm()">';
                            
-                           <div class="rate">
+                          echo' <div class="rate">
                            <textarea class="review-text" placeholder="Write your review..." style="
                            resize: none;
                          "></textarea>
@@ -302,8 +317,7 @@ $resultPrevious = $connection->conn->query($sqlPrevious); // Execute query for c
       var ratingSection = element.querySelector('.rating-section');
       if (ratingSection.style.display === 'none') {
          ratingSection.style.display = 'block';
-      } else {
-         ratingSection.style.display = 'none';
+  
       }
    }
    function submitRating(button) {
@@ -311,18 +325,18 @@ $resultPrevious = $connection->conn->query($sqlPrevious); // Execute query for c
    var reviewText = box.querySelector('.review-text').value;
    var rating = box.querySelector('input[name="rate"]:checked').value;
    
-   // Send the reviewText and rating to your backend using AJAX
-   var xhr = new XMLHttpRequest();
-   xhr.open("POST", "submit_rating.php", true);
-   xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-   xhr.onreadystatechange = function() {
-      if (xhr.readyState === 4 && xhr.status === 200) {
-         // Handle the response from the server
-         console.log(xhr.responseText);
-      }
-   };
-   var data = "reviewText=" + encodeURIComponent(reviewText) + "&rating=" + encodeURIComponent(rating);
-   xhr.send(data);
+   // // Send the reviewText and rating to your backend using AJAX
+   // var xhr = new XMLHttpRequest();
+   // xhr.open("POST", "submit_rating.php", true);
+   // xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+   // xhr.onreadystatechange = function() {
+   //    if (xhr.readyState === 4 && xhr.status === 200) {
+   //       // Handle the response from the server
+   //       console.log(xhr.responseText);
+   //    }
+   // };
+   // var data = "reviewText=" + encodeURIComponent(reviewText) + "&rating=" + encodeURIComponent(rating);
+   // xhr.send(data);
 }
 </script>
    
