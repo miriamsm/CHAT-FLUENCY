@@ -16,6 +16,7 @@ $sql = "SELECT lr.*, ll.FirstName AS LearnerFirstName, ll.LastName AS LearnerLas
         INNER JOIN LanguageLearners ll ON lr.LearnerID = ll.LearnerID";
 $stmt = $connection->conn->query($sql); // Use the connection object's query method
 
+
 function getStatusColor($status) {
    switch ($status) {
        case 'Accepted':
@@ -117,7 +118,7 @@ function getStatusColor($status) {
          while($row = $stmt->fetch_assoc()) {
             echo '<div class="box">';
             echo '<div class="tutor">';
-            echo '<img src="images/pic-9.jpg" alt="">'; // Assuming static image for now
+            echo '<img src="images/' . $row["Photo"] . '" alt="Learner photo">'; // Assuming static image for now
             echo '<div class="info">';
             // Display learner's name
             $learner_name = $row["LearnerFirstName"] . ' ' . $row["LearnerLastName"];
