@@ -59,7 +59,7 @@ $user_role='learner';
    <?php
    // Include the sidebar based on user role
    include 'sidebar.php';
-   generateSidebar($user_role;, $connection); 
+   generateSidebar($user_role, $connection); 
 
    ?>
 
