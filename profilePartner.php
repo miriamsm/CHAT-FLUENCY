@@ -2,15 +2,16 @@
 
 include 'connect.php';
 $connection = new connect();
-/*
+
 if(isset($_COOKIE['user_id'])){
    $user_id = $_COOKIE['user_id'];
 }else{
    $user_id = '';
    header('location:login.php');
 }
-*/
-$user_id = 12;
+
+
+
 
 $select_user = $connection->conn->prepare("SELECT * FROM languagepartners WHERE PartnerID = ? LIMIT 1"); 
 $select_user->bind_param("i", $user_id);
@@ -64,14 +65,29 @@ $total_partners = $select_partners->rowCount();
 
 </head>
 <body>
+   
 
    <header class="header">
    
       <div class="flex">
    
-         <a href="profilePartner.html" class="logo"><img src = "images/logo.jpg" width="210" height="60" alt="logo"></a>
+         <a href="profilePartner.php" class="logo"><img src = "images/logo.jpg" width="210" height="60" alt="logo"></a>
    
-        
+         <?php
+session_start(); // Start the session
+
+// Check if the session variable is set and not empty
+if (isset($_SESSION['redirect_message']) && !empty($_SESSION['redirect_message'])) {
+    $redirect_message = $_SESSION['redirect_message'];
+
+    // Echo or display the message where needed in your HTML
+    echo '<script>alert("' . $redirect_message . '");</script>';
+
+    // Clear the session variable
+    unset($_SESSION['redirect_message']);
+}
+?>
+
    
          <div class="icons">
             <div id="menu-btn" class="fas fa-bars"></div>
@@ -91,7 +107,7 @@ $total_partners = $select_partners->rowCount();
       </div>
    
       <div class="profile">
-         <img src="uploaded_files/<?$fetch_user['Photo'];?>" class="image" alt="" >
+      <img src="images/<?= $fetch_user['Photo']; ?>" class="image" alt="">
          <h3 class="name"><?= $fetch_user['FirstName'] . ' ' . $fetch_user['LastName']; ?></h3>
          <p class="role">Partner</p>
       </div>
@@ -117,7 +133,7 @@ $total_partners = $select_partners->rowCount();
    <div class="info">
 
       <div class="user">
-         <img src="uploaded_files/<?= $fetch_user['Photo']; ?>" alt="">
+         <img src="images/<?= $fetch_user['Photo']; ?>" alt="">
          <h3><?= $fetch_user['FirstName'] . ' ' . $fetch_user['LastName']; ?></h3>
          <p>Partner</p>
          <p><? $fetch_user['Bio']; ?></p>
