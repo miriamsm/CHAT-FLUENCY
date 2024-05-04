@@ -15,9 +15,11 @@ class Login {
       if($role == "learner") {
           $sql = "SELECT * FROM languagelearners WHERE Email = ? AND Password = ?";
           $profilePage = "profileLearner.php"; // Set the profile page for learners
+          $idColumn = "LearnerID"; // Column name for user ID in the learner table
       } elseif($role == "partner") {
           $sql = "SELECT * FROM languagepartners WHERE Email = ? AND Password = ?";
           $profilePage = "profilePartner.php"; // Set the profile page for partners
+          $idColumn = "PartnerID"; // Column name for user ID in the partner table
       }
   
       // Prepare statement
@@ -42,8 +44,8 @@ class Login {
           // Login successful
           // Get the user ID from the fetched row
           $user = $result->fetch_assoc();
-          $user_id = $user['PartnerID']; // Assuming the column name is 'PartnerID'
-  
+          $user_id = $user[$idColumn]; // Get the user ID using the correct column name
+          
           // Redirect to the appropriate profile page with user ID as query parameter
           header("Location: $profilePage?id=$user_id");
           exit;
