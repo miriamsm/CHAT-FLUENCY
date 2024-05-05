@@ -1,31 +1,15 @@
 <?php
 include 'connect.php';
 $connection = new Connect();
-session_start(); // Start or resume the session
 
 if (isset($_COOKIE['user_id'])) {
    $user_id = $_COOKIE['user_id'];
 } else {
    $user_id = '';
    header('location:login.php');
-   exit();
 }
 
-// if (isset($_SESSION['user_id'])) {
-//    $user_id = $_SESSION['user_id'];
-// } else {
-//    header('location:login.php');
-//    exit();
-// }
-
-// // Get partner ID from URL parameter
-// if(isset($_GET['partnerID'])) {
-//    $partnerID = $_GET['partnerID'];
-// } else {
-//    // Handle case where partner ID is not provided
-//    die("Partner ID not provided.");
-// }
-$partnerId=$user_id;
+$partnerId = $user_id;
 
 
 // Fetching scheduled sessions from LearningSessions table
@@ -67,7 +51,7 @@ $resultPrevious = $connection->conn->query($sqlPrevious); // Execute query for c
 
    <!-- custom css file link  -->
    <link rel="stylesheet" href="style.css">
-   
+
 </head>
 
 <body>
@@ -93,28 +77,28 @@ $resultPrevious = $connection->conn->query($sqlPrevious); // Execute query for c
 
    <div class="side-bar">
 
-<div id="close-btn">
-   <i class="fas fa-times"></i>
-</div>
+      <div id="close-btn">
+         <i class="fas fa-times"></i>
+      </div>
 
-<div class="profile">
-<img src="images/<?= $fetch_user['Photo']; ?>" class="image" alt="">
-   <h3 class="name"><?= $fetch_user['FirstName'] . ' ' . $fetch_user['LastName']; ?></h3>
-   <p class="role">Partner</p>
-</div>
+      <div class="profile">
+         <img src="images/<?= $fetch_user['Photo']; ?>" class="image" alt="">
+         <h3 class="name"><?= $fetch_user['FirstName'] . ' ' . $fetch_user['LastName']; ?></h3>
+         <p class="role">Partner</p>
+      </div>
 
-<nav class="navbar">
-   <a href="profilePartner.php"><i class="fas fa-home"></i><span>home</span></a>
-   <a href="SessionsPartner.php"><i><img src="images/session.png" alt="sessions"></i><span>sessions</span></a>
-   <a href="about_partner.php"><i class="fas fa-question"></i><span>about</span></a>
-</nav>
-<nav>
-   <div style="text-align: center; margin-top: 20px; margin-bottom: 150px;">
-   <a href="home.php"  class="inline-btn" >Sign out</a>
-</div>
-</nav>
+      <nav class="navbar">
+         <a href="profilePartner.php"><i class="fas fa-home"></i><span>home</span></a>
+         <a href="SessionsPartner.php"><i><img src="images/session.png" alt="sessions"></i><span>sessions</span></a>
+         <a href="about_partner.php"><i class="fas fa-question"></i><span>about</span></a>
+      </nav>
+      <nav>
+         <div style="text-align: center; margin-top: 20px; margin-bottom: 150px;">
+            <a href="home.php" class="inline-btn">Sign out</a>
+         </div>
+      </nav>
 
-</div>
+   </div>
    <div style="display: flex;">
 
 
@@ -125,24 +109,24 @@ $resultPrevious = $connection->conn->query($sqlPrevious); // Execute query for c
 
          <div class="box-container">
             <?php
-               if ($resultCurrent->num_rows > 0) {
-                  // Output data of each row
-                  while ($row = $resultCurrent->fetch_assoc()) {
-                     echo "<a class='box2'>";
-                     echo "<div class='student'>";
-                     echo "<img src='" . $fetch_user['Photo'] . "' alt='profile picture'>";
-                     echo "<div class='info'>";
-                     echo "<h3>" . $row['LearnerFirstName'] . " " . $row['LearnerLastName'] . "</h3>";
-                     echo "<span>" . date('d-m-Y', strtotime($row['SessionDate'])) . "</span>";
-                     echo "</div>";
-                     echo "</div>";
-                     echo "<h3>SessionId:" . $row['SessionID'] . "</h3>"; // Displaying session ID
-                     echo "</a>";
-                  }
-               } else {
-                  echo "<p>No sessions scheduled</p>";
+            if ($resultCurrent->num_rows > 0) {
+               // Output data of each row
+               while ($row = $resultCurrent->fetch_assoc()) {
+                  echo "<a class='box2'>";
+                  echo "<div class='student'>";
+                  echo "<img src='" . $fetch_user['Photo'] . "' alt='profile picture'>";
+                  echo "<div class='info'>";
+                  echo "<h3>" . $row['LearnerFirstName'] . " " . $row['LearnerLastName'] . "</h3>";
+                  echo "<span>" . date('d-m-Y', strtotime($row['SessionDate'])) . "</span>";
+                  echo "</div>";
+                  echo "</div>";
+                  echo "<h3>SessionId:" . $row['SessionID'] . "</h3>"; // Displaying session ID
+                  echo "</a>";
                }
-             
+            } else {
+               echo "<p>No sessions scheduled</p>";
+            }
+
             ?>
          </div>
 
@@ -155,25 +139,25 @@ $resultPrevious = $connection->conn->query($sqlPrevious); // Execute query for c
          <div class="box-container">
 
             <?php
-               if ($resultPrevious->num_rows > 0) {
-                  // Output data of each row for completed or canceled sessions
-                  while ($row = $resultPrevious->fetch_assoc()) {
-                     echo "<a class='box2'>";
-                     echo "<div class='student'>";
-                     echo "<img src='" . $fetch_user['Photo'] . "' alt='profile picture'>";
-                     echo "<div class='info'>";
-                     echo "<h3>" . $row['LearnerFirstName'] . " " . $row['LearnerLastName'] . "</h3>";
-                     echo "<span>" . date('d-m-Y', strtotime($row['SessionDate'])) . "</span>";
-                     echo "</div>";
-                     echo "</div>";
-                     echo "<h3>SessionId:" . $row['SessionID'] . "</h3>"; // Displaying session ID
-                     echo "</a>";
-                  }
-               } else {
-                  echo "<p>No previous sessions found.</p>";
+            if ($resultPrevious->num_rows > 0) {
+               // Output data of each row for completed or canceled sessions
+               while ($row = $resultPrevious->fetch_assoc()) {
+                  echo "<a class='box2'>";
+                  echo "<div class='student'>";
+                  echo "<img src='" . $fetch_user['Photo'] . "' alt='profile picture'>";
+                  echo "<div class='info'>";
+                  echo "<h3>" . $row['LearnerFirstName'] . " " . $row['LearnerLastName'] . "</h3>";
+                  echo "<span>" . date('d-m-Y', strtotime($row['SessionDate'])) . "</span>";
+                  echo "</div>";
+                  echo "</div>";
+                  echo "<h3>SessionId:" . $row['SessionID'] . "</h3>"; // Displaying session ID
+                  echo "</a>";
                }
-          
-            
+            } else {
+               echo "<p>No previous sessions found.</p>";
+            }
+
+
             ?>
          </div>
 
@@ -189,8 +173,8 @@ $resultPrevious = $connection->conn->query($sqlPrevious); // Execute query for c
 
    <!-- custom js file link  -->
    <script src="js/script.js"></script>
-   
-   
+
+
 
 </body>
 

@@ -5,6 +5,7 @@ $connection = new Connect();
 if(isset($_COOKIE['user_id'])){
    $user_id = $_COOKIE['user_id'];
 }else{
+   $user_id='';
    header('location:login.php');
 }
 
@@ -25,7 +26,6 @@ $result = $connection->conn->query($sql);
 if (!$result) {
    die("Query failed: " . $conn->error); // Output error message if query fails
 }
-$user_role='learner';
 
 
 ?>

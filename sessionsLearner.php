@@ -1,27 +1,16 @@
 <?php
 include 'connect.php';
 $connection = new Connect();
-session_start(); // Start or resume the session
 
-// if (isset($_SESSION['user_id'])) {
-//     $user_id = $_SESSION['user_id'];
-// } else {
-//     header('location:login.php');
-//     exit();
-// }
 if(isset($_COOKIE['user_id'])){
    $user_id = $_COOKIE['user_id'];
 }else{
+   $user_id='';
    header('location:login.php');
-   exit();
 }
-// if(isset($_GET['LearnerID'])) {
-//    $LearnerID = $_GET['LearnerID'];
-// } else {
-//    // Handle case where partner ID is not provided
-//    die("Learner ID not provided.");
-// }
+
 $LearnerId=$user_id;
+
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
    // Retrieve rating and review data from the POST request
    $reviewText = $_POST["reviewText"];
