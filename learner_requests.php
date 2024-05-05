@@ -34,6 +34,12 @@ function getStatusColor($status) {
    }
 }
 
+$sqlSidebar = "SELECT Photo, CONCAT(FirstName, ' ', LastName) AS FullName FROM LanguagePartners WHERE User_Role = 'partner' LIMIT 1";
+$resultSidebar = $connection->conn->query($sqlSidebar);
+$rowSidebar = $resultSidebar->fetch_assoc();
+$partnerPhoto = $rowSidebar['Photo'];
+$partnerName = $rowSidebar['FullName'];
+
 ?>
 
 
@@ -58,13 +64,11 @@ function getStatusColor($status) {
    
    <section class="flex">
 
-      <a href="home.html" class="logo"> <img src = "images/logo.jpg" width="210" height="60" alt="logo"></a> 
+      <a href="home.php" class="logo"> <img src = "images/logo.jpg" width="210" height="60" alt="logo"></a> 
 
       
 
       <div class="icons">
-         <div id="menu-btn" class="fas fa-bars"></div>
-        
          <div id="toggle-btn" class="fas fa-sun"></div>
       </div>
 
@@ -90,19 +94,19 @@ function getStatusColor($status) {
    </div>
 
    <div class="profile">
-      <img src="images/pic-1.jpg" class="image" alt="">
-      <h3 class="name">Richard Murphy</h3>
+   <img src="images/<?php echo $partnerPhoto; ?>" class="image" alt="Partner Photo">
+      <h3 class="name"><?php echo $partnerName; ?></h3>
       <p class="role">Partner</p>
    </div>
 
    <nav class="navbar">
-      <a href="profilePartner.html"><i class="fas fa-home"></i><span>home</span></a>
-      <a href="SessionsPartner.html"><i><img src="images/session.png" alt="sessions"></i><span>sessions</span></a>
-      <a href="about_partner.html"><i class="fas fa-question"></i><span>about</span></a>
+      <a href="profilePartner.php"><i class="fas fa-home"></i><span>home</span></a>
+      <a href="SessionsPartner.php"><i><img src="images/session.png" alt="sessions"></i><span>sessions</span></a>
+      <a href="about_partner.php"><i class="fas fa-question"></i><span>about</span></a>
    </nav>
    <nav>
       <div style="text-align: center; margin-top: 20px; margin-bottom: 150px;">
-      <a href="home.html"  class="inline-btn" >Sign out</a>
+      <a href="user_logout.php" onclick="return confirm('logout from this website?');" class="inline-btn" >Sign out</a>
    </div>
    </nav>
 
@@ -143,7 +147,7 @@ function getStatusColor($status) {
 <script src="script.js"></script>
 <footer style="margin-top : 80px;" class="footer">
    &copy; copyright @ 2024 by <span>CHAT FLUENCY</span> | all rights reserved!
-   <a href="contact_partner.html"><i class="fas fa-headset"></i><span> contact us</span></a>
+   <a href="contact_partner.php"><i class="fas fa-headset"></i><span> contact us</span></a>
 </footer>
 
 </body>
