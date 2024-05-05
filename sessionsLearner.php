@@ -29,7 +29,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["submit"])) {
 }
 
 // Fetching scheduled sessions from LearningSessions table
-$sqlCurrent = "SELECT LearningSessions.SessionID, LearningSessions.SessionDate, LearningSessions.SessionDuration, LanguageLearners.FirstName AS LearnerFirstName, LanguageLearners.LastName AS LearnerLastName, LanguagePartners.FirstName AS PartnerFirstName, LanguagePartners.LastName AS PartnerLastName, LanguagePartners.Photo AS PartnerPhoto 
+$sqlCurrent = "SELECT LearningSessions.SessionID, LearningSessions.SessionDate, LearningSessions.SessionDuration, LanguageLearners.FirstName AS LearnerFirstName, LanguageLearners.LastName AS LearnerLastName, LanguagePartners.FirstName AS PartnerFirstName, LanguagePartners.LastName AS PartnerLastName, LanguagePartners.Photo AS PartnerPhoto, LearningSessions.PartnerID AS PartnerID
                FROM LearningSessions
                INNER JOIN LanguageLearners ON LearningSessions.LearnerID = LanguageLearners.LearnerID
                INNER JOIN LanguagePartners ON LearningSessions.PartnerID = LanguagePartners.PartnerID
@@ -40,7 +40,7 @@ $sqlCurrent = "SELECT LearningSessions.SessionID, LearningSessions.SessionDate, 
 $sqlPrevious = "SELECT LearningSessions.SessionID, LearningSessions.SessionDate, LearningSessions.SessionDuration, 
 LanguageLearners.FirstName AS LearnerFirstName, LanguageLearners.LastName AS LearnerLastName, 
 LanguagePartners.FirstName AS PartnerFirstName, LanguagePartners.LastName AS PartnerLastName,
-LearningSessions.Status, LanguagePartners.Photo AS PartnerPhoto
+LearningSessions.Status, LanguagePartners.Photo AS PartnerPhoto, LearningSessions.PartnerID AS PartnerID
 FROM LearningSessions
 INNER JOIN LanguageLearners ON LearningSessions.LearnerID = LanguageLearners.LearnerID
 INNER JOIN LanguagePartners ON LearningSessions.PartnerID = LanguagePartners.PartnerID
@@ -153,8 +153,7 @@ $resultPrevious = $connection->conn->query($sqlPrevious); // Execute query for c
 </nav>
 <nav>
    <div style="text-align: center; margin-top: 20px; margin-bottom: 150px;">
-   <a href="home.html"  class="inline-btn" >Sign out</a>
-</div>
+   <a href="user_logout.php" onclick="return confirm('logout from this website?');" class="inline-btn" >Sign out</a></div>
 </nav>
 
 </div>
@@ -172,7 +171,7 @@ $resultPrevious = $connection->conn->query($sqlPrevious); // Execute query for c
                if ($resultCurrent->num_rows > 0) {
                   // Output data of each row
                   while ($row = $resultCurrent->fetch_assoc()) {
-                     echo "<a class='box2'href='partner_profile.php'>";
+                     echo "<a class='box' href='partner_profile.php?partner_id=" . $row['PartnerID'] . "'>";
                      echo "<div class='student'>";
                      echo "<img src='" . $row['PartnerPhoto'] . "' alt='profile photo'>";
                      echo "<div class='info'>";
@@ -246,7 +245,7 @@ $resultPrevious = $connection->conn->query($sqlPrevious); // Execute query for c
                   }else{
             
 
-                     echo "<a class='box' href='partner_profile.php'>";
+                     echo "<a class='box' href='partner_profile.php?partner_id=" . $row['PartnerID'] . "'>";
                      echo "<div class='tutor'>";
                      echo "<img src='" . $row['PartnerPhoto'] . "' alt='profile photo'>";
                      echo "<div class='info'>";
