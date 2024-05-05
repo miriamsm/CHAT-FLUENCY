@@ -11,7 +11,7 @@ if(isset($_COOKIE['user_id'])){
 $connection = new Connect();
 
 // Fetch learner requests from the database along with learner names
-$sql = "SELECT lr.*, ll.FirstName AS LearnerFirstName, ll.LastName AS LearnerLastName 
+$sql = "SELECT lr.*, ll.FirstName AS LearnerFirstName, ll.LastName AS LearnerLastName, ll.Photo 
         FROM LearningRequests lr
         INNER JOIN LanguageLearners ll ON lr.LearnerID = ll.LearnerID";
 $stmt = $connection->conn->query($sql); // Use the connection object's query method
