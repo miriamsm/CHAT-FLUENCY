@@ -220,7 +220,7 @@ $resultPrevious = $connection->conn->query($sqlPrevious); // Execute query for c
                         echo "<h3>SessionId:" . $row['SessionID'] . "</h3>"; 
                         echo'<button class="inline-btn">Rate</button>
                         <div class="rating-section" style="display: none;">';?>
-                        <form name="rate" method="post" action="<?php echo $_SERVER["PHP_SELF"];?>" onsubmit="return confirmRate()">
+                        <form name="rate" method="post" action="<?php echo $_SERVER["PHP_SELF"];?>" >
                            
                          <?php echo' <div class="rate">
                            <textarea class="review-text" placeholder="Write your review..." style="
@@ -288,13 +288,6 @@ $resultPrevious = $connection->conn->query($sqlPrevious); // Execute query for c
   
       }
    }
-   function submitRating(button) {
-   var box = button.closest('.box');
-   var reviewText = box.querySelector('.review-text').value;
-   var rating = box.querySelector('input[name="rate"]:checked').value;
-   
-   
-}
 </script>
    
 
