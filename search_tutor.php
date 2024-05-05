@@ -28,7 +28,14 @@ if(isset($_POST['search_tutor']) && !empty($_POST['search_box'])) {
     // If search_box is empty or not set, retrieve all partners
     $sql = "SELECT * FROM LanguagePartners";
     $result = $connection->conn->query($sql);
+
 }
+$sqlSidebar = "SELECT Photo, CONCAT(FirstName, ' ', LastName) AS FullName FROM LanguageLearners WHERE User_Role = 'learner' LIMIT 1";
+$resultSidebar = $connection->conn->query($sqlSidebar);
+$rowSidebar = $resultSidebar->fetch_assoc();
+$learnerPhoto = $rowSidebar['Photo'];
+$learnerName = $rowSidebar['FullName'];
+
 
 ?>
 
@@ -51,9 +58,9 @@ if(isset($_POST['search_tutor']) && !empty($_POST['search_box'])) {
 
 <header class="header">
     <div class="flex">
-        <a href="profileLearner.html" class="logo"> <img src="images/logo.jpg" width="210" height="60" alt="logo"></a>
+        <a href="profileLearner.php" class="logo"> <img src="images/logo.jpg" width="210" height="60" alt="logo"></a>
         <div class="icons">
-            <div id="menu-btn" class="fas fa-bars"></div>
+            
             <div id="toggle-btn" class="fas fa-sun"></div>
         </div>
     </div>
@@ -66,20 +73,20 @@ if(isset($_POST['search_tutor']) && !empty($_POST['search_box'])) {
    </div>
 
    <div class="profile">
-      <img src="images/pic-1.jpg" class="image" alt="">
-      <h3 class="name">Leena Alshaikh</h3>
-      <p class="role">Learner</p>
+   <img src="images/<?php echo $learnerPhoto; ?>" class="image" alt="Learner Photo">
+   <h3 class="name"><?php echo $learnerName; ?></h3>
+   <p class="role">Learner</p>
    </div>
 
    <nav class="navbar">
-      <a href="profileLearner.html"><i class="fas fa-home"></i><span>home</span></a>
-      <a href="SesssionsLearner.html"><i><img src="images/session.png" alt="sessions"></i><span>sessions</span></a>
-      <a href="partners.html"><i class="fas fa-chalkboard-user"></i><span>partners</span></a>
-      <a href="about_learner.html"><i class="fas fa-question"></i><span>about</span></a>
+      <a href="profileLearner.php"><i class="fas fa-home"></i><span>home</span></a>
+      <a href="SessionsLearner.php"><i><img src="images/session.png" alt="sessions"></i><span>sessions</span></a>
+      <a href="partners.php"><i class="fas fa-chalkboard-user"></i><span>partners</span></a>
+      <a href="about_learner.php"><i class="fas fa-question"></i><span>about</span></a>
    </nav>
    <nav>
       <div style="text-align: center; margin-top: 20px; margin-bottom: 150px;">
-      <a href="home.html"  class="inline-btn" >Sign out</a>
+      <a href="user_logout.php" onclick="return confirm('logout from this website?');" class="inline-btn" >Sign out</a>
    </div>
    </nav>
 
@@ -117,7 +124,7 @@ if(isset($_POST['search_tutor']) && !empty($_POST['search_box'])) {
 
 <footer class="footer">
     &copy; copyright @ 2024 by <span>CHAT FLUENCY</span> | all rights reserved!
-    <a href="contact_learner.html"><i class="fas fa-headset"></i><span> contact us</span></a>
+    <a href="contact_learner.php"><i class="fas fa-headset"></i><span> contact us</span></a>
 </footer>
 
 <!-- custom js file link  -->
