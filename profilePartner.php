@@ -164,7 +164,7 @@ if (isset($_SESSION['redirect_message']) && !empty($_SESSION['redirect_message']
                 <p>reviews</p> 
              </div>
           </div>
-          <a href="reviews.php?partnerID=<?php echo $partnerID; ?>" class="inline-btn">view Reviews</a>
+          <a href="reviewsPartner.php?partnerID=<?php echo $user_id; ?>" class="inline-btn">view Reviews</a>
        </div>
    
        <div class="box">
