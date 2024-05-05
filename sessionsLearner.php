@@ -222,10 +222,10 @@ $resultPrevious = $connection->conn->query($sqlPrevious); // Execute query for c
                         </div>';
                         echo "<h3>SessionId:" . $row['SessionID'] . "</h3>"; 
                         echo'<button class="inline-btn">Rate</button>
-                        <div class="rating-section" style="display: none;">';
-                           echo'<form name="rate" action='. $_SERVER['PHP_SELF'] . 'method="post" enctype="multipart/form-data" onsubmit="return validateForm()">';
+                        <div class="rating-section" style="display: none;">';?>
+                        <form name="rate" method="post" action="<?php echo $_SERVER["PHP_SELF"];?>" onsubmit="return confirmRate()">
                            
-                          echo' <div class="rate">
+                         <?php echo' <div class="rate">
                            <textarea class="review-text" placeholder="Write your review..." style="
                            resize: none;
                          "></textarea>
