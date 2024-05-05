@@ -11,25 +11,22 @@ if(isset($_COOKIE['user_id'])){
 
 $LearnerId=$user_id;
 
-// if ($_SERVER["REQUEST_METHOD"] == "POST") {
-//    // Retrieve rating and review data from the POST request
-//    $reviewText = $_POST["reviewText"];
-//    $rating = $_POST["rating"];
-//    $sessionId = $_POST["sessionId"]; // Assuming you're also submitting the session ID
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["submit"])) {
+   // Retrieve rating and review data from the POST request
+   $reviewText = $_POST["reviewText"];
+   $rating = $_POST["rate"];
+   $sessionId = $_POST["sessionId"]; // Assuming you're also submitting the session ID
    
-//    // Perform SQL insertion into the reviewsratings table
-//    $partnerId = $_COOKIE['user_id']; // Assuming partner ID is stored in the session
-//    $sql = "INSERT INTO reviewsratings (SessionID, PartnerID, ReviewText, Rating) VALUES ('$sessionId', '$partnerId', '$reviewText', '$rating')";
+   // Perform SQL insertion into the reviewsratings table
+   $partnerId = $_COOKIE['user_id']; // Assuming partner ID is stored in the session
+   $sql = "INSERT INTO reviewsratings (SessionID, PartnerID, ReviewText, Rating) VALUES ('$sessionId', '$partnerId', '$reviewText', '$rating')";
    
-//    if ($connection->conn->query($sql) === TRUE) {
-//       echo "<script>alert('Thank you for your review');</script>";
-//    } else {
-//       echo "Error: " . $sql . "<br>" . $connection->conn->error;
-//    }
-// } else {
-//    echo "Invalid request.";
-// }
-
+   if ($connection->conn->query($sql) === TRUE) {
+      echo "<script>alert('Thank you for your review');</script>";
+   } else {
+      echo "Error: " . $sql . "<br>" . $connection->conn->error;
+   }
+}
 
 // Fetching scheduled sessions from LearningSessions table
 $sqlCurrent = "SELECT LearningSessions.SessionID, LearningSessions.SessionDate, LearningSessions.SessionDuration, LanguageLearners.FirstName AS LearnerFirstName, LanguageLearners.LastName AS LearnerLastName, LanguagePartners.FirstName AS PartnerFirstName, LanguagePartners.LastName AS PartnerLastName, LanguagePartners.Photo AS PartnerPhoto 
@@ -221,7 +218,8 @@ $resultPrevious = $connection->conn->query($sqlPrevious); // Execute query for c
                         echo'<button class="inline-btn">Rate</button>
                         <div class="rating-section" style="display: none;">';?>
                         <form name="rate" method="post" action="<?php echo $_SERVER["PHP_SELF"];?>" >
-                           
+                        <input type="hidden" name="sessionId" value="<?php echo $row['SessionID']; ?>">
+                        <input type="hidden" name="partnerId" value="<?php echo $row['PartnerID']; ?>">
                          <?php echo' <div class="rate">
                            <textarea class="review-text" placeholder="Write your review..." style="
                            resize: none;
