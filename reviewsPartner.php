@@ -5,6 +5,7 @@ $connection = new Connect();
 if(isset($_COOKIE['user_id'])){
    $user_id = $_COOKIE['user_id'];
 }else{
+   $user_id='';
    header('location:login.php');
 }
 
@@ -25,7 +26,6 @@ $result = $connection->conn->query($sql);
 if (!$result) {
    die("Query failed: " . $conn->error); // Output error message if query fails
 }
-$user_role='learner';
 
 
 ?>
@@ -79,12 +79,7 @@ $user_role='learner';
 </nav>
 
 </div>
-   <?php
-   // Include the sidebar based on user role
-   include 'sidebar.php';
-   generateSidebar($user_role, $connection); 
-
-   ?>
+   
 
    <section class="reviews">
       <h1 class="heading">Reviews</h1>
