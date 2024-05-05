@@ -44,6 +44,12 @@ if($select_contact->num_rows > 0){
 
 }
 
+$sqlSidebar = "SELECT Photo, CONCAT(FirstName, ' ', LastName) AS FullName FROM LanguagePartners WHERE User_Role = 'partner' LIMIT 1";
+$resultSidebar = $connection->conn->query($sqlSidebar);
+$rowSidebar = $resultSidebar->fetch_assoc();
+$partnerPhoto = $rowSidebar['Photo'];
+$partnerName = $rowSidebar['FullName'];
+
 ?>
 
 
@@ -72,12 +78,12 @@ if($select_contact->num_rows > 0){
    
    <div class="flex">
 
-      <a href="profileLearner.html" class="logo"><img src = "images/logo.jpg" width="210" height="60" alt="logo"></a>
+      <a href="profileLearner.php" class="logo"><img src = "images/logo.jpg" width="210" height="60" alt="logo"></a>
 
      
 
       <div class="icons">
-         <div id="menu-btn" class="fas fa-bars"></div>
+         
          <div id="toggle-btn" class="fas fa-sun"></div>
       </div>
 
@@ -93,8 +99,8 @@ if($select_contact->num_rows > 0){
    </div>
 
    <div class="profile">
-   <img src="images/<?= $fetch_user['Photo']; ?>" class="image" alt="">
-   <h3 class="name"><?= $fetch_user['FirstName'] . ' ' . $fetch_user['LastName']; ?></h3>
+   <img src="images/<?php echo $partnerPhoto; ?>" class="image" alt="Partner Photo">
+      <h3 class="name"><?php echo $partnerName; ?></h3>
       <p class="role">Partner</p>
    </div>
 
@@ -105,7 +111,7 @@ if($select_contact->num_rows > 0){
    </nav>
    <nav>
       <div style="text-align: center; margin-top: 20px; margin-bottom: 150px;">
-      <a href="home.html"  class="inline-btn" >Sign out</a>
+      <a href="user_logout.php" onclick="return confirm('logout from this website?');" class="inline-btn" >Sign out</a>
    </div>
    </nav>
 
@@ -168,7 +174,7 @@ if($select_contact->num_rows > 0){
 <footer class="footer">
 
    &copy; copyright @ 2024 by <span>CHAT FLUENCY</span> | all rights reserved!
-   <a href="contact_learner.html"><i class="fas fa-headset"></i><span> contact us</span></a>
+   <a href="contact_partner.php"><i class="fas fa-headset"></i><span> contact us</span></a>
 
 </footer>
 
