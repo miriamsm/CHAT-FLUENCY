@@ -81,12 +81,6 @@ if (!$result) {
 </nav>
 
 </div>
-   <?php
-   // Include the sidebar based on user role
-   include 'sidebar.php';
-   generateSidebar($user_role, $connection); 
-
-   ?>
 
    <section class="reviews">
       <h1 class="heading">Reviews</h1>
