@@ -1,7 +1,7 @@
 <?php
 include 'connect.php';
 $connection = new Connect();
-
+session_start(); // Start or resume the session
 
 if (isset($_COOKIE['user_id'])) {
    $user_id = $_COOKIE['user_id'];
@@ -11,13 +11,21 @@ if (isset($_COOKIE['user_id'])) {
    exit();
 }
 
-// Get partner ID from URL parameter
-if(isset($_GET['partnerID'])) {
-   $partnerID = $_GET['partnerID'];
-} else {
-   // Handle case where partner ID is not provided
-   die("Partner ID not provided.");
-}
+// if (isset($_SESSION['user_id'])) {
+//    $user_id = $_SESSION['user_id'];
+// } else {
+//    header('location:login.php');
+//    exit();
+// }
+
+// // Get partner ID from URL parameter
+// if(isset($_GET['partnerID'])) {
+//    $partnerID = $_GET['partnerID'];
+// } else {
+//    // Handle case where partner ID is not provided
+//    die("Partner ID not provided.");
+// }
+$partnerId=$user_id;
 
 
 // Fetching scheduled sessions from LearningSessions table
@@ -90,7 +98,7 @@ $resultPrevious = $connection->conn->query($sqlPrevious); // Execute query for c
 </div>
 
 <div class="profile">
-   <img src="images/<?= $fetch_user['Photo']; ?>" class="image" alt="">
+<img src="images/<?= $fetch_user['Photo']; ?>" class="image" alt="">
    <h3 class="name"><?= $fetch_user['FirstName'] . ' ' . $fetch_user['LastName']; ?></h3>
    <p class="role">Partner</p>
 </div>
@@ -102,7 +110,7 @@ $resultPrevious = $connection->conn->query($sqlPrevious); // Execute query for c
 </nav>
 <nav>
    <div style="text-align: center; margin-top: 20px; margin-bottom: 150px;">
-   <a href="home.html"  class="inline-btn" >Sign out</a>
+   <a href="home.php"  class="inline-btn" >Sign out</a>
 </div>
 </nav>
 

@@ -135,7 +135,7 @@ if (isset($_SESSION['redirect_message']) && !empty($_SESSION['redirect_message']
                 <p>sessions</p>
              </div>
           </div>
-          <a href="SesssionsLearner.php" class="inline-btn">view sessions</a>
+          <a href="sessionsLearner.php" class="inline-btn">view sessions</a>
        </div>
 
        <div class="box">
