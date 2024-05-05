@@ -13,7 +13,7 @@ $partnerId = $user_id;
 
 
 // Fetching scheduled sessions from LearningSessions table
-$sqlCurrent = "SELECT LearningSessions.SessionID, LearningSessions.SessionDate, LearningSessions.SessionDuration, LanguageLearners.FirstName AS LearnerFirstName, LanguageLearners.LastName AS LearnerLastName, LanguagePartners.FirstName AS PartnerFirstName, LanguagePartners.LastName AS PartnerLastName
+$sqlCurrent = "SELECT LearningSessions.SessionID, LearningSessions.SessionDate, LearningSessions.SessionDuration, LanguageLearners.FirstName AS LearnerFirstName, LanguageLearners.LastName AS LearnerLastName, LanguagePartners.FirstName AS PartnerFirstName, LanguagePartners.LastName AS PartnerLastName, LanguageLearner.Photo AS LearnerPhoto
                FROM LearningSessions
                INNER JOIN LanguageLearners ON LearningSessions.LearnerID = LanguageLearners.LearnerID
                INNER JOIN LanguagePartners ON LearningSessions.PartnerID = LanguagePartners.PartnerID
@@ -24,7 +24,7 @@ $sqlCurrent = "SELECT LearningSessions.SessionID, LearningSessions.SessionDate, 
 $sqlPrevious = "SELECT LearningSessions.SessionID, LearningSessions.SessionDate, LearningSessions.SessionDuration, 
 LanguageLearners.FirstName AS LearnerFirstName, LanguageLearners.LastName AS LearnerLastName, 
 LanguagePartners.FirstName AS PartnerFirstName, LanguagePartners.LastName AS PartnerLastName,
-LearningSessions.Status
+LearningSessions.Status, LanguageLearner.Photo AS LearnerPhoto
 FROM LearningSessions
 INNER JOIN LanguageLearners ON LearningSessions.LearnerID = LanguageLearners.LearnerID
 INNER JOIN LanguagePartners ON LearningSessions.PartnerID = LanguagePartners.PartnerID
@@ -114,7 +114,7 @@ $resultPrevious = $connection->conn->query($sqlPrevious); // Execute query for c
                while ($row = $resultCurrent->fetch_assoc()) {
                   echo "<a class='box2'>";
                   echo "<div class='student'>";
-                  echo "<img src='" . $fetch_user['Photo'] . "' alt='profile picture'>";
+                  echo "<img src='" . $row['LearnerPhoto'] . "' alt='profile picture'>";
                   echo "<div class='info'>";
                   echo "<h3>" . $row['LearnerFirstName'] . " " . $row['LearnerLastName'] . "</h3>";
                   echo "<span>" . date('d-m-Y', strtotime($row['SessionDate'])) . "</span>";
@@ -144,7 +144,7 @@ $resultPrevious = $connection->conn->query($sqlPrevious); // Execute query for c
                while ($row = $resultPrevious->fetch_assoc()) {
                   echo "<a class='box2'>";
                   echo "<div class='student'>";
-                  echo "<img src='" . $fetch_user['Photo'] . "' alt='profile picture'>";
+                  echo "<img src='" . $row['LearnerPhoto'] . "' alt='profile picture'>";
                   echo "<div class='info'>";
                   echo "<h3>" . $row['LearnerFirstName'] . " " . $row['LearnerLastName'] . "</h3>";
                   echo "<span>" . date('d-m-Y', strtotime($row['SessionDate'])) . "</span>";

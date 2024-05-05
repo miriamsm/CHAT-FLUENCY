@@ -11,28 +11,28 @@ if(isset($_COOKIE['user_id'])){
 
 $LearnerId=$user_id;
 
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-   // Retrieve rating and review data from the POST request
-   $reviewText = $_POST["reviewText"];
-   $rating = $_POST["rating"];
-   $sessionId = $_POST["sessionId"]; // Assuming you're also submitting the session ID
+// if ($_SERVER["REQUEST_METHOD"] == "POST") {
+//    // Retrieve rating and review data from the POST request
+//    $reviewText = $_POST["reviewText"];
+//    $rating = $_POST["rating"];
+//    $sessionId = $_POST["sessionId"]; // Assuming you're also submitting the session ID
    
-   // Perform SQL insertion into the reviewsratings table
-   $partnerId = $_COOKIE['user_id']; // Assuming partner ID is stored in the session
-   $sql = "INSERT INTO reviewsratings (SessionID, PartnerID, ReviewText, Rating) VALUES ('$sessionId', '$partnerId', '$reviewText', '$rating')";
+//    // Perform SQL insertion into the reviewsratings table
+//    $partnerId = $_COOKIE['user_id']; // Assuming partner ID is stored in the session
+//    $sql = "INSERT INTO reviewsratings (SessionID, PartnerID, ReviewText, Rating) VALUES ('$sessionId', '$partnerId', '$reviewText', '$rating')";
    
-   if ($connection->conn->query($sql) === TRUE) {
-      echo "<script>alert('Thank you for your review');</script>";
-   } else {
-      echo "Error: " . $sql . "<br>" . $connection->conn->error;
-   }
-} else {
-   echo "Invalid request.";
-}
+//    if ($connection->conn->query($sql) === TRUE) {
+//       echo "<script>alert('Thank you for your review');</script>";
+//    } else {
+//       echo "Error: " . $sql . "<br>" . $connection->conn->error;
+//    }
+// } else {
+//    echo "Invalid request.";
+// }
 
 
 // Fetching scheduled sessions from LearningSessions table
-$sqlCurrent = "SELECT LearningSessions.SessionID, LearningSessions.SessionDate, LearningSessions.SessionDuration, LanguageLearners.FirstName AS LearnerFirstName, LanguageLearners.LastName AS LearnerLastName, LanguagePartners.FirstName AS PartnerFirstName, LanguagePartners.LastName AS PartnerLastName
+$sqlCurrent = "SELECT LearningSessions.SessionID, LearningSessions.SessionDate, LearningSessions.SessionDuration, LanguageLearners.FirstName AS LearnerFirstName, LanguageLearners.LastName AS LearnerLastName, LanguagePartners.FirstName AS PartnerFirstName, LanguagePartners.LastName AS PartnerLastName, LanguagePartners.Photo AS PartnerPhoto 
                FROM LearningSessions
                INNER JOIN LanguageLearners ON LearningSessions.LearnerID = LanguageLearners.LearnerID
                INNER JOIN LanguagePartners ON LearningSessions.PartnerID = LanguagePartners.PartnerID
@@ -43,7 +43,7 @@ $sqlCurrent = "SELECT LearningSessions.SessionID, LearningSessions.SessionDate, 
 $sqlPrevious = "SELECT LearningSessions.SessionID, LearningSessions.SessionDate, LearningSessions.SessionDuration, 
 LanguageLearners.FirstName AS LearnerFirstName, LanguageLearners.LastName AS LearnerLastName, 
 LanguagePartners.FirstName AS PartnerFirstName, LanguagePartners.LastName AS PartnerLastName,
-LearningSessions.Status
+LearningSessions.Status, LanguagePartners.Photo AS PartnerPhoto
 FROM LearningSessions
 INNER JOIN LanguageLearners ON LearningSessions.LearnerID = LanguageLearners.LearnerID
 INNER JOIN LanguagePartners ON LearningSessions.PartnerID = LanguagePartners.PartnerID
@@ -177,7 +177,7 @@ $resultPrevious = $connection->conn->query($sqlPrevious); // Execute query for c
                   while ($row = $resultCurrent->fetch_assoc()) {
                      echo "<a class='box2'href='partner_profile.php'>";
                      echo "<div class='student'>";
-                     echo "<img src='" . $fetch_user['Photo'] . "' alt='profile photo'>";
+                     echo "<img src='" . $row['PartnerPhoto'] . "' alt='profile photo'>";
                      echo "<div class='info'>";
                      echo "<h3>" . $row['PartnerFirstName'] . " " . $row['PartnerLastName'] . "</h3>";
                      echo "<span>" . date('d-m-Y', strtotime($row['SessionDate'])) . "</span>";
@@ -210,12 +210,12 @@ $resultPrevious = $connection->conn->query($sqlPrevious); // Execute query for c
                         echo "<a class='box'>";
 
                         echo '<div class="box" onclick="showRating(this)">
-                        <div class="tutor">
-                           <img src="images/pic-2.jpg" alt="">
-                           <div class="info">';
-                           echo "<h3>" . $row['PartnerFirstName'] . " " . $row['PartnerLastName'] . "</h3>";
-                           echo "<span>" . date('d-m-Y', strtotime($row['SessionDate'])) . "</span>";
-                           echo'</div>
+                        <div class="tutor">';
+                        echo "<img src='" . $row['PartnerPhoto'] . "' alt='profile photo'>";
+                        echo' <div class="info">';
+                        echo "<h3>" . $row['PartnerFirstName'] . " " . $row['PartnerLastName'] . "</h3>";
+                        echo "<span>" . date('d-m-Y', strtotime($row['SessionDate'])) . "</span>";
+                        echo'</div>
                         </div>';
                         echo "<h3>SessionId:" . $row['SessionID'] . "</h3>"; 
                         echo'<button class="inline-btn">Rate</button>
@@ -250,7 +250,7 @@ $resultPrevious = $connection->conn->query($sqlPrevious); // Execute query for c
 
                      echo "<a class='box' href='partner_profile.php'>";
                      echo "<div class='tutor'>";
-                     echo "<img src='images/pic-2.jpg' alt=''>";
+                     echo "<img src='" . $row['PartnerPhoto'] . "' alt='profile photo'>";
                      echo "<div class='info'>";
                      echo "<h3>" . $row['PartnerFirstName'] . " " . $row['PartnerLastName'] . "</h3>";
                      echo "<span>" . date('d-m-Y', strtotime($row['SessionDate'])) . "</span>";
