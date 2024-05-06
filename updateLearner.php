@@ -249,7 +249,7 @@ if($redirect_message !== '') {
          <a href="profileLearner.html" class="logo"> <img src = "images/logo.jpg" width="210" height="60" alt="logo"></a> 
    
          <div class="icons">
-            <div id="menu-btn" class="fas fa-bars"></div>
+           
             <div id="toggle-btn" class="fas fa-sun"></div>
          </div>
    

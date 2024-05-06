@@ -287,7 +287,7 @@ if($redirect_message !== '') {
         
    
          <div class="icons">
-            <div id="menu-btn" class="fas fa-bars"></div>
+         
             <div id="toggle-btn" class="fas fa-sun"></div>
          </div>
    
@@ -375,7 +375,7 @@ if($redirect_message !== '') {
 <footer class="footer">
 
    &copy; copyright @ 2024 by <span>CHAT FLUENCY</span> | all rights reserved!
-   <a href="contact_partner.html"><i class="fas fa-headset"></i><span> contact us</span></a>
+   <a href="contact_partner.php"><i class="fas fa-headset"></i><span> contact us</span></a>
 
 </footer>
 
