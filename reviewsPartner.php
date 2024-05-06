@@ -27,6 +27,11 @@ if (!$result) {
    die("Query failed: " . $conn->error); // Output error message if query fails
 }
 
+$sqlSidebar = "SELECT Photo, CONCAT(FirstName, ' ', LastName) AS FullName FROM LanguagePartners WHERE LanguagePartner.PartnerID=$user_id";
+$resultSidebar = $connection->conn->query($sqlSidebar);
+$rowSidebar = $resultSidebar->fetch_assoc();
+$partnerPhoto = $rowSidebar['Photo'];
+$partnerName = $rowSidebar['FullName'];
 
 ?>
 
@@ -48,9 +53,8 @@ if (!$result) {
 
    <header class="header">
       <div class="flex">
-         <a href="profileLearner.html" class="logo"> <img src = "images/logo.jpg" width="210" height="60" alt="logo"></a> 
+         <a href="profilePartner.php" class="logo"> <img src = "images/logo.jpg" width="210" height="60" alt="logo"></a> 
          <div class="icons">
-            <div id="menu-btn" class="fas fa-bars"></div>
             <div id="toggle-btn" class="fas fa-sun"></div>
          </div>
       </div>
@@ -62,8 +66,8 @@ if (!$result) {
 </div>
 
 <div class="profile">
-   <img src="images/<?= $fetch_user['Photo']; ?>" class="image" alt="">
-   <h3 class="name"><?= $fetch_user['FirstName'] . ' ' . $fetch_user['LastName']; ?></h3>
+<img src="images/<?php echo $partnerPhoto; ?>" class="image" alt="Partner Photo">
+   <h3 class="name"><?php echo $partnerName; ?></h3>
    <p class="role">Partner</p>
 </div>
 
@@ -79,6 +83,7 @@ if (!$result) {
 </nav>
 
 </div>
+
    
 
    <section class="reviews">
@@ -112,10 +117,10 @@ if (!$result) {
       </div>
    </section>
 
-   <footer class="footer">
-      &copy; copyright @ 2024 by <span>CHAT FLUENCY</span> | all rights reserved!
-      <a href="contact_learner.html"><i class="fas fa-headset"></i><span> contact us</span></a>
-   </footer>
+   <footer style="margin-top : 80px;" class="footer">
+   &copy; copyright @ 2024 by <span>CHAT FLUENCY</span> | all rights reserved!
+   <a href="contact_partner.php"><i class="fas fa-headset"></i><span> contact us</span></a>
+</footer>
 
    <!-- custom js file link  -->
    <script src="js/script.js"></script>

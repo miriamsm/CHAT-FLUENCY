@@ -34,6 +34,12 @@ ORDER BY LearningSessions.SessionDate DESC";
 $resultCurrent = $connection->conn->query($sqlCurrent); // Execute query for scheduled sessions
 $resultPrevious = $connection->conn->query($sqlPrevious); // Execute query for completed or canceled sessions
 
+$sqlSidebar = "SELECT Photo, CONCAT(FirstName, ' ', LastName) AS FullName FROM LanguagePartners WHERE LanguagePartner.PartnerID=$user_id";
+$resultSidebar = $connection->conn->query($sqlSidebar);
+$rowSidebar = $resultSidebar->fetch_assoc();
+$partnerPhoto = $rowSidebar['Photo'];
+$partnerName = $rowSidebar['FullName'];
+
 ?>
 
 
@@ -56,49 +62,40 @@ $resultPrevious = $connection->conn->query($sqlPrevious); // Execute query for c
 
 <body>
 
-   <header class="header">
-
+<header class="header">
       <div class="flex">
-
-         <a href="profilePartner.html" class="logo"><img src="images/logo.jpg" width="210" height="60" alt="logo"></a>
-
-
-
+         <a href="profilePartner.php" class="logo"> <img src = "images/logo.jpg" width="210" height="60" alt="logo"></a> 
          <div class="icons">
-            <div id="menu-btn" class="fas fa-bars"></div>
             <div id="toggle-btn" class="fas fa-sun"></div>
          </div>
-
-
-
       </div>
-
-   </header>
+   </header>   
 
    <div class="side-bar">
 
-      <div id="close-btn">
-         <i class="fas fa-times"></i>
-      </div>
+<div id="close-btn">
+   <i class="fas fa-times"></i>
+</div>
 
-      <div class="profile">
-         <img src="images/<?= $fetch_user['Photo']; ?>" class="image" alt="">
-         <h3 class="name"><?= $fetch_user['FirstName'] . ' ' . $fetch_user['LastName']; ?></h3>
-         <p class="role">Partner</p>
-      </div>
+<div class="profile">
+<img src="images/<?php echo $partnerPhoto; ?>" class="image" alt="Partner Photo">
+   <h3 class="name"><?php echo $partnerName; ?></h3>
+   <p class="role">Partner</p>
+</div>
 
-      <nav class="navbar">
-         <a href="profilePartner.php"><i class="fas fa-home"></i><span>home</span></a>
-         <a href="SessionsPartner.php"><i><img src="images/session.png" alt="sessions"></i><span>sessions</span></a>
-         <a href="about_partner.php"><i class="fas fa-question"></i><span>about</span></a>
-      </nav>
-      <nav>
-         <div style="text-align: center; margin-top: 20px; margin-bottom: 150px;">
-         <a href="user_logout.php" onclick="return confirm('logout from this website?');" class="inline-btn" >Sign out</a>
-         </div>
-      </nav>
+<nav class="navbar">
+   <a href="profilePartner.php"><i class="fas fa-home"></i><span>home</span></a>
+   <a href="SessionsPartner.php"><i><img src="images/session.png" alt="sessions"></i><span>sessions</span></a>
+   <a href="about_partner.php"><i class="fas fa-question"></i><span>about</span></a>
+</nav>
+<nav>
+   <div style="text-align: center; margin-top: 20px; margin-bottom: 150px;">
+   <a href="user_logout.php" onclick="return confirm('logout from this website?');" class="inline-btn" >Sign out</a>
+</div>
+</nav>
 
-   </div>
+</div>
+
    <div style="display: flex;">
 
 
@@ -164,12 +161,10 @@ $resultPrevious = $connection->conn->query($sqlPrevious); // Execute query for c
       </section>
    </div>
 
-   <footer class="footer">
-
-      &copy;copyright @ 2024 by <span>CHAT FLUENCY</span> | all rights reserved!
-      <a href="contact_partner.html"><i class="fas fa-headset"></i><span> contact us</span></a>
-
-   </footer>
+   <footer style="margin-top : 80px;" class="footer">
+   &copy; copyright @ 2024 by <span>CHAT FLUENCY</span> | all rights reserved!
+   <a href="contact_partner.php"><i class="fas fa-headset"></i><span> contact us</span></a>
+</footer>/footer>
 
    <!-- custom js file link  -->
    <script src="js/script.js"></script>
