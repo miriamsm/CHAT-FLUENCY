@@ -1,12 +1,16 @@
 <?php
 include 'connect.php';
 
-if(isset($_GET['partnerID'])){
-    $partnerID = $_GET['partnerID'];
+
+
 
     // Create an instance of the Connect class
     $connection = new Connect();
-
+    if(isset($_COOKIE['user_id'])){
+        $user_id = $_COOKIE['user_id'];
+     }else{
+        $user_id = '';
+     }
     // Retrieve partner details from the database
     $sql = "SELECT * FROM LanguagePartners WHERE PartnerID = ?";
     $stmt = $connection->conn->prepare($sql);

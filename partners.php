@@ -4,7 +4,11 @@ include 'connect.php';
 
 // Create an instance of the Connect class
 $connection = new Connect();
-
+if(isset($_COOKIE['user_id'])){
+    $user_id = $_COOKIE['user_id'];
+ }else{
+    $user_id = '';
+ }
 // Retrieve partners data using the connection object
 $sql = "SELECT * FROM LanguagePartners";
 $result = $connection->conn->query($sql);
