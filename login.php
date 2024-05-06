@@ -2,13 +2,7 @@
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 include 'Connect.php'; // Include the Connect.php file
-if(isset($_COOKIE['user_id'])){
-    $user_id = $_COOKIE['user_id'];
- }else{
-    $user_id = '';
- }
 
- 
 class Login {
     private $conn;
 
@@ -16,87 +10,58 @@ class Login {
         $connect = new Connect(); // Create an instance of the Connect class
         $this->conn = $connect->conn; // Get the database connection from the Connect class
     }
-    public function loginUser($email, $password, $role) {
-      // Query based on role
-      if($role == "learner") {
-          $sql = "SELECT * FROM languagelearners WHERE Email = ? AND Password = ?";
-          $profilePage = "profileLearner.php"; // Set the profile page for learners
-          $idColumn = "LearnerID"; // Column name for user ID in the learner table
-
-//set cookies
-$select_user =  $this->conn->prepare("SELECT * FROM `languagelearners` WHERE Email = ? AND  Password = ? LIMIT 1");
-$select_user->execute([$email, $password]);
-$result = $select_user->get_result();
-$row = $result->fetch_assoc();
-
-$select_user->execute();
-$select_user->store_result(); // Store the result set
-
-if ($select_user->num_rows > 0) {
-  setcookie('user_id', $row['LearnerID'], time() + 60*60*24*30, '/');
-  header('location: profileLearner.php');
-}else{
-   $message[] = 'incorrect email or password!';
-}
-
-
-
-      } elseif($role == "partner") {
-          $sql = "SELECT * FROM languagepartners WHERE Email = ? AND Password = ?";
-          $profilePage = "profilePartner.php"; // Set the profile page for partners
-          $idColumn = "PartnerID"; // Column name for user ID in the partner table
-
-          //set cookies 
-          $select_user =  $this->conn->prepare("SELECT * FROM `languagepartners` WHERE Email = ? AND  Password = ? LIMIT 1");
-          $select_user->execute([$email, $password]);
-          $result = $select_user->get_result();
-          $row = $result->fetch_assoc();
-        
-$select_user->execute();
-$select_user->store_result(); // Store the result set
-
-if ($select_user->num_rows > 0) {
-            setcookie('user_id', $row['PartnerID'], time() + 60*60*24*30, '/');
-            header('location: profilePartner.php');
-          }else{
-             $message[] = 'incorrect email or password!';
-          }
     
-      }
-  
-      // Prepare statement
-      $stmt = $this->conn->prepare($sql);
-      
-      if(!$stmt) {
-          // Error handling: Check for SQL syntax errors
-          echo "SQL Error: " . $this->conn->error;
-          return false;
-      }
-  
-      // Bind parameters
-      $stmt->bind_param("ss", $email, $password);
-  
-      // Execute statement
-      $stmt->execute();
-  
-      // Get result
-      $result = $stmt->get_result();
-  
-      if ($result->num_rows > 0) {
-          // Login successful
-          // Get the user ID from the fetched row
-          $user = $result->fetch_assoc();
-          $user_id = $user[$idColumn]; // Get the user ID using the correct column name
-          
-          // Redirect to the appropriate profile page with user ID as query parameter
-          header("Location: $profilePage?id=$user_id");
-          exit;
-      } else {
-          // Login failed
-          echo "<script>alert('Password or email is wrong');</script>";
-          return false;
-      }
-  }
+    public function loginUser($email, $password, $role) {
+        // Query based on role
+        if($role == "learner") {
+            $sql = "SELECT * FROM languagelearners WHERE Email = ? AND Password = ?";
+            $profilePage = "profileLearner.php"; // Set the profile page for learners
+            $idColumn = "LearnerID"; // Column name for user ID in the learner table
+        } elseif($role == "partner") {
+            $sql = "SELECT * FROM languagepartners WHERE Email = ? AND Password = ?";
+            $profilePage = "profilePartner.php"; // Set the profile page for partners
+            $idColumn = "PartnerID"; // Column name for user ID in the partner table
+        } else {
+            echo "<script>alert('Invalid role');</script>";
+            return false;
+        }
+        
+        // Prepare statement
+        $stmt = $this->conn->prepare($sql);
+        
+        if(!$stmt) {
+            // Error handling: Check for SQL syntax errors
+            echo "SQL Error: " . $this->conn->error;
+            return false;
+        }
+        
+        // Bind parameters
+        $stmt->bind_param("ss", $email, $password);
+        
+        // Execute statement
+        $stmt->execute();
+        
+        // Get result
+        $result = $stmt->get_result();
+        
+        if ($result->num_rows > 0) {
+            // Login successful
+            // Fetch the user data
+            $user = $result->fetch_assoc();
+            $user_id = $user[$idColumn]; // Get the user ID using the correct column name
+            
+            // Set cookie with user ID
+            setcookie('user_id', $user_id, time() + 86400 * 30, '/'); // Cookie expires in 30 days
+            
+            // Redirect to the appropriate profile page
+            header("Location: $profilePage");
+            exit;
+        } else {
+            // Login failed
+            echo "<script>alert('Password or email is wrong');</script>";
+            return false;
+        }
+    }
 }
 
 // Check if form is submitted
@@ -127,9 +92,9 @@ if(isset($_POST['login'])) {
 
 <header class="header">
    <div class="flex"> 
-      <a href="home.html" class="logo"><img src="images/logo.jpg" width="210" height="60" alt="logo"></a>
+      <a href="home.php" class="logo"><img src="images/logo.jpg" width="210" height="60" alt="logo"></a>
       <div class="icons">
-         <a href="home.html"><div id="home-btn" class="fas fa-home"></div></a>
+         <a href="home.php"><div id="home-btn" class="fas fa-home"></div></a>
          <div id="toggle-btn" class="fas fa-sun"></div>
       </div>
    </div> 
