@@ -2,13 +2,11 @@
 
 include 'connect.php';
 $connection = new connect();
-if(isset($_GET['id'])){
-   $user_id = $_GET['id'];
+if(isset($_COOKIE['user_id'])){
+   $user_id = $_COOKIE['user_id'];
 }else{
-   // Redirect to login page if user ID is not provided
-   header('location: login.php');
+   $user_id = '';
 }
-
 $select_user = $connection->conn->prepare("SELECT * FROM languagelearners WHERE LearnerID = ? LIMIT 1"); 
 $select_user->bind_param("i", $user_id);
 $select_user->execute();

@@ -2,7 +2,13 @@
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 include 'Connect.php'; // Include the Connect.php file
+if(isset($_COOKIE['user_id'])){
+    $user_id = $_COOKIE['user_id'];
+ }else{
+    $user_id = '';
+ }
 
+ 
 class Login {
     private $conn;
 
@@ -16,10 +22,46 @@ class Login {
           $sql = "SELECT * FROM languagelearners WHERE Email = ? AND Password = ?";
           $profilePage = "profileLearner.php"; // Set the profile page for learners
           $idColumn = "LearnerID"; // Column name for user ID in the learner table
+
+//set cookies
+$select_user =  $this->conn->prepare("SELECT * FROM `languagelearners` WHERE Email = ? AND  Password = ? LIMIT 1");
+$select_user->execute([$email, $password]);
+$result = $select_user->get_result();
+$row = $result->fetch_assoc();
+
+$select_user->execute();
+$select_user->store_result(); // Store the result set
+
+if ($select_user->num_rows > 0) {
+  setcookie('user_id', $row['LearnerID'], time() + 60*60*24*30, '/');
+  header('location: profileLearner.php');
+}else{
+   $message[] = 'incorrect email or password!';
+}
+
+
+
       } elseif($role == "partner") {
           $sql = "SELECT * FROM languagepartners WHERE Email = ? AND Password = ?";
           $profilePage = "profilePartner.php"; // Set the profile page for partners
           $idColumn = "PartnerID"; // Column name for user ID in the partner table
+
+          //set cookies 
+          $select_user =  $this->conn->prepare("SELECT * FROM `languagepartners` WHERE Email = ? AND  Password = ? LIMIT 1");
+          $select_user->execute([$email, $password]);
+          $result = $select_user->get_result();
+          $row = $result->fetch_assoc();
+        
+$select_user->execute();
+$select_user->store_result(); // Store the result set
+
+if ($select_user->num_rows > 0) {
+            setcookie('user_id', $row['PartnerID'], time() + 60*60*24*30, '/');
+            header('location: profilePartner.php');
+          }else{
+             $message[] = 'incorrect email or password!';
+          }
+    
       }
   
       // Prepare statement
