@@ -119,7 +119,7 @@ if (isset($_SESSION['redirect_message']) && !empty($_SESSION['redirect_message']
       </nav>
       <nav>
          <div style="text-align: center; margin-top: 20px; margin-bottom: 150px;">
-         <a href="home.php"  class="inline-btn" >Sign out</a>
+         <a href="user_logout.php"  class="inline-btn" >Sign out</a>
       </div>
       </nav>
    
