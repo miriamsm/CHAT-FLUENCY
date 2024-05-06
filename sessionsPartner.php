@@ -111,7 +111,7 @@ $partnerName = $rowSidebar['FullName'];
                while ($row = $resultCurrent->fetch_assoc()) {
                   echo "<a class='box2'>";
                   echo "<div class='student'>";
-                  echo "<img src='" . $row['LearnerPhoto'] . "' alt='profile picture'>";
+                  echo '<img src="images/' . $row['LearnerPhoto'] . '" alt="profile picture">';
                   echo "<div class='info'>";
                   echo "<h3>" . $row['LearnerFirstName'] . " " . $row['LearnerLastName'] . "</h3>";
                   echo "<span>" . date('d-m-Y', strtotime($row['SessionDate'])) . "</span>";
@@ -141,7 +141,7 @@ $partnerName = $rowSidebar['FullName'];
                while ($row = $resultPrevious->fetch_assoc()) {
                   echo "<a class='box2'>";
                   echo "<div class='student'>";
-                  echo "<img src='" . $row['LearnerPhoto'] . "' alt='profile picture'>";
+                  echo '<img src="images/' . $row['LearnerPhoto'] . '" alt="profile picture">';
                   echo "<div class='info'>";
                   echo "<h3>" . $row['LearnerFirstName'] . " " . $row['LearnerLastName'] . "</h3>";
                   echo "<span>" . date('d-m-Y', strtotime($row['SessionDate'])) . "</span>";
