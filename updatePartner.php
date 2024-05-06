@@ -151,7 +151,7 @@ if (isset($_POST['remove_photo']) && $_POST['remove_photo'] == 'on') {
 } else {
     // Upload and update photo if not removing
     if (!empty($Photo) && $Photo != $fetch_user['Photo']) {
-        $update_Photo = $connection->conn->prepare("UPDATE `languagelearners` SET `Photo` = ? WHERE PartnerID= ?");
+        $update_Photo = $connection->conn->prepare("UPDATE `languagepartners` SET `Photo` = ? WHERE PartnerID= ?");
         $update_Photo->execute([$Photo, $user_id]);
         move_uploaded_file($Photo_tmp_name, $Photo_folder);
 
