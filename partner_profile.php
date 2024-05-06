@@ -1,40 +1,34 @@
 <?php
 include 'connect.php';
 
+// Create an instance of the Connect class
+$connection = new Connect();
+if(isset($_GET['partnerID'])){
+    $partnerID = $_GET['partnerID'];}
 
+// Retrieve partner details from the database
+$sql = "SELECT * FROM LanguagePartners WHERE PartnerID = ?";
+$stmt = $connection->conn->prepare($sql);
+$stmt->bind_param('s', $partnerID);
+$stmt->execute();
+$result = $stmt->get_result();
 
-
-    // Create an instance of the Connect class
-    $connection = new Connect();
-    if(isset($_COOKIE['user_id'])){
-        $user_id = $_COOKIE['user_id'];
-     }else{
-        $user_id = '';
-     }
-    // Retrieve partner details from the database
-    $sql = "SELECT * FROM LanguagePartners WHERE PartnerID = ?";
-    $stmt = $connection->conn->prepare($sql);
-    $stmt->bind_param('s', $partnerID);
-    $stmt->execute();
-    $result = $stmt->get_result();
-    $sqlSidebar = "SELECT Photo, CONCAT(FirstName, ' ', LastName) AS FullName FROM LanguageLearners WHERE User_Role = 'learner' LIMIT 1";
+$sqlSidebar = "SELECT Photo, CONCAT(FirstName, ' ', LastName) AS FullName FROM LanguageLearners WHERE User_Role = 'learner' LIMIT 1";
 $resultSidebar = $connection->conn->query($sqlSidebar);
 $rowSidebar = $resultSidebar->fetch_assoc();
 $learnerPhoto = $rowSidebar['Photo'];
 $learnerName = $rowSidebar['FullName'];
 
-    if($result->num_rows > 0) {
-        $partner = $result->fetch_assoc();
-    } else {
-        echo "Partner not found.";
-    }
-
-    $stmt->close();
-    $connection->conn->close();
+if($result->num_rows > 0) {
+    $partner = $result->fetch_assoc();
 } else {
-    echo "Partner ID not provided.";
+    echo "Partner not found.";
 }
+
+$stmt->close();
+$connection->conn->close();
 ?>
+
 
 <!DOCTYPE html>
 <html lang="en">
