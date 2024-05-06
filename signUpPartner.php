@@ -21,7 +21,47 @@ if (isset($_POST['submit'])) {
     $city = $_POST['city'];
     $spokenLanguage = $_POST['spoken_language'];
     $shortBio = $_POST['short_bio'];
-    $photo = ""; // Placeholder for photo, you'll need to handle file upload separately
+
+    // Handle file upload for photo
+    $target_dir = "uploads/";
+    $target_file = $target_dir . basename($_FILES["photo"]["name"]);
+    $uploadOk = 1;
+    $imageFileType = strtolower(pathinfo($target_file, PATHINFO_EXTENSION));
+
+    // Check if image file is a actual image or fake image
+    $check = getimagesize($_FILES["photo"]["tmp_name"]);
+    if($check !== false) {
+        $uploadOk = 1;
+    } else {
+        echo "File is not an image.";
+        $uploadOk = 0;
+    }
+
+    // Check file size
+    if ($_FILES["photo"]["size"] > 500000) {
+        echo "Sorry, your file is too large.";
+        $uploadOk = 0;
+    }
+
+    // Allow certain file formats
+    if($imageFileType != "jpg" && $imageFileType != "png" && $imageFileType != "jpeg"
+    && $imageFileType != "gif" ) {
+        echo "Sorry, only JPG, JPEG, PNG & GIF files are allowed.";
+        $uploadOk = 0;
+    }
+
+    // Check if $uploadOk is set to 0 by an error
+    if ($uploadOk == 0) {
+        echo "Sorry, your file was not uploaded.";
+    // if everything is ok, try to upload file
+    } else {
+        if (move_uploaded_file($_FILES["photo"]["tmp_name"], $target_file)) {
+            echo "The file ". htmlspecialchars( basename( $_FILES["photo"]["name"])). " has been uploaded.";
+            $photo = $target_file;
+        } else {
+            echo "Sorry, there was an error uploading your file.";
+        }
+    }
 
     // SQL query to insert data into languagepartners table
     $query = "INSERT INTO languagepartners (FirstName, LastName, Age, Gender, Email, Password, Phone, City, Bio, Languages, Photo) 
@@ -31,15 +71,19 @@ if (isset($_POST['submit'])) {
 
     // Check if the query was successful
     if ($result) {
-      // Get the ID of the newly inserted user
-    $user_id = mysqli_insert_id($db->conn);
-   
-    // Redirect to profilePartner.php and include the user ID as a query parameter
-    header("Location: profilePartner.php?id=$user_id");
-    exit();
-  } else {
-      echo "Error: " . mysqli_error($db->conn);
-  }}
+        // Retrieve the user ID from the inserted row
+        $user_id = mysqli_insert_id($db->conn);
+
+        // Set a cookie for the partner
+        setcookie('user_id', $user_id, time() + 60*60*24*30, '/'); // Cookie expires in 30 days
+
+        // Redirect to profilePartner.php
+        header("Location: profilePartner.php");
+        exit();
+    } else {
+        echo "Error: " . mysqli_error($db->conn);
+    }
+}
 ?>
 <!DOCTYPE html> 
 <html lang="en"> 
@@ -62,10 +106,10 @@ if (isset($_POST['submit'])) {
    
       <section class="flex">
    
-         <a href="home.html" class="logo"> <img src = "images/logo.jpg" width="210" height="60" alt="logo"></a> 
+         <a href="home.php" class="logo"> <img src = "images/logo.jpg" width="210" height="60" alt="logo"></a> 
    
          <div class="icons">
-            <a href="home.html"> <div id="home-btn" class="fas fa-home"> </div> </a>
+            <a href="home.php"> <div id="home-btn" class="fas fa-home"> </div> </a>
             <div id="toggle-btn" class="fas fa-sun"></div>
          </div>
    
@@ -110,8 +154,8 @@ if (isset($_POST['submit'])) {
       <textarea name="short_bio" placeholder="enter your short bio" required maxlength="200" class="box" rows="3"></textarea> 
 
       <p>Your photo (optional)</p> 
-      <input type="file" accept="image/*" class="box"> 
-
+      <input type="file" name="photo" accept="image/*" class="box">
+      
       <input type="submit" value="Sign up" name="submit" class="btn"> 
    </form> 
 </section> 

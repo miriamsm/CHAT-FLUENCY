@@ -17,7 +17,49 @@ if (isset($_POST['submit'])) {
     $password = $_POST['pass'];
     $city = $_POST['city'];
     $location = $_POST['location'];
-    $photo = ""; // Placeholder for photo, you'll need to handle file upload separately
+    
+    // Handle file upload
+    $target_dir = "uploads/";
+    $target_file = $target_dir . basename($_FILES["photo"]["name"]);
+    $uploadOk = 1;
+    $imageFileType = strtolower(pathinfo($target_file,PATHINFO_EXTENSION));
+
+    // Check if image file is a actual image or fake image
+    if(isset($_POST["submit"])) {
+        $check = getimagesize($_FILES["photo"]["tmp_name"]);
+        if($check !== false) {
+            $uploadOk = 1;
+        } else {
+            echo "File is not an image.";
+            $uploadOk = 0;
+        }
+    }
+
+    // Check file size
+    if ($_FILES["photo"]["size"] > 500000) {
+        echo "Sorry, your file is too large.";
+        $uploadOk = 0;
+    }
+
+    // Allow certain file formats
+    if($imageFileType != "jpg" && $imageFileType != "png" && $imageFileType != "jpeg"
+    && $imageFileType != "gif" ) {
+        echo "Sorry, only JPG, JPEG, PNG & GIF files are allowed.";
+        $uploadOk = 0;
+    }
+
+    // Check if $uploadOk is set to 0 by an error
+    if ($uploadOk == 0) {
+        echo "Sorry, your file was not uploaded.";
+    // if everything is ok, try to upload file
+    } else {
+        if (move_uploaded_file($_FILES["photo"]["tmp_name"], $target_file)) {
+            echo "The file ". basename( $_FILES["photo"]["name"]). " has been uploaded.";
+            $photo = $target_file;
+        } else {
+            echo "Sorry, there was an error uploading your file.";
+        }
+    }
 
     // SQL query to insert data into learners table
     $query = "INSERT INTO languagelearners (FirstName, LastName, Email, Password, Photo, City, Location) 
@@ -28,18 +70,20 @@ if (isset($_POST['submit'])) {
 
     // Check if the query was successful
     if ($result) {
-               // Retrieve the user ID from the inserted row
-               $user_id = mysqli_insert_id($db->conn);
-        
-               // Redirect to profileLearner.php with user ID as query parameter
-               header("Location: profileLearner.php?id=$user_id");
-               exit();
+        // Retrieve the user ID from the inserted row
+        $user_id = mysqli_insert_id($db->conn);
+
+        // Set a cookie for the learner
+        setcookie('user_id', $user_id, time() + 60*60*24*30, '/'); // Cookie expires in 30 days
+
+        // Redirect to profileLearner.php
+        header("Location: profileLearner.php");
+        exit();
     } else {
         echo "Error: " . mysqli_error($db->conn);
     }
 }
 ?>
-
 <!DOCTYPE html> 
 <html lang="en"> 
 <head> 
@@ -61,10 +105,10 @@ if (isset($_POST['submit'])) {
    
       <div class="flex">
    
-         <a href="home.html" class="logo"> <img src = "images/logo.jpg" width="210" height="60" alt="logo"></a> 
+         <a href="home.php" class="logo"> <img src = "images/logo.jpg" width="210" height="60" alt="logo"></a> 
    
          <div class="icons">
-            <a href="home.html"> <div id="home-btn" class="fas fa-home"> </div> </a>
+            <a href="home.php"> <div id="home-btn" class="fas fa-home"> </div> </a>
             <div id="toggle-btn" class="fas fa-sun"></div>
          </div>
    
