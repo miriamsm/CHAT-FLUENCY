@@ -220,7 +220,7 @@ $learnerName = $rowSidebar['FullName'];
                         <input type="hidden" name="sessionId" value="<?php echo $row['SessionID']; ?>">
                         <input type="hidden" name="partnerId" value="<?php echo $row['PartnerID']; ?>">
                          <?php echo' <div class="rate">
-                           <textarea class="review-text" placeholder="Write your review..." style="
+                           <textarea name="reviewText" class="review-text" placeholder="Write your review..." style="
                            resize: none;
                          "></textarea>
                               <input type="radio" id="star5" name="rate" value="5" />
