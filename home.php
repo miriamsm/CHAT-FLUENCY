@@ -29,11 +29,11 @@
 <body style="padding-left: 0;">
     <header class="header">
       <div class="flex"> 
-        <a href="home.html" class="logo"><img src = "images/logo.jpg" width="210" height="60" alt="logo"></a>
+        <a href="home.php" class="logo"><img src = "images/logo.jpg" width="210" height="60" alt="logo"></a>
          
          
          <div class="icons">
-            <a href="home.html"> <div id="home-btn" class="fas fa-home"> </div> </a>
+            <a href="home.php"> <div id="home-btn" class="fas fa-home"> </div> </a>
             <div id="toggle-btn" class="fas fa-sun"></div>
           </div>
     

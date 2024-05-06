@@ -6,6 +6,7 @@ if(isset($_COOKIE['user_id'])){
    $user_id = $_COOKIE['user_id'];
 }else{
    $user_id = '';
+   header('location:login.php');
 }
 
 // Your existing code to fetch user data using the $user_id
