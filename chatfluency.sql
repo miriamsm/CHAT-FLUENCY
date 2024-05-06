@@ -33,7 +33,7 @@ CREATE TABLE `languagelearners` (
   `LastName` varchar(15) NOT NULL,
   `Email` varchar(30) NOT NULL,
   `Password` varchar(50) NOT NULL,
-  `Photo` varchar(255) DEFAULT NULL,
+  `Photo` varchar(255) DEFAULT Profile.png,
   `City` varchar(20) DEFAULT NULL,
   `Location` varchar(100) DEFAULT NULL,
   `User_Role` enum('learner','partner') NOT NULL DEFAULT 'learner'
@@ -59,16 +59,16 @@ CREATE TABLE `languagepartners` (
   `Age` int(11) DEFAULT NULL,
   `Gender` enum('Male','Female') DEFAULT NULL,
   `Email` varchar(100) NOT NULL,
-  `Photo` varchar(255) DEFAULT NULL,
+  `Photo` varchar(255) DEFAULT Profile.png,
   `Password` varchar(50) NOT NULL,
   `Phone` varchar(15) DEFAULT NULL,
   `City` varchar(20) DEFAULT NULL,
   `Bio` text DEFAULT NULL,
   `User_Role` enum('learner','partner') NOT NULL DEFAULT 'partner',
   `Languages` text NOT NULL,
-  `Rating` float NOT NULL,
-  `LanguageProf` text NOT NULL,
-  `SessionPrice` int(11) NOT NULL
+  `Rating` float DEFAULT NULL,
+  `LanguageProf` text DEFAULT NULL,
+  `SessionPrice` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -135,6 +135,14 @@ CREATE TABLE `reviewsratings` (
   `PartnerID` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+
+CREATE TABLE contact (
+    ID INT PRIMARY KEY AUTO_INCREMENT,
+    name VARCHAR(255),
+    email VARCHAR(255),
+    number VARCHAR(20),
+    message TEXT
+);
 --
 -- Indexes for dumped tables
 --
