@@ -18,7 +18,7 @@ if(isset($_GET['partnerID'])) {
 }
  // Assuming the partner ID is 1 for example
 $sql = "SELECT ReviewsRatings.ReviewID, ReviewsRatings.Rating, ReviewsRatings.ReviewText, LanguageLearners.FirstName, LanguageLearners.LastName
-        FROM ReviewsRatings
+        FROM ReviewsRatings 
         INNER JOIN LearningSessions ON ReviewsRatings.SessionID = LearningSessions.SessionID
         INNER JOIN LanguageLearners ON LearningSessions.LearnerID = LanguageLearners.LearnerID
         WHERE LearningSessions.PartnerID = $partnerID";
@@ -96,12 +96,18 @@ $learnerName = $rowSidebar['FullName'];
          if ($result->num_rows > 0) {
             // Output data of each row
             while ($row = $result->fetch_assoc()) {
+               $learnerFirstName = $row['FirstName'];
+               $learnerLastName = $row['LastName'];
+               $sqlPhoto = "SELECT Photo FROM LanguageLearners WHERE FirstName='$learnerFirstName' AND LastName='$learnerLastName'";
+               $resultPhoto = $connection->conn->query($sqlPhoto);
+               $rowPhoto = $resultPhoto->fetch_assoc();
+
                echo '<div class="box">';
                echo '<p>' . $row['ReviewText'] . '</p>';
                echo '<div class="student">';
-               echo '<img src="images/pic-2.jpg" alt="">'; // Assuming all reviews have the same image
+               echo '<img src="images/'. $rowPhoto['Photo'] .'" alt="Profile photo">'; 
                echo '<div>';
-               echo '<h3>' . $row['FirstName'] . ' ' . $row['LastName'] . '</h3>';
+               echo '<h3>' . $learnerFirstName . ' ' . $learnerLastName . '</h3>';
                // Display stars based on rating
                echo '<div class="stars">';
                $rating = $row['Rating'];
