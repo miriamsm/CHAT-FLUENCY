@@ -312,7 +312,7 @@ if($redirect_message !== '') {
    
       <nav class="navbar">
          <a href="profilePartner.php"><i class="fas fa-home"></i><span>home</span></a>
-         <a href="SessionsPartner.php"><i><img src="images/session.png" alt="sessions"></i><span>sessions</span></a>
+         <a href="sessionsPartner.php"><i><img src="images/session.png" alt="sessions"></i><span>sessions</span></a>
          <a href="about_partner.php"><i class="fas fa-question"></i><span>about</span></a>
       </nav>
       <nav>
