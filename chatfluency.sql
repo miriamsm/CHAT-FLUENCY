@@ -245,6 +245,25 @@ COMMIT;
 
 ALTER TABLE LearningRequests 
 ADD COLUMN RequestTimestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP;
+DELIMITER //
+CREATE TRIGGER after_insert_reviewsratings
+AFTER INSERT ON reviewsratings
+FOR EACH ROW
+BEGIN
+    DECLARE avg_rating FLOAT;
+
+    -- Calculate average rating for the partner
+    SELECT AVG(Rating) INTO avg_rating
+    FROM reviewsratings
+    WHERE PartnerID = NEW.PartnerID;
+
+    -- Update rating in languagepartners table
+    UPDATE languagepartners
+    SET Rating = avg_rating
+    WHERE PartnerID = NEW.PartnerID;
+END;
+//
+DELIMITER ;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;

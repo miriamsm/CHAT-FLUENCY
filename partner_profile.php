@@ -37,37 +37,37 @@ $result = $stmt->get_result();
 // $learnerName = $rowSidebar['FullName'];
 
 // Calculate average rating for the partner
-$averageRating = 0;
-$numRatings = 0;
+// $averageRating = 0;
+// $numRatings = 0;
 
-// Query to get all ratings for the partner
-$sqlRatings = "SELECT Rating FROM reviewsratings WHERE PartnerID = ?";
-$stmtRatings = $connection->conn->prepare($sqlRatings);
-$stmtRatings->bind_param('s', $partnerID);
-$stmtRatings->execute();
-$resultRatings = $stmtRatings->get_result();
+// // Query to get all ratings for the partner
+// $sqlRatings = "SELECT Rating FROM reviewsratings WHERE PartnerID = ?";
+// $stmtRatings = $connection->conn->prepare($sqlRatings);
+// $stmtRatings->bind_param('s', $partnerID);
+// $stmtRatings->execute();
+// $resultRatings = $stmtRatings->get_result();
 
-// Calculate average rating
-if ($resultRatings->num_rows > 0) {
-    while ($rowRating = $resultRatings->fetch_assoc()) {
-        $averageRating += $rowRating['Rating'];
-        $numRatings++;
-    }
-    $averageRating /= $numRatings; // Calculate the average
-    $sqlUpdateRating = "UPDATE languagepartners SET Rating = $averageRating WHERE PartnerID = ?";
-    $stmtUpdateRating = $connection->conn->prepare($sqlUpdateRating);
-    $stmtUpdateRating->bind_param('s', $partnerID);
-    $stmtUpdateRating->execute();
-    $stmtUpdateRating->close();
-}
-else{
-    $sqlUpdateRating = "UPDATE languagepartners SET Rating = 0 WHERE PartnerID = ?";
-$stmtUpdateRating = $connection->conn->prepare($sqlUpdateRating);
-$stmtUpdateRating->bind_param('s', $partnerID);
-$stmtUpdateRating->execute();
-$stmtUpdateRating->close();
+// // Calculate average rating
+// if ($resultRatings->num_rows > 0) {
+//     while ($rowRating = $resultRatings->fetch_assoc()) {
+//         $averageRating += $rowRating['Rating'];
+//         $numRatings++;
+//     }
+//     $averageRating /= $numRatings; // Calculate the average
+//     $sqlUpdateRating = "UPDATE languagepartners SET Rating = $averageRating WHERE PartnerID = ?";
+//     $stmtUpdateRating = $connection->conn->prepare($sqlUpdateRating);
+//     $stmtUpdateRating->bind_param('s', $partnerID);
+//     $stmtUpdateRating->execute();
+//     $stmtUpdateRating->close();
+// }
+// else{
+//     $sqlUpdateRating = "UPDATE languagepartners SET Rating = 0 WHERE PartnerID = ?";
+// $stmtUpdateRating = $connection->conn->prepare($sqlUpdateRating);
+// $stmtUpdateRating->bind_param('s', $partnerID);
+// $stmtUpdateRating->execute();
+// $stmtUpdateRating->close();
     
-}
+// }
 
 
 if($result->num_rows > 0) {
@@ -144,7 +144,9 @@ $connection->conn->close();
             <p>Proficiency in Language : <span><?php echo $partner['LanguageProf']; ?></span></p>
             <p>Session Price : <span><?php echo $partner['SessionPrice']; ?> per hour.</span></p> 
             <p><img alt="star icon" loading="lazy" width="16" height="16" decoding="async" 
-            src="https://static.cambly.com/_next/static/media/star.57929b94.svg" style="color: transparent;"> <?php echo $partner['Rating']; ?> • 6 reviews <a href="reviewsLearner.php?partnerID=<?php echo $partnerID; ?>" class="inline-btn">View Reviews</a></p>
+            src="https://static.cambly.com/_next/static/media/star.57929b94.svg" style="color: transparent;"> 
+            <?php echo $partner['Rating']; ?> • 6 reviews <a href="reviewsLearner.php?partnerID=<?php echo $partnerID; ?>" 
+            class="inline-btn">View Reviews</a></p>
         </div>
     </div>
 </section>
