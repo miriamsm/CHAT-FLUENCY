@@ -19,6 +19,7 @@ if (isset($_POST['submit'])) {
     $location = $_POST['location'];
     
     // Handle file upload
+    $photo = $_FILES['photo']['name'];
     $target_dir = 'images/';
     $target_file = $target_dir . basename($_FILES["photo"]["name"]);
     $uploadOk = 1;
@@ -55,7 +56,7 @@ if (isset($_POST['submit'])) {
     } else {
         if (move_uploaded_file($_FILES["photo"]["tmp_name"], $target_file)) {
             echo "The file ". basename( $_FILES["photo"]["name"]). " has been uploaded.";
-            $photo = $target_file;
+            //$photo = $target_file;
         } else {
             echo "Sorry, there was an error uploading your file.";
         }
