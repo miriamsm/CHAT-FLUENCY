@@ -177,7 +177,7 @@ $resultPrevious = $connection->conn->query($sqlPrevious); // Execute query for c
    <a href="contact_partner.php"><i class="fas fa-headset"></i><span> contact us</span></a>
 </footer>
    <!-- custom js file link  -->
-   <script src="js/script.js"></script>
+   <script src="script.js"></script>
 
 
 
