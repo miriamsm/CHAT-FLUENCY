@@ -1,152 +1,119 @@
 <?php
-
 error_reporting(E_ALL);
-
 ini_set('display_errors', 1);
 
-
 include 'connect.php';
-
 $connection = new connect();
 
-if(isset($_COOKIE['user_id'])){
-
-   $user_id = $_COOKIE['user_id'];
-
-}else{
-
-   $user_id = '';
-
-   header('location:login.php');
-
+// Check if user is logged in
+if (!isset($_COOKIE['user_id'])) {
+    header('location: login.php');
+    exit(); // Added exit() after header redirect
 }
 
+$user_id = $_COOKIE['user_id'];
 
-$select_user = $connection->conn->prepare("SELECT * FROM languagelearners WHERE LearnerID = ? LIMIT 1"); 
-
+$select_user = $connection->conn->prepare("SELECT * FROM languagelearners WHERE LearnerID = ? LIMIT 1");
 $select_user->bind_param("i", $user_id);
-
 $select_user->execute();
-
 $fetch_user = $select_user->get_result()->fetch_assoc();
 
-
+// Fetch partner's languages from the database
+$sqlPartnerLanguages = "SELECT Languages FROM languagepartners WHERE PartnerID = ?";
+$stmtPartnerLanguages = $connection->conn->prepare($sqlPartnerLanguages);
+$stmtPartnerLanguages->bind_param("i", $partnerID);
+$partnerID = $_GET['partnerID']; // Assuming you have already fetched $partnerID from URL parameters
+$stmtPartnerLanguages->execute();
+$partnerLanguagesResult = $stmtPartnerLanguages->get_result();
+$partnerLanguagesRow = $partnerLanguagesResult->fetch_assoc();
+$partnerLanguages = explode(', ', $partnerLanguagesRow['Languages']);
+$stmtPartnerLanguages->close();
 
 // Retrieve partnerID from URL parameters
-
-if (isset($_GET['partnerID'])) {
-
-    $partnerID = $_GET['partnerID'];
-
-} else {
-
-    // Redirect or display an error if partnerID is not provided
-
+if (!isset($_GET['partnerID'])) {
     echo '<script>alert("Error: PartnerID not specified."); window.location.href = "partners.php";</script>';
-
     exit();
-
 }
 
+$partnerID = $_GET['partnerID'];
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-
-    // Validate and sanitize input data
-
-    $languageToLearn = trim($_POST['language']);
-
-    $proficiencyLevel = trim($_POST['level']);
-
-    $preferredSchedule = trim($_POST['pass']);
-
-    $sessionDuration = trim($_POST['session_duration']); // Corrected name attribute
-
-    $learnerGoals = trim($_POST['learner_goals']); // Updated name attribute
-
-
-    // Validate session duration to ensure it's a positive integer
-
-    // Add your validation logic here
-
-
-    // Assuming you have a way to get the LearnerID, replace 1 with the actual LearnerID value
-
-    $learnerID = isset($_COOKIE['user_id']) ? $_COOKIE['user_id'] : '';
-
-
-    // Check if the LearnerID exists in the languagelearners table
-
-    $sqlCheckLearner = "SELECT COUNT(*) FROM languagelearners WHERE LearnerID = ?";
-
-    $stmtCheckLearner = $connection->conn->prepare($sqlCheckLearner);
-
-    $stmtCheckLearner->bind_param("i", $learnerID);
-
-    $stmtCheckLearner->execute();
-
-    $stmtCheckLearner->bind_result($learnerCount);
-
-    $stmtCheckLearner->fetch();
-
-    $stmtCheckLearner->close();
-
-
-    if ($learnerCount > 0) {
-
-        // LearnerID exists, proceed with the insertion/update
-
-            $sqlInsert = "INSERT INTO learningrequests(LearnerID, PartnerID, LanguageToLearn, ProficiencyLevel, PreferredSchedule, SessionDuration, RequestDate, Status, learnerGoals) 
-
-            VALUES (?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP, 'Pending', ?)";
-
-                $stmtInsert = $connection->conn->prepare($sqlInsert);
-
-                $stmtInsert->bind_param("iisssss", $learnerID, $partnerID, $languageToLearn, $proficiencyLevel, $preferredSchedule, $sessionDuration, $learnerGoals);
-
-
-                    if ($stmtInsert->execute()) {
-
-            // If insertion is successful, display success message using JavaScript
-
-            echo '<script>
-
-            if (confirm("Thank you! The request has been sent successfully. Do you want to see your list of requests?")) {
-
-                window.location.href = "list_of_requests_learner.php";
-
-            } 
-
-          </script>';
-
-
-            exit(); // Added exit() to stop further execution
-
-        } else {
-
-            // If insertion fails, display an error message
-
-            echo '<script>alert("Error: Unable to submit your request. Please try again later.");</script>';
-
-        }
-
-
-        $stmtInsert->close(); // Close the prepared statement for insertion
-
-    } else {
-
-        // LearnerID does not exist, display an error or handle accordingly
-
-        echo '<script>alert("Error: Invalid LearnerID. Please choose a valid LearnerID.");</script>';
-
+    $scheduleInput = trim($_POST['pass']);
+    // Validate schedule format using regex
+    if (!preg_match("/^(1[0-2]|0?[1-9])(:[0-5][0-9])?( ?[ap]m)?$/i", $scheduleInput)) {
+        echo '<script>alert("Error: Invalid schedule format. Please use format like 10am, 9pm, etc.");</script>';
+        
     }
 
+    // Validate Session Duration Input
+    if ($_SERVER["REQUEST_METHOD"] == "POST") {
+        $sessionDuration = trim($_POST['session_duration']);
+        // Validate session duration format using regex
+        if (!preg_match("/^\d+ (hour|hours)$/i", $sessionDuration)) {
+            echo '<script>alert("Error: Invalid session duration format. Please use format like 1 hour, 4 hours, etc.");</script>';
+            exit();
+        }
+    }
+
+    // Sanitize input data
+    $languageToLearn = $_POST['language']; // No trimming or validation for language input
+    $proficiencyLevel = trim($_POST['level']);
+    $preferredSchedule = $scheduleInput; // Use the validated schedule input
+    $learnerGoals = trim($_POST['learner_goals']); // Updated name attribute
+
+    // Check if the requested schedule conflicts with the partner's existing session
+    $sqlCheckConflict = "SELECT COUNT(*) FROM learningrequests WHERE PartnerID = ? AND PreferredSchedule = ?";
+    $stmtCheckConflict = $connection->conn->prepare($sqlCheckConflict);
+    $stmtCheckConflict->bind_param("is", $partnerID, $preferredSchedule);
+    $stmtCheckConflict->execute();
+    $stmtCheckConflict->bind_result($conflictCount);
+    $stmtCheckConflict->fetch();
+    $stmtCheckConflict->close();
+
+    if ($conflictCount > 0) {
+        // There is a conflict, display an error message
+        echo '<script>alert("Error: The requested schedule conflicts with the partner\'s existing session. Please choose a different schedule.");</script>';
+    } else {
+        // No conflict, proceed with the insertion/update
+        // Check if the LearnerID exists in the languagelearners table
+        $sqlCheckLearner = "SELECT COUNT(*) FROM languagelearners WHERE LearnerID = ?";
+        $stmtCheckLearner = $connection->conn->prepare($sqlCheckLearner);
+        $stmtCheckLearner->bind_param("i", $user_id);
+        $stmtCheckLearner->execute();
+        $stmtCheckLearner->bind_result($learnerCount);
+        $stmtCheckLearner->fetch();
+        $stmtCheckLearner->close();
+
+        if ($learnerCount > 0) {
+            // LearnerID exists, proceed with the insertion/update
+            $sqlInsert = "INSERT INTO learningrequests(LearnerID, PartnerID, LanguageToLearn, ProficiencyLevel, PreferredSchedule, SessionDuration, RequestDate, Status, learnerGoals) 
+                VALUES (?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP, 'Pending', ?)";
+            $stmtInsert = $connection->conn->prepare($sqlInsert);
+            $stmtInsert->bind_param("iisssss", $user_id, $partnerID, $languageToLearn, $proficiencyLevel, $preferredSchedule, $sessionDuration, $learnerGoals);
+
+            if ($stmtInsert->execute()) {
+                // If insertion is successful, display success message using JavaScript
+                echo '<script>
+                    if (confirm("Thank you! The request has been sent successfully. Do you want to see your list of requests?")) {
+                        window.location.href = "list_of_requests_learner.php";
+                    }
+                </script>';
+                exit(); // Added exit() to stop further execution
+            } else {
+                // If insertion fails, display an error message
+                echo '<script>alert("Error: Unable to submit your request. Please try again later.");</script>';
+            }
+
+            $stmtInsert->close(); // Close the prepared statement for insertion
+        } else {
+            // LearnerID does not exist, display an error or handle accordingly
+            echo '<script>alert("Error: Invalid LearnerID. Please choose a valid LearnerID.");</script>';
+        }
+    }
 }
 
-
 // Close the database connection
-
 $connection->conn->close();
-
 ?>
 
 
@@ -200,7 +167,12 @@ $connection->conn->close();
 
         }
 
-        
+        // Check if the selected language is one of the partner's languages
+    var partnerLanguages = <?php echo json_encode($partnerLanguages); ?>;
+    if (!partnerLanguages.includes(language)) {
+        alert("Invalid language. Please choose another language.");
+        return false;
+    }
 
             // Additional validation logic can be added here if needed
 
@@ -295,7 +267,7 @@ if (isset($_SESSION['redirect_message']) && !empty($_SESSION['redirect_message']
 
 <a href="profileLearner.php"><i class="fas fa-home"></i><span>home</span></a>
 
-   <a href="sessionsLearner.php"><i><img src="images/session.png" alt="sessions"></i><span>sessions</span></a>
+   <a href="SesssionsLearner.php"><i><img src="images/session.png" alt="sessions"></i><span>sessions</span></a>
 
    <a href="partners.php"><i class="fas fa-chalkboard-user"></i><span>partners</span></a>
 
@@ -367,17 +339,17 @@ if (isset($_SESSION['redirect_message']) && !empty($_SESSION['redirect_message']
 
             <p>enter your preferred schedule <span>*</span></p>
 
-            <input type="text" name="pass" placeholder="E.g. weekdays evenings , weekends mornings " maxlength="20" class="box">
+            <input type="text" name="pass" placeholder="E.g. 10am , 12pm " maxlength="20" class="box">
 
             
 
             <p>enter your session duration <span>*</span></p>
 
-            <input type="text" name="session_duration" placeholder="E.g. 1 hour , 90 minutes " maxlength="20" class="box">
+            <input type="text" name="session_duration" placeholder="E.g. 1 hour , 3 hours " maxlength="20" class="box">
 
             <p>Enter your learner goals <span>*</span></p>
 
-    <textarea name="learner_goals" placeholder="Describe your goals..." maxlength="200" col rows="4" class="box"></textarea>
+            <textarea name="learner_goals" placeholder="Describe your goals..." maxlength="200" col rows="4" class="box"></textarea>
 
     
 
