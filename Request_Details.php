@@ -75,11 +75,19 @@ if(isset($_GET['request_id'])) {
     exit();
 }
 
-$sqlSidebar = "SELECT Photo, CONCAT(FirstName, ' ', LastName) AS FullName FROM LanguagePartners WHERE User_Role = 'partner' LIMIT 1";
-$resultSidebar = $connection->conn->query($sqlSidebar);
-$rowSidebar = $resultSidebar->fetch_assoc();
-$partnerPhoto = $rowSidebar['Photo'];
-$partnerName = $rowSidebar['FullName'];
+$select_user = $connection->conn->prepare("SELECT * FROM languagepartners WHERE PartnerID = ? LIMIT 1"); 
+$select_user->bind_param("i", $user_id);
+$select_user->execute();
+$fetch_user = $select_user->get_result()->fetch_assoc();
+
+// Check if the query was successful
+if ($fetch_user) {
+    // Get the 'name' attribute from the fetched row
+    $name = $fetch_user['FirstName'];
+} else {
+    // Default name if the query fails or no data is found
+    $name = "Guest";
+}
 ?>
 
 <!DOCTYPE html>
@@ -142,9 +150,9 @@ $partnerName = $rowSidebar['FullName'];
    </div>
 
    <div class="profile">
-   <img src="images/<?php echo $partnerPhoto; ?>" class="image" alt="Partner Photo">
-      <h3 class="name"><?php echo $partnerName; ?></h3>
-      <p class="role">Partner</p>
+   <img src="images/<?= $fetch_user['Photo']; ?>" class="image" alt="">
+         <h3 class="name"><?= $fetch_user['FirstName'] . ' ' . $fetch_user['LastName']; ?></h3>
+         <p class="role">Partner</p>
    </div>
 
    <nav class="navbar">
