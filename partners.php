@@ -4,16 +4,26 @@ include 'connect.php';
 
 // Create an instance of the Connect class
 $connection = new Connect();
-
+if(isset($_COOKIE['user_id'])){
+    $user_id = $_COOKIE['user_id'];
+ }else{
+    $user_id = '';
+ }
 // Retrieve partners data using the connection object
 $sql = "SELECT * FROM LanguagePartners";
 $result = $connection->conn->query($sql);
 
-$sqlSidebar = "SELECT Photo, CONCAT(FirstName, ' ', LastName) AS FullName FROM LanguageLearners WHERE User_Role = 'learner' LIMIT 1";
-$resultSidebar = $connection->conn->query($sqlSidebar);
-$rowSidebar = $resultSidebar->fetch_assoc();
-$learnerPhoto = $rowSidebar['Photo'];
-$learnerName = $rowSidebar['FullName'];
+$select_user = $connection->conn->prepare("SELECT * FROM languagelearners WHERE LearnerID = ? LIMIT 1"); 
+$select_user->bind_param("i", $user_id);
+$select_user->execute();
+$fetch_user = $select_user->get_result()->fetch_assoc();
+
+// Check if the query was successful
+if ($fetch_user) {
+	$name = $fetch_user['FirstName'];
+   // Default name if the query fails or no data is found
+   $name = "Guest";
+}
 ?>
 
 <!DOCTYPE html>
@@ -44,9 +54,9 @@ $learnerName = $rowSidebar['FullName'];
    </div>
 
    <div class="profile">
-   <img src="images/<?php echo $learnerPhoto; ?>" class="image" alt="Learner Photo">
-   <h3 class="name"><?php echo $learnerName; ?></h3>
-   <p class="role">Learner</p>
+   <img src="images/<?= $fetch_user['Photo']; ?>" class="image" alt="">
+         <h3 class="name"><?= $fetch_user['FirstName'] . ' ' . $fetch_user['LastName']; ?></h3>
+         <p class="role">Learner</p>
    </div>
 
    <nav class="navbar">

@@ -173,7 +173,7 @@ $learnerName = $rowSidebar['FullName'];
                   while ($row = $resultCurrent->fetch_assoc()) {
                      echo "<a class='box' href='partner_profile.php?partner_id=" . $row['PartnerID'] . "'>";
                      echo "<div class='student'>";
-                     echo "<img src='" . $row['PartnerPhoto'] . "' alt='profile photo'>";
+                     echo "<img src='images/" . $row['PartnerPhoto'] . "' alt='profile photo'>";
                      echo "<div class='info'>";
                      echo "<h3>" . $row['PartnerFirstName'] . " " . $row['PartnerLastName'] . "</h3>";
                      echo "<span>" . date('d-m-Y', strtotime($row['SessionDate'])) . "</span>";
@@ -207,7 +207,7 @@ $learnerName = $rowSidebar['FullName'];
 
                         echo '<div class="box" onclick="showRating(this)">
                         <div class="tutor">';
-                        echo "<img src='" . $row['PartnerPhoto'] . "' alt='profile photo'>";
+                        echo "<img src='images/" . $row['PartnerPhoto'] . "' alt='profile photo'>";
                         echo' <div class="info">';
                         echo "<h3>" . $row['PartnerFirstName'] . " " . $row['PartnerLastName'] . "</h3>";
                         echo "<span>" . date('d-m-Y', strtotime($row['SessionDate'])) . "</span>";
@@ -220,7 +220,7 @@ $learnerName = $rowSidebar['FullName'];
                         <input type="hidden" name="sessionId" value="<?php echo $row['SessionID']; ?>">
                         <input type="hidden" name="partnerId" value="<?php echo $row['PartnerID']; ?>">
                          <?php echo' <div class="rate">
-                           <textarea class="review-text" placeholder="Write your review..." style="
+                           <textarea name="reviewText" class="review-text" placeholder="Write your review..." style="
                            resize: none;
                          "></textarea>
                               <input type="radio" id="star5" name="rate" value="5" />
@@ -247,7 +247,7 @@ $learnerName = $rowSidebar['FullName'];
 
                      echo "<a class='box' href='partner_profile.php?partner_id=" . $row['PartnerID'] . "'>";
                      echo "<div class='tutor'>";
-                     echo "<img src='" . $row['PartnerPhoto'] . "' alt='profile photo'>";
+                     echo "<img src='images/" . $row['PartnerPhoto'] . "' alt='profile photo'>";
                      echo "<div class='info'>";
                      echo "<h3>" . $row['PartnerFirstName'] . " " . $row['PartnerLastName'] . "</h3>";
                      echo "<span>" . date('d-m-Y', strtotime($row['SessionDate'])) . "</span>";
