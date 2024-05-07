@@ -8,6 +8,17 @@ if(isset($_COOKIE['user_id'])){
    $user_id='';
    header('location:login.php');
 }
+$select_user = $connection->conn->prepare("SELECT * FROM languagelearners WHERE LearnerID = ? LIMIT 1"); 
+$select_user->bind_param("i", $user_id);
+$select_user->execute();
+$fetch_user = $select_user->get_result()->fetch_assoc();
+
+// Check if the query was successful
+if ($fetch_user) {
+	$name = $fetch_user['FirstName'];
+   // Default name if the query fails or no data is found
+   $name = "Guest";
+}
 
 $LearnerId=$user_id;
 
@@ -49,12 +60,6 @@ ORDER BY LearningSessions.SessionDate DESC";
 
 $resultCurrent = $connection->conn->query($sqlCurrent); // Execute query for scheduled sessions
 $resultPrevious = $connection->conn->query($sqlPrevious); // Execute query for completed or canceled sessions
-
-$sqlSidebar = "SELECT Photo, CONCAT(FirstName, ' ', LastName) AS FullName FROM LanguageLearners WHERE LanguageLearners.LearnerID=$user_id";
-$resultSidebar = $connection->conn->query($sqlSidebar);
-$rowSidebar = $resultSidebar->fetch_assoc();
-$learnerPhoto = $rowSidebar['Photo'];
-$learnerName = $rowSidebar['FullName'];
 
 ?>
 
@@ -133,28 +138,30 @@ $learnerName = $rowSidebar['FullName'];
 </div>
 </header>
 
-   <div class="side-bar">
+<div class="side-bar">
+
 <div id="close-btn">
-      <i class="fas fa-times"></i>
-   </div>
+   <i class="fas fa-times"></i>
+</div>
 
-   <div class="profile">
-   <img src="images/<?php echo $learnerPhoto; ?>" class="image" alt="Learner Photo">
-   <h3 class="name"><?php echo $learnerName; ?></h3>
+<div class="profile">
+<img src="images/<?= $fetch_user['Photo']; ?>" class="image" alt="">
+   <h3 class="name"><?= $fetch_user['FirstName'] . ' ' . $fetch_user['LastName']; ?></h3>
    <p class="role">Learner</p>
-   </div>
+</div>
 
-   <nav class="navbar">
-      <a href="profileLearner.php"><i class="fas fa-home"></i><span>home</span></a>
-      <a href="SessionsLearner.php"><i><img src="images/session.png" alt="sessions"></i><span>sessions</span></a>
-      <a href="partners.php"><i class="fas fa-chalkboard-user"></i><span>partners</span></a>
-      <a href="about_learner.php"><i class="fas fa-question"></i><span>about</span></a>
-   </nav>
-   <nav>
-      <div style="text-align: center; margin-top: 20px; margin-bottom: 150px;">
-      <a href="user_logout.php" onclick="return confirm('logout from this website?');" class="inline-btn" >Sign out</a>
-   </div>
-   </nav>
+<nav class="navbar">
+<a href="profileLearner.php"><i class="fas fa-home"></i><span>home</span></a>
+   <a href="SesssionsLearner.php"><i><img src="images/session.png" alt="sessions"></i><span>sessions</span></a>
+   <a href="partners.php"><i class="fas fa-chalkboard-user"></i><span>partners</span></a>
+   <a href="about_learner.php"><i class="fas fa-question"></i><span>about</span></a>
+</nav>
+<nav>
+   <div style="text-align: center; margin-top: 20px; margin-bottom: 150px;">
+   <a href="user_logout.php"  class="inline-btn" >Sign out</a>
+</div>
+</nav>
+
 </div>
 
    <div style="display: flex;">
