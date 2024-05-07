@@ -289,7 +289,7 @@ if (isset($_SESSION['redirect_message']) && !empty($_SESSION['redirect_message']
 
       <a href="profileLearner.php"><i class="fas fa-home"></i><span>home</span></a>
 
-         <a href="SesssionsLearner.php"><i><img src="images/session.png" alt="sessions"></i><span>sessions</span></a>
+         <a href="sessionsLearner.php"><i><img src="images/session.png" alt="sessions"></i><span>sessions</span></a>
 
          <a href="partners.php"><i class="fas fa-chalkboard-user"></i><span>partners</span></a>
 

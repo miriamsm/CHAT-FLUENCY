@@ -152,7 +152,7 @@ $resultPrevious = $connection->conn->query($sqlPrevious); // Execute query for c
 
 <nav class="navbar">
 <a href="profileLearner.php"><i class="fas fa-home"></i><span>home</span></a>
-   <a href="SesssionsLearner.php"><i><img src="images/session.png" alt="sessions"></i><span>sessions</span></a>
+   <a href="sessionsLearner.php"><i><img src="images/session.png" alt="sessions"></i><span>sessions</span></a>
    <a href="partners.php"><i class="fas fa-chalkboard-user"></i><span>partners</span></a>
    <a href="about_learner.php"><i class="fas fa-question"></i><span>about</span></a>
 </nav>
