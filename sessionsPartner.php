@@ -27,7 +27,10 @@ $partnerId = $user_id;
 
 
 // Fetching scheduled sessions from LearningSessions table
-$sqlCurrent = "SELECT LearningSessions.SessionID, LearningSessions.SessionDate, LearningSessions.SessionDuration, LanguageLearners.FirstName AS LearnerFirstName, LanguageLearners.LastName AS LearnerLastName, LanguagePartners.FirstName AS PartnerFirstName, LanguagePartners.LastName AS PartnerLastName, LanguageLearner.Photo AS LearnerPhoto
+$sqlCurrent = "SELECT LearningSessions.SessionID, LearningSessions.SessionDate, LearningSessions.SessionDuration,
+ LanguageLearners.FirstName AS LearnerFirstName, LanguageLearners.LastName AS LearnerLastName,
+ LanguagePartners.FirstName AS PartnerFirstName, LanguagePartners.LastName AS PartnerLastName, 
+ LanguageLearners.Photo AS LearnerPhoto
                FROM LearningSessions
                INNER JOIN LanguageLearners ON LearningSessions.LearnerID = LanguageLearners.LearnerID
                INNER JOIN LanguagePartners ON LearningSessions.PartnerID = LanguagePartners.PartnerID
@@ -38,7 +41,7 @@ $sqlCurrent = "SELECT LearningSessions.SessionID, LearningSessions.SessionDate, 
 $sqlPrevious = "SELECT LearningSessions.SessionID, LearningSessions.SessionDate, LearningSessions.SessionDuration, 
 LanguageLearners.FirstName AS LearnerFirstName, LanguageLearners.LastName AS LearnerLastName, 
 LanguagePartners.FirstName AS PartnerFirstName, LanguagePartners.LastName AS PartnerLastName,
-LearningSessions.Status, LanguageLearner.Photo AS LearnerPhoto
+LearningSessions.Status, LanguageLearners.Photo AS LearnerPhoto
 FROM LearningSessions
 INNER JOIN LanguageLearners ON LearningSessions.LearnerID = LanguageLearners.LearnerID
 INNER JOIN LanguagePartners ON LearningSessions.PartnerID = LanguagePartners.PartnerID
@@ -172,8 +175,7 @@ $resultPrevious = $connection->conn->query($sqlPrevious); // Execute query for c
    <footer style="margin-top : 80px;" class="footer">
    &copy; copyright @ 2024 by <span>CHAT FLUENCY</span> | all rights reserved!
    <a href="contact_partner.php"><i class="fas fa-headset"></i><span> contact us</span></a>
-</footer>/footer>
-
+</footer>
    <!-- custom js file link  -->
    <script src="js/script.js"></script>
 
