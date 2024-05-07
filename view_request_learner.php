@@ -160,7 +160,7 @@ if (isset($_SESSION['redirect_message']) && !empty($_SESSION['redirect_message']
 
 <a href="profileLearner.php"><i class="fas fa-home"></i><span>home</span></a>
 
-   <a href="sessionsLearner.php"><i><img src="images/session.png" alt="sessions"></i><span>sessions</span></a>
+   <a href="SesssionsLearner.php"><i><img src="images/session.png" alt="sessions"></i><span>sessions</span></a>
 
    <a href="partners.php"><i class="fas fa-chalkboard-user"></i><span>partners</span></a>
 
@@ -243,7 +243,7 @@ echo "<p class='learner-goals'><br>Learner Goals: " . htmlspecialchars($requestD
 
                 // Display the "Cancel request" button only if the status is "Pending"
 
-                if ($requestDetails['Status'] == 'Pending') {
+                if ($requestDetails['Status'] == 'Pending' || $requestDetails['Status'] == 'Rejected' ) {
 
                     echo '<div style="text-align: center; margin-top: 20px;">';
 
@@ -289,7 +289,7 @@ echo "<p class='learner-goals'><br>Learner Goals: " . htmlspecialchars($requestD
 
     if (isset($_POST['cancel_request'])) {
 
-        if ($requestDetails['Status'] == 'Pending') {
+        if ($requestDetails['Status'] == 'Pending' || $requestDetails['Status'] == 'Rejected' ) {
 
             try {
 
