@@ -1,7 +1,7 @@
 <?php
-// Include necessary files and initialize connection
+
 include 'connect.php';
-$connection = new Connect();
+
 
 // Check if user_id is set in cookies
 if(isset($_COOKIE['user_id'])){
@@ -9,6 +9,8 @@ if(isset($_COOKIE['user_id'])){
 } else {
     $user_id = '';
 }
+
+$connection = new Connect();
 
 // Fetch request details based on the request ID
 if(isset($_GET['request_id'])) {
@@ -18,37 +20,24 @@ if(isset($_GET['request_id'])) {
     if(isset($_GET['action'])) {
         $action = $_GET['action'];
 
-        // Check if the partner has already responded to this request
-        $check_response_sql = "SELECT * FROM LearningRequests WHERE RequestID = ? AND PartnerID = ?";
-        $stmt_check_response = $connection->conn->prepare($check_response_sql);
-        $stmt_check_response->bind_param('ii', $request_id, $user_id);
-        $stmt_check_response->execute();
-        $response_result = $stmt_check_response->get_result();
-
-        if ($response_result->num_rows > 0) {
-            // Partner has already responded to this request
-            echo "<script>alert('You have already responded to this request.');</script>";
+           // Update the status based on the action
+        if($action == "accept") {
+            $status = "Accepted";
+        } elseif($action == "reject") {
+            $status = "Rejected";
         } else {
-            // Update the status based on the action
-            if($action == "accept") {
-                $status = "Accepted";
-                echo "<script>alert('Request Accepted Successfully!');</script>";
-            } elseif($action == "reject") {
-                $status = "Rejected";
-                echo "<script>alert('Request Rejected Successfully!');</script>";
-            } else {
-                $status = "Pending";
-            }
-
-            // Update the status in the database
-            $update_sql = "UPDATE LearningRequests SET Status = ?, PartnerID = ? WHERE RequestID = ?";
-            $stmt = $connection->conn->prepare($update_sql);
-            $stmt->bind_param('sii', $status, $user_id, $request_id);
-            $stmt->execute();
+            $status = "Pending";
         }
 
+           // Update the status in the database
+           $update_sql = "UPDATE LearningRequests SET Status = ? WHERE RequestID = ?";
+           $stmt = $connection->conn->prepare($update_sql);
+           $stmt->bind_param('si', $status, $request_id);
+           $stmt->execute();
+           
+          
         // Redirect back to learner requests page
-        echo "<script>window.location.href = 'learner_requests.php';</script>";
+        header("Location: learner_requests.php");
         exit();
     }
 
@@ -84,30 +73,10 @@ if(isset($_GET['request_id'])) {
 } else {
     // No request ID provided in the URL
     // Redirect back to learner requests page
-    echo "<script>window.location.href = 'learner_requests.php';</script>";
+    header("Location: learner_requests.php");
     exit();
 }
 
-// Check if the partner has already responded to this request
-$check_response_sql = "SELECT * FROM LearningRequests WHERE RequestID = ? AND PartnerID = ?";
-$stmt_check_response = $connection->conn->prepare($check_response_sql);
-$stmt_check_response->bind_param('ii', $request_id, $user_id);
-$stmt_check_response->execute();
-$response_result = $stmt_check_response->get_result();
-
-// Display remaining time
-$currentTime = time();
-$requestTime = strtotime($row["RequestTimestamp"]);
-$elapsedTime = $currentTime - $requestTime;
-$timeLimitSeconds = 48 * 60 * 60; // 48 hours
-$remainingTime = $timeLimitSeconds - $elapsedTime;
-
-// Display remaining time
-if ($remainingTime > 0) {
-    echo "<p>You have " . gmdate("i:s", $remainingTime) . " remaining to respond to this request.</p>";
-} else {
-    echo "<p>The request has expired.</p>";
-}
 
 $select_user = $connection->conn->prepare("SELECT * FROM languagepartners WHERE PartnerID = ? LIMIT 1"); 
 $select_user->bind_param("i", $user_id);
@@ -123,21 +92,6 @@ if ($fetch_user) {
     $name = "Guest";
 }
 
-// Calculate elapsed time since request was posted
-$currentTime = time();
-$requestTime = strtotime($row["RequestTimestamp"]);
-$elapsedTime = $currentTime - $requestTime;
-
-// If elapsed time exceeds 48 hours and request is still pending, withdraw the request
-if ($elapsedTime >= 48 * 60 * 60 && $status == "Pending") {
-    $status = "Withdrawn";
-    // Update the status in the database
-    $update_sql = "UPDATE LearningRequests SET Status = ? WHERE RequestID = ?";
-    $stmt = $connection->conn->prepare($update_sql);
-    $stmt->bind_param('si', $status, $request_id);
-    $stmt->execute();
-    echo "<script>alert('Request has been automatically withdrawn due to no response within 48 hours.');</script>";
-}
 ?>
 
 <!DOCTYPE html>

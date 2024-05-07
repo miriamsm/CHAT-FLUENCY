@@ -129,45 +129,28 @@ if ($fetch_user) {
       // Display learner requests
       if ($stmt && $stmt->num_rows > 0) {
          while($row = $stmt->fetch_assoc()) {
-            // Calculate remaining time
-            $currentTime = time();
-            $requestTime = strtotime($row["RequestTimestamp"]);
-            $elapsedTime = $currentTime - $requestTime;
-            $timeLimitSeconds = 48 * 60 * 60; // 48 hours
-            
-            $remainingTime = $timeLimitSeconds - $elapsedTime;
-            $remainingHours = floor($remainingTime / 3600); // Convert remaining time to hours
-            
-echo '<div class="box">';
-echo '<div class="tutor">';
-echo '<img src="images/' . $row["Photo"] . '" alt="Learner photo">'; // Assuming static image for now
-echo '<div class="info">';
-// Display learner's name
-$learner_name = $row["LearnerFirstName"] . ' ' . $row["LearnerLastName"];
-echo '<h3>' . $learner_name . '</h3>';
-echo '<span>' . $row["RequestDate"] . '</span>';
-echo '</div>';
-echo '</div>';
-echo '<h3 class="title">' . $learner_name . ' Wants to take a session with you!</h3>';
-echo '<a href="Request_Details.php?request_id=' . $row["RequestID"] . '" class="inline-btn">Request Details</a>';
-echo '<div class="box">';
-$status = $row["Status"]; // Assigning value to $status variable
-echo '<div class="request-status ' . getStatusColor($status) . '">' . $status . ' </div>';
-echo '</div>';
-
-// Display remaining time
-if ($remainingTime > 0) {
-    echo "<p>You have " . gmdate("i:s", $remainingTime) . " time remaining to respond to this request.</p>";
-} else {
-    echo "<p>The request has expired.</p>";
-}
-
-echo '</div>';
-}
-} else {
-echo "<p>No learner requests found.</p>";
-}
-?>
+            echo '<div class="box">';
+            echo '<div class="tutor">';
+            echo '<img src="images/' . $row["Photo"] . '" alt="Learner photo">'; // Assuming static image for now
+            echo '<div class="info">';
+            // Display learner's name
+            $learner_name = $row["LearnerFirstName"] . ' ' . $row["LearnerLastName"];
+            echo '<h3>' . $learner_name . '</h3>';
+            echo '<span>' . $row["RequestDate"] . '</span>';
+            echo '</div>';
+            echo '</div>';
+            echo '<h3 class="title">' . $learner_name . ' Wants to take a session with you!</h3>';
+            echo '<a href="Request_Details.php?request_id=' . $row["RequestID"] . '" class="inline-btn">Request Details</a>';
+            echo '<div class="box">';
+            $status = $row["Status"]; // Assigning value to $status variable
+            echo '<div class="request-status ' . getStatusColor($status) . '">' . $status . ' </div>';
+            echo '</div>';
+            echo '</div>';
+         }
+      } else {
+         echo "<p>No learner requests found.</p>";
+      }
+      ?>
    </div>
 </section>
 <script src="script.js"></script>
