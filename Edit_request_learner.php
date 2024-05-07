@@ -372,8 +372,7 @@ if (isset($_SESSION['redirect_message']) && !empty($_SESSION['redirect_message']
 
             <p>Enter your preferred schedule <span>*</span></p>
 
-            <input type="text" id="preferred_schedule" name="preferred_schedule" placeholder="E.g. weekdays evenings, weekends mornings" maxlength="20" class="box" value="<?php echo $learnerInfo['PreferredSchedule']; ?>">
-
+            <input type="datetime-local" name="preferred_schedule" class="box">
             <p>Enter your session duration <span>*</span></p>
 
             <input type="text" id="session_duration" name="session_duration" placeholder="E.g. 1 hour, 90 minutes" maxlength="20" class="box" value="<?php echo $learnerInfo['SessionDuration']; ?>">
