@@ -245,6 +245,7 @@ COMMIT;
 
 ALTER TABLE LearningRequests 
 ADD COLUMN RequestTimestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP;
+
 DELIMITER //
 CREATE TRIGGER after_insert_reviewsratings
 AFTER INSERT ON reviewsratings
