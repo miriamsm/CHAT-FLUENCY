@@ -39,11 +39,6 @@ $partnerID = $_GET['partnerID'];
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $scheduleInput = trim($_POST['pass']);
-    // Validate schedule format using regex
-    if (!preg_match("/^(1[0-2]|0?[1-9])(:[0-5][0-9])?( ?[ap]m)?$/i", $scheduleInput)) {
-        echo '<script>alert("Error: Invalid schedule format. Please use format like 10am, 9pm, etc.");</script>';
-        exit(); // Added exit() to stop further execution
-    }
 
     // Validate Session Duration Input
     $sessionDuration = trim($_POST['session_duration']);

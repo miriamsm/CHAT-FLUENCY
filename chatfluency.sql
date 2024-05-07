@@ -284,6 +284,23 @@ END;
 //
 
 DELIMITER ;
+
+DELIMITER //
+
+CREATE EVENT `update_session_status_to_completed`
+ON SCHEDULE EVERY 1 HOUR
+STARTS CURRENT_TIMESTAMP
+DO
+BEGIN
+    -- Update the status of sessions where the SessionDate has passed to 'Completed'
+    UPDATE learningsessions
+    SET Status = 'Completed'
+    WHERE SessionDate < CURRENT_TIMESTAMP AND Status = 'Scheduled';
+END;
+//
+
+DELIMITER ;
+
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
