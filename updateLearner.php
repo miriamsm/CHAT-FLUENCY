@@ -33,14 +33,14 @@ if(!empty($fname) && $fname != $fetch_user['FirstName']){
     $update_fname = $connection->conn->prepare("UPDATE `languagelearners` SET FirstName = ? WHERE LearnerID = ?");
     $update_fname->bind_param("si", $fname, $user_id);
     $update_fname->execute();
-    $redirect_message ='First name updated successfully!';
+    $redirect_message ='Profile updated successfully!';
 }
 
 if(!empty($lname) && $lname != $fetch_user['LastName']){
     $update_lname = $connection->conn->prepare("UPDATE `languagelearners` SET LastName = ? WHERE LearnerID = ?");
     $update_lname->bind_param("si", $lname, $user_id);
     $update_lname->execute();
-    $redirect_message = 'Last name updated successfully!';
+    $redirect_message = 'Profile updated successfully!';
 }
 
 $city = $_POST['City'];
@@ -51,7 +51,7 @@ if (!empty($city) && $city != $fetch_user['City']) {
     $update_city = $connection->conn->prepare("UPDATE `languagelearners` SET City = ? WHERE LearnerID = ?");
     $update_city->bind_param("si", $city, $user_id);
     $update_city->execute();
-    $redirect_message = 'City updated successfully!';
+    $redirect_message = 'Profile updated successfully!';
     
 } 
 
@@ -64,7 +64,7 @@ if (!empty($location) && $location != $fetch_user['Location']) {
     $update_location = $connection->conn->prepare("UPDATE `languagelearners` SET Location = ? WHERE LearnerID = ?");
     $update_location->bind_param("si", $location, $user_id);
     $update_location->execute();
-    $redirect_message  = 'Location updated successfully!';
+    $redirect_message  = 'Profile updated successfully!';
     
 } 
 
@@ -81,7 +81,7 @@ if (!empty($email) && $email != $fetch_user['Email']) {
         $update_email->execute([$email, $user_id]);
         $update_email->bind_param("si", $email, $user_id);
         $update_email->execute();
-        $redirect_message  = 'Email updated successfully!';
+        $redirect_message  = 'Profile updated successfully!';
     }
 }
 
@@ -100,7 +100,7 @@ if (isset($_POST['remove_photo']) && $_POST['remove_photo'] == 'on') {
     $update_Photo->bind_param("si", $default_photo, $user_id);
     $update_Photo->execute();
     // Remove photo file from the server
-    $redirect_message = 'Photo removed successfully!';
+    $redirect_message = 'Profile updated successfully!';
     } 
     else {
     // Upload and update photo if not removing
@@ -113,7 +113,7 @@ if (isset($_POST['remove_photo']) && $_POST['remove_photo'] == 'on') {
             unlink('images/' . $prev_Photo);
         }
 
-        $redirect_message = 'Photo updated successfully!';
+        $redirect_message = 'Profile updated successfully!';
     }
 }
 
@@ -136,7 +136,7 @@ if (isset($_POST['remove_photo']) && $_POST['remove_photo'] == 'on') {
               $update_pass = $connection->conn->prepare("UPDATE languagelearners SET Password = ? WHERE LearnerID = ?");
               $update_pass->bind_param("si", $new_pass, $user_id);
               $update_pass->execute();
-              $redirect_message = 'Password updated successfully!';
+              $redirect_message = 'Profile updated successfully!';
           } else {
               $message[] = 'Please enter a new password!'; // Inform the user to enter a new password
           }

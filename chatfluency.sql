@@ -268,6 +268,22 @@ END;
 //
 DELIMITER ;
 
+DELIMITER //
+
+CREATE TRIGGER after_update_learningrequests
+AFTER UPDATE ON learningrequests
+FOR EACH ROW
+BEGIN
+    -- Check if the status has been updated to Accepted
+    IF NEW.Status = 'Accepted' THEN
+        -- Insert a new session into the learningsessions table with the requested date
+        INSERT INTO learningsessions (LearnerID, PartnerID, SessionDate, SessionDuration, Status)
+        VALUES (NEW.LearnerID, NEW.PartnerID, NEW.RequestDate, NEW.SessionDuration, 'Scheduled');
+    END IF;
+END;
+//
+
+DELIMITER ;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
