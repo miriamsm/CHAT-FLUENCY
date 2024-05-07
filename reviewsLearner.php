@@ -8,7 +8,17 @@ if(isset($_COOKIE['user_id'])){
    $user_id='';
    header('location:login.php');
 }
+$select_user = $connection->conn->prepare("SELECT * FROM languagelearners WHERE LearnerID = ? LIMIT 1"); 
+$select_user->bind_param("i", $user_id);
+$select_user->execute();
+$fetch_user = $select_user->get_result()->fetch_assoc();
 
+// Check if the query was successful
+if ($fetch_user) {
+	$name = $fetch_user['FirstName'];
+   // Default name if the query fails or no data is found
+   $name = "Guest";
+}
 // Get partner ID from URL parameter
 if(isset($_GET['partnerID'])) {
    $partnerID = $_GET['partnerID'];
