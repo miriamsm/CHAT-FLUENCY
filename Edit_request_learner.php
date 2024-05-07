@@ -248,7 +248,9 @@ if (isset($_SESSION['redirect_message']) && !empty($_SESSION['redirect_message']
                 <!-- Add other proficiency level options and handle selected attribute similarly -->
             </select>
             <p>Enter your preferred schedule <span>*</span></p>
-            <input type="datetime-local" name="preferred_schedule" class="box">
+
+            <input type="text" id="preferred_schedule" name="preferred_schedule" placeholder="E.g. weekdays evenings, weekends mornings" maxlength="20" class="box" value="<?php echo $learnerInfo['PreferredSchedule']; ?>">
+
             <p>Enter your session duration <span>*</span></p>
             <input type="text" id="session_duration" name="session_duration" placeholder="E.g. 1 hour, 3 hours " maxlength="20" class="box" value="<?php echo $learnerInfo['SessionDuration']; ?>">
             <p>Learner Goals:</p>

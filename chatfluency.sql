@@ -106,7 +106,7 @@ CREATE TABLE `learningrequests` (
   `PartnerID` int(11) NOT NULL,
   `LanguageToLearn` set('English','Spanish','French','Mandarian Chinese','Arabic','Hindi','Russian','Portuguese','Bengali','German') NOT NULL,
   `ProficiencyLevel` set('Beginner','Intermediate','Advanced','') DEFAULT NULL,
-  `PreferredSchedule` datetime(6) DEFAULT NULL,
+  `PreferredSchedule` varchar(50) DEFAULT NULL,
   `SessionDuration` varchar(15) DEFAULT NULL,
   `RequestDate` timestamp NOT NULL DEFAULT current_timestamp(),
   `Status` enum('Pending','Accepted','Rejected') DEFAULT 'Pending',
@@ -299,21 +299,47 @@ ALTER TABLE `learningsessions`
 --
 ALTER TABLE `reviewsratings`
   ADD CONSTRAINT `reviewsratings_ibfk_1` FOREIGN KEY (`SessionID`) REFERENCES `learningsessions` (`SessionID`) ON DELETE CASCADE;
-
-DELIMITER $$
---
--- Events
---
-CREATE DEFINER=`root`@`localhost` EVENT `update_session_status_to_completed` ON SCHEDULE EVERY 1 HOUR STARTS '2024-05-07 23:42:30' ON COMPLETION NOT PRESERVE ENABLE DO BEGIN
-    -- Update the status of sessions where the SessionDate has passed to 'Completed'
-    UPDATE learningsessions
-    SET Status = 'Completed'
-    WHERE SessionDate < CURRENT_TIMESTAMP AND Status = 'Scheduled';
-END$$
-
-DELIMITER ;
 COMMIT;
 
+ALTER TABLE LearningRequests 
+ADD COLUMN RequestTimestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP;
+
+DELIMITER //
+CREATE TRIGGER after_insert_reviewsratings
+AFTER INSERT ON reviewsratings
+FOR EACH ROW
+BEGIN
+    DECLARE avg_rating FLOAT;
+
+    -- Calculate average rating for the partner
+    SELECT AVG(Rating) INTO avg_rating
+    FROM reviewsratings
+    WHERE PartnerID = NEW.PartnerID;
+
+    -- Update rating in languagepartners table
+    UPDATE languagepartners
+    SET Rating = avg_rating
+    WHERE PartnerID = NEW.PartnerID;
+END;
+//
+DELIMITER ;
+
+DELIMITER //
+
+CREATE TRIGGER after_update_learningrequests
+AFTER UPDATE ON learningrequests
+FOR EACH ROW
+BEGIN
+    -- Check if the status has been updated to Accepted
+    IF NEW.Status = 'Accepted' THEN
+        -- Insert a new session into the learningsessions table with the requested date
+        INSERT INTO learningsessions (LearnerID, PartnerID, SessionDate, SessionDuration, Status)
+        VALUES (NEW.LearnerID, NEW.PartnerID, NEW.RequestDate, NEW.SessionDuration, 'Scheduled');
+    END IF;
+END;
+//
+
+DELIMITER ;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
