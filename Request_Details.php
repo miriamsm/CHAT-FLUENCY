@@ -78,11 +78,7 @@ if(isset($_GET['request_id'])) {
     exit();
 }
 
-// Check if the request status is already accepted or rejected
-if ($status !== "Pending") {
-   echo "<script>alert('You have already responded to the request!'); window.location.href = 'learner_requests.php';</script>";
-   exit();
-}
+
 
 // Proceed with updating the request status if it's pending
 
@@ -244,16 +240,19 @@ if ($fetch_user) {
         <span style="font-size: 1.5em;"><Strong>My goals:</Strong></span>
         <p style="font-size: 1.5em;"><?php echo $goals; ?></p>
     </div>
-    
-</div>
-
-
+    <!-- Display Accept and Reject buttons only if the request status is pending -->
+   <?php if ($status === "Pending"): ?>
       <div style="text-align: center; margin-top: 20px;">
          <!-- Buttons to accept or reject request -->
          <a href="Request_Details.php?request_id=<?php echo $request_id; ?>&action=accept" class="inline-btn" style="margin-right: 10px;">Accept request</a>
          <a href="Request_Details.php?request_id=<?php echo $request_id; ?>&action=reject" class="inline-delete-btn">Reject request</a>
       </div>
-   </div>
+   <?php endif; ?>
+    
+</div>
+
+
+     
 </section>
 <script src="script.js"></script>
 <footer class="footer">
