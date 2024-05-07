@@ -282,7 +282,7 @@ $resultPrevious = $connection->conn->query($sqlPrevious); // Execute query for c
 
 
    <!-- custom js file link  -->
-   <script src="js/script.js"></script>
+   <script src="script.js"></script>
    <script>
    function showRating(element) {
       var ratingSection = element.querySelector('.rating-section');
