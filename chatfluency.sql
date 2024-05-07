@@ -91,7 +91,7 @@ CREATE TABLE `learningrequests` (
   `PartnerID` int(11) NOT NULL,
   `LanguageToLearn` set('English','Spanish','French','Mandarian Chinese','Arabic','Hindi','Russian','Portuguese','Bengali','German') NOT NULL,
   `ProficiencyLevel` set('Beginner','Intermediate','Advanced','') DEFAULT NULL,
-  `PreferredSchedule` varchar(50) DEFAULT NULL,
+  `PreferredSchedule` datetime DEFAULT NULL,
   `SessionDuration` varchar(15) DEFAULT NULL,
   `RequestDate` timestamp NOT NULL DEFAULT current_timestamp(),
   `Status` enum('Pending','Accepted','Rejected') DEFAULT 'Pending',
@@ -278,7 +278,7 @@ BEGIN
     IF NEW.Status = 'Accepted' THEN
         -- Insert a new session into the learningsessions table with the requested date
         INSERT INTO learningsessions (LearnerID, PartnerID, SessionDate, SessionDuration, Status)
-        VALUES (NEW.LearnerID, NEW.PartnerID, NEW.RequestDate, NEW.SessionDuration, 'Scheduled');
+        VALUES (NEW.LearnerID, NEW.PartnerID, NEW.PreferredSchedule, NEW.SessionDuration, 'Scheduled');
     END IF;
 END;
 //
