@@ -28,6 +28,7 @@ if(isset($_GET['request_id'])) {
         } else {
             $status = "Pending";
         }
+        
 
            // Update the status in the database
            $update_sql = "UPDATE LearningRequests SET Status = ? WHERE RequestID = ?";
@@ -75,6 +76,35 @@ if(isset($_GET['request_id'])) {
     // Redirect back to learner requests page
     header("Location: learner_requests.php");
     exit();
+}
+
+// Check if the request status is already accepted or rejected
+if ($status !== "Pending") {
+   echo "<script>alert('You have already responded to the request!'); window.location.href = 'learner_requests.php';</script>";
+   exit();
+}
+
+// Proceed with updating the request status if it's pending
+
+if(isset($_GET['action'])) {
+   $action = $_GET['action'];
+
+   // Update the status based on the action
+   if($action == "accept") {
+       $status = "Accepted";
+   } elseif($action == "reject") {
+       $status = "Rejected";
+   }
+
+   // Update the status in the database
+   $update_sql = "UPDATE LearningRequests SET Status = ? WHERE RequestID = ?";
+   $stmt = $connection->conn->prepare($update_sql);
+   $stmt->bind_param('si', $status, $request_id);
+   $stmt->execute();
+
+   // Redirect back to learner requests page
+   header("Location: learner_requests.php");
+   exit();
 }
 
 
