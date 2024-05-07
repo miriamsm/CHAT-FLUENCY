@@ -30,48 +30,18 @@ $stmt->bind_param('s', $partnerID);
 $stmt->execute();
 $result = $stmt->get_result();
 
-// $sqlSidebar = "SELECT Photo, CONCAT(FirstName, ' ', LastName) AS FullName FROM LanguageLearners WHERE User_Role = 'learner' LIMIT 1";
-// $resultSidebar = $connection->conn->query($sqlSidebar);
-// $rowSidebar = $resultSidebar->fetch_assoc();
-// $learnerPhoto = $rowSidebar['Photo'];
-// $learnerName = $rowSidebar['FullName'];
-
-// Calculate average rating for the partner
-// $averageRating = 0;
-// $numRatings = 0;
-
-// // Query to get all ratings for the partner
-// $sqlRatings = "SELECT Rating FROM reviewsratings WHERE PartnerID = ?";
-// $stmtRatings = $connection->conn->prepare($sqlRatings);
-// $stmtRatings->bind_param('s', $partnerID);
-// $stmtRatings->execute();
-// $resultRatings = $stmtRatings->get_result();
-
-// // Calculate average rating
-// if ($resultRatings->num_rows > 0) {
-//     while ($rowRating = $resultRatings->fetch_assoc()) {
-//         $averageRating += $rowRating['Rating'];
-//         $numRatings++;
-//     }
-//     $averageRating /= $numRatings; // Calculate the average
-//     $sqlUpdateRating = "UPDATE languagepartners SET Rating = $averageRating WHERE PartnerID = ?";
-//     $stmtUpdateRating = $connection->conn->prepare($sqlUpdateRating);
-//     $stmtUpdateRating->bind_param('s', $partnerID);
-//     $stmtUpdateRating->execute();
-//     $stmtUpdateRating->close();
-// }
-// else{
-//     $sqlUpdateRating = "UPDATE languagepartners SET Rating = 0 WHERE PartnerID = ?";
-// $stmtUpdateRating = $connection->conn->prepare($sqlUpdateRating);
-// $stmtUpdateRating->bind_param('s', $partnerID);
-// $stmtUpdateRating->execute();
-// $stmtUpdateRating->close();
-    
-// }
-
 
 if($result->num_rows > 0) {
     $partner = $result->fetch_assoc();
+
+     // Query to count the number of reviews for this partner
+     $sqlCountReviews = "SELECT COUNT(*) AS num_reviews FROM reviewsratings WHERE PartnerID = ?";
+     $stmtCountReviews = $connection->conn->prepare($sqlCountReviews);
+     $stmtCountReviews->bind_param('s', $partnerID);
+     $stmtCountReviews->execute();
+     $resultCountReviews = $stmtCountReviews->get_result();
+     $rowCountReviews = $resultCountReviews->fetch_assoc();
+     $numReviews = $rowCountReviews['num_reviews'];
 } else {
     echo "Partner not found.";
 }
@@ -145,7 +115,7 @@ $connection->conn->close();
             <p>Session Price : <span> 100$ per hour.</span></p> 
             <p> <img alt="star icon" loading="lazy" width="16" height="16" decoding="async" 
             src="https://static.cambly.com/_next/static/media/star.57929b94.svg" style="color: transparent;">
-            <?php echo $partner['Rating']; ?> • 6 reviews <a href="reviewsLearner.php?partnerID=<?php echo $partnerID; ?>" 
+            <?php echo $partner['Rating']; ?> •  <?php echo $numReviews; ?> reviews <a href="reviewsLearner.php?partnerID=<?php echo $partnerID; ?>" 
             class="inline-btn">View Reviews</a></p>
         </div>
     </div>
