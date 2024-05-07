@@ -42,17 +42,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Validate schedule format using regex
     if (!preg_match("/^(1[0-2]|0?[1-9])(:[0-5][0-9])?( ?[ap]m)?$/i", $scheduleInput)) {
         echo '<script>alert("Error: Invalid schedule format. Please use format like 10am, 9pm, etc.");</script>';
-        
+        exit(); // Added exit() to stop further execution
     }
 
     // Validate Session Duration Input
-    if ($_SERVER["REQUEST_METHOD"] == "POST") {
-        $sessionDuration = trim($_POST['session_duration']);
-        // Validate session duration format using regex
-        if (!preg_match("/^\d+ (hour|hours)$/i", $sessionDuration)) {
-            echo '<script>alert("Error: Invalid session duration format. Please use format like 1 hour, 4 hours, etc.");</script>';
-            exit();
-        }
+    $sessionDuration = trim($_POST['session_duration']);
+    // Validate session duration format using regex
+    if (!preg_match("/^\d+ (hour|hours)$/i", $sessionDuration)) {
+        echo '<script>alert("Error: Invalid session duration format. Please use format like 1 hour, 4 hours, etc.");</script>';
+        exit();
     }
 
     // Sanitize input data
@@ -339,7 +337,7 @@ if (isset($_SESSION['redirect_message']) && !empty($_SESSION['redirect_message']
 
             <p>enter your preferred schedule <span>*</span></p>
 
-            <input type="text" name="pass" placeholder="E.g. 10am , 12pm " maxlength="20" class="box">
+            <input type="datetime-local" name="pass" class="box">
 
             
 
