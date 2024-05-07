@@ -143,7 +143,9 @@ $connection->conn->close();
         <div class="flex">
             <p>Proficiency in Language : <span>Professional</span></p>
             <p>Session Price : <span> 100$ per hour.</span></p> 
-            <p> <?php echo $partner['Rating']; ?> • 6 reviews <a href="reviewsLearner.php?partnerID=<?php echo $partnerID; ?>" 
+            <p> <img alt="star icon" loading="lazy" width="16" height="16" decoding="async" 
+            src="https://static.cambly.com/_next/static/media/star.57929b94.svg" style="color: transparent;">
+            <?php echo $partner['Rating']; ?> • 6 reviews <a href="reviewsLearner.php?partnerID=<?php echo $partnerID; ?>" 
             class="inline-btn">View Reviews</a></p>
         </div>
     </div>
