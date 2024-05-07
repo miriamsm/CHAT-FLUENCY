@@ -34,14 +34,14 @@ if(!empty($fname) && $fname != $fetch_user['FirstName']){
     $update_fname = $connection->conn->prepare("UPDATE languagepartners SET FirstName = ? WHERE PartnerID = ?");
     $update_fname->bind_param("si", $fname, $user_id);
     $update_fname->execute();
-    $redirect_message ='First name updated successfully!';
+    $redirect_message ='Profile updated successfully!';
 }
 
 if(!empty($lname) && $lname != $fetch_user['LastName']){
     $update_lname = $connection->conn->prepare("UPDATE languagepartners SET LastName = ? WHERE PartnerID = ?");
     $update_lname->bind_param("si", $lname, $user_id);
     $update_lname->execute();
-    $redirect_message = 'Last name updated successfully!';
+    $redirect_message = 'Profile updated successfully!';
 }
 
 $city = $_POST['City'];
@@ -52,7 +52,7 @@ if (!empty($city) && $city != $fetch_user['City']) {
     $update_city = $connection->conn->prepare("UPDATE languagepartners SET City = ? WHERE PartnerID = ?");
     $update_city->bind_param("si", $city, $user_id);
     $update_city->execute();
-    $redirect_message = 'City updated successfully!';
+    $redirect_message = 'Profile updated successfully!';
     
 } 
 
@@ -63,7 +63,7 @@ if (!empty($bio) && $bio != $fetch_user['Bio']) {
     $update_bio = $connection->conn->prepare("UPDATE languagepartners SET Bio = ? WHERE PartnerID = ?");
     $update_bio->bind_param("si", $bio, $user_id);
     $update_bio->execute();
-    $redirect_message  = 'Bio updated successfully!';
+    $redirect_message  = 'Profile updated successfully!';
     
 } 
 
@@ -79,7 +79,7 @@ if (!empty($email) && $email != $fetch_user['Email']) {
         $update_email = $connection->conn->prepare("UPDATE languagepartners SET Email = ? WHERE PartnerID = ?");
         $update_email->bind_param("si", $email, $user_id);
         $update_email->execute();
-        $redirect_message  = 'Email updated successfully!';
+        $redirect_message  = 'Profile updated successfully!';
     }
 }
 
@@ -91,7 +91,7 @@ if (!empty($phone) && $phone != $fetch_user['Phone']) {
         $update_phone = $connection->conn->prepare("UPDATE languagepartners SET Phone = ? WHERE PartnerID = ?");
         $update_phone->bind_param("si", $phone, $user_id);
         $update_phone->execute();
-        $redirect_message = 'Phone updated successfully!';
+        $redirect_message = 'Profile updated successfully!';
     } else {
         // Render a message if the phone number contains non-numeric characters
         $message[] = 'Please enter a valid phone number!';
@@ -106,7 +106,7 @@ if (!empty($age) && $age != $fetch_user['Age']) {
         $update_age = $connection->conn->prepare("UPDATE languagepartners SET Age = ? WHERE PartnerID = ?");
         $update_age->bind_param("ii", $age, $user_id);
         $update_age->execute();
-        $redirect_message = 'Age updated successfully!';
+        $redirect_message = 'Profile updated successfully!';
     } else {
         // Render a message if the age is negative
         $message[]= 'Age cannot be negative!';
@@ -121,7 +121,7 @@ if ($new_gender === 'Male' || $new_gender === 'Female') {
         $update_gender = $connection->conn->prepare("UPDATE languagepartners SET Gender = ? WHERE PartnerID = ?");
         $update_gender->bind_param("si", $new_gender, $user_id);
         $update_gender->execute();
-        $redirect_message = 'Gender updated successfully!';
+        $redirect_message = 'Profile updated successfully!';
     } 
 } else {
     // Render a message if the provided gender is invalid
@@ -147,7 +147,7 @@ if (isset($_POST['remove_photo']) && $_POST['remove_photo'] == 'on') {
 
     // Remove photo file from the server
 
-    $redirect_message = 'Photo removed successfully!';
+    $redirect_message = 'Profile updated successfully!';
 } else {
     // Upload and update photo if not removing
     if (!empty($Photo) && $Photo != $fetch_user['Photo']) {
@@ -159,7 +159,7 @@ if (isset($_POST['remove_photo']) && $_POST['remove_photo'] == 'on') {
             unlink('images/' . $prev_Photo);
         }
 
-        $redirect_message = 'Photo updated successfully!';
+        $redirect_message = 'Profile updated successfully!';
     }
 }
 
@@ -180,7 +180,7 @@ if (isset($_POST['remove_photo']) && $_POST['remove_photo'] == 'on') {
               $update_pass = $connection->conn->prepare("UPDATE languagepartners SET Password = ? WHERE PartnerID = ?");
               $update_pass->bind_param("si", $new_pass, $user_id);
               $update_pass->execute();
-              $redirect_message = 'Password updated successfully!';
+              $redirect_message = 'Profile updated successfully!';
           } else {
               $message[] = 'Please enter a new password!'; // Inform the user to enter a new password
           }
