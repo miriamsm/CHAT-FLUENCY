@@ -187,6 +187,10 @@ if (isset($_POST['remove_photo']) && $_POST['remove_photo'] == 'on') {
       }
   
   }
+    // Check if any field has been updated
+if (empty($redirect_message)&& empty($message)) {
+    $message[] = 'No fields were updated!';
+}
   
 }
 $cancel_button_clicked = isset($_POST['cancel']); // Check if the cancel button was clicked
@@ -317,7 +321,7 @@ if($redirect_message !== '') {
       </nav>
       <nav>
          <div style="text-align: center; margin-top: 20px; margin-bottom: 150px;">
-         <a href="user_logout.php"  class="inline-btn" >Sign out</a>
+         <a href="user_logout.php" onclick="return confirm('logout from this website?');" class="inline-btn" >Sign out</a>
       </div>
       </nav>
    

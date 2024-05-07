@@ -88,7 +88,7 @@ if ($fetch_user) {
       <div class="content">
          <h3>why choose us?</h3>
          <p>Our interactive platform empowers you to achieve fluency faster than ever before. Join a community of language enthusiasts and embark on a journey to linguistic proficiency with Chat Fluency!</p>
-         <a href="partners.html" class="inline-btn">our Language Partners</a>
+         <a href="partners.php" class="inline-btn">our Language Partners</a>
       </div>
 
    </div>
