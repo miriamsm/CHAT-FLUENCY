@@ -19,6 +19,8 @@ if (isset($_POST['submit'])) {
     $location = $_POST['location'];
     
     // Handle file upload
+if(isset($_FILES['photo']['name']) && !empty($_FILES['photo']['name'])) {
+    // File was uploaded by the user
     $photo = $_FILES['photo']['name'];
     $target_dir = 'images/';
     $target_file = $target_dir . basename($_FILES["photo"]["name"]);
@@ -26,14 +28,10 @@ if (isset($_POST['submit'])) {
     $imageFileType = strtolower(pathinfo($target_file,PATHINFO_EXTENSION));
 
     // Check if image file is a actual image or fake image
-    if(isset($_POST["submit"])) {
-        $check = getimagesize($_FILES["photo"]["tmp_name"]);
-        if($check !== false) {
-            $uploadOk = 1;
-        } else {
-            echo "File is not an image.";
-            $uploadOk = 0;
-        }
+    $check = getimagesize($_FILES["photo"]["tmp_name"]);
+    if($check === false) {
+        echo "File is not an image.";
+        $uploadOk = 0;
     }
 
     // Check file size
@@ -52,16 +50,20 @@ if (isset($_POST['submit'])) {
     // Check if $uploadOk is set to 0 by an error
     if ($uploadOk == 0) {
         echo "Sorry, your file was not uploaded.";
-    // if everything is ok, try to upload file
+        // Set default photo
+        $photo = 'Profile.png';
     } else {
+        // Move uploaded file to desired location
         if (move_uploaded_file($_FILES["photo"]["tmp_name"], $target_file)) {
             echo "The file ". basename( $_FILES["photo"]["name"]). " has been uploaded.";
-            //$photo = $target_file;
         } else {
             echo "Sorry, there was an error uploading your file.";
         }
     }
-
+} else {
+    // No file was uploaded, set default photo
+    $photo = 'Profile.png';
+}
     // SQL query to insert data into learners table
     $query = "INSERT INTO languagelearners (FirstName, LastName, Email, Password, Photo, City, Location) 
               VALUES ('$firstName', '$lastName', '$email', '$password', '$photo', '$city', '$location')";
