@@ -178,7 +178,7 @@ $resultPrevious = $connection->conn->query($sqlPrevious); // Execute query for c
                if ($resultCurrent->num_rows > 0) {
                   // Output data of each row
                   while ($row = $resultCurrent->fetch_assoc()) {
-                     echo "<a class='box' href='partner_profile.php?partner_id=" . $row['PartnerID'] . "'>";
+                     echo "<a class='box' href='partner_profile.php?partnerID=" . $row['PartnerID'] . "'>";
                      echo "<div class='student'>";
                      echo "<img src='images/" . $row['PartnerPhoto'] . "' alt='profile photo'>";
                      echo "<div class='info'>";
@@ -252,7 +252,7 @@ $resultPrevious = $connection->conn->query($sqlPrevious); // Execute query for c
                   }else{
             
 
-                     echo "<a class='box' href='partner_profile.php?partner_id=" . $row['PartnerID'] . "'>";
+                     echo "<a class='box' href='partner_profile.php?partnerID=" . $row['PartnerID'] . "'>";
                      echo "<div class='tutor'>";
                      echo "<img src='images/" . $row['PartnerPhoto'] . "' alt='profile photo'>";
                      echo "<div class='info'>";

@@ -1,225 +1,461 @@
 <?php
-include 'connect.php'; // Include your database connection file
 
-// Initialize variables to hold form data
-$language = $level = $preferred_schedule = $session_duration = $requestID = '';
+error_reporting(E_ALL);
 
-// Check if the form was submitted
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    // Retrieve form data
-    $language = $_POST['language'];
-    $level = $_POST['level'];
-    $preferred_schedule = $_POST['preferred_schedule'];
-    $session_duration = $_POST['session_duration'];
-    $requestID = $_POST['request_id'];
+ini_set('display_errors', 1);
 
-    // Check if any required field is empty
-    if (empty($language) || empty($level) || empty($preferred_schedule) || empty($session_duration)) {
-        echo "<script>alert('Please fill all fields.');</script>";
-    } else {
-        // Database connection details (moved outside the try block for better organization)
-        $db_name = 'mysql:host=localhost;dbname=chatfluency';
-        $user_name = 'root';
-        $user_password = '';
 
-        try {
-            // Create a PDO connection
-            $conn = new PDO($db_name, $user_name, $user_password);
-            $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+// Include the database connection file
 
-            // Prepare and execute the query to fetch existing data for comparison
-            $stmt = $conn->prepare("SELECT LanguageToLearn, ProficiencyLevel, PreferredSchedule, SessionDuration FROM LearningRequests WHERE RequestID = ?");
-            $stmt->execute([$requestID]);
-            $existingData = $stmt->fetch(PDO::FETCH_ASSOC);
+include 'connect.php'; // Update the path as necessary
 
-            // Check if the submitted data is different from the existing data
-            if ($existingData['LanguageToLearn'] != $language || $existingData['ProficiencyLevel'] != $level || $existingData['PreferredSchedule'] != $preferred_schedule || $existingData['SessionDuration'] != $session_duration) {
-                // Update the request information in the database
-                $stmt = $conn->prepare("UPDATE LearningRequests SET LanguageToLearn = ?, ProficiencyLevel = ?, PreferredSchedule = ?, SessionDuration = ? WHERE RequestID = ?");
-                $stmt->execute([$language, $level, $preferred_schedule, $session_duration, $requestID]);
 
-                // Check if the update was successful
-                $updatedRows = $stmt->rowCount();
-                if ($updatedRows > 0) {
-                    // Redirect to the view page after successful update with success parameter
-                    header("Location: view_request_learner.php?request_id=$requestID&success=true");
-                    exit(); // Stop further execution
-                } else {
-                    echo "<script>alert('Failed to update information. Please try again.');</script>";
-                }
-            } else {
-                // Data is the same, redirect without attempting update
-                header("Location: view_request_learner.php?request_id=$requestID");
-                exit(); // Stop further execution
-            }
-        } catch (PDOException $e) {
-            // Handle PDO exceptions
-            echo "Connection failed: " . $e->getMessage();
-        }
+// Create a new instance of the Connect class to establish the database connection
 
-        // Close the PDO connection
-        $conn = null;
-    }
+$connection = new Connect();
+
+$conn = $connection->conn;
+
+
+// Check if the connection is successful
+
+if (!$conn) {
+
+    die("Connection failed: " . mysqli_connect_error());
+
 }
 
-// Check if the request ID is set in the URL
-if (isset($_GET['request_id'])) {
-    // Get the request ID from the URL
-    $requestID = $_GET['request_id'];
 
-    // Database connection details (moved outside the try block for better organization)
-    $db_name = 'mysql:host=localhost;dbname=chatfluency';
-    $user_name = 'root';
-    $user_password = '';
+session_start(); // Start the session if not already started
+
+
+if (isset($_COOKIE['user_id'])) {
+
+    $user_id = $_COOKIE['user_id'];
+
+} else {
+
+    $user_id = '';
+
+    // Redirect to login.php if user_id cookie is not set
+
+    header('location: login.php');
+
+    // Add an exit after header redirection
+
+    exit();
+
+}
+
+
+$select_user = $conn->prepare("SELECT * FROM languagelearners WHERE LearnerID = ? LIMIT 1");
+
+$select_user->bind_param("i", $user_id);
+
+$select_user->execute();
+
+$fetch_user = $select_user->get_result()->fetch_assoc();
+
+
+$user_id = $_COOKIE['user_id'];
+
+
+// Fetch the learner's information from the database
+
+try {
+
+    $stmt = $conn->prepare("SELECT * FROM learningrequests WHERE LearnerID = ?");
+
+    $stmt->bind_param("i", $user_id);
+
+    $stmt->execute();
+
+    $result = $stmt->get_result();
+
+    $learnerInfo = $result->fetch_assoc();
+
+    if (!$learnerInfo) {
+
+        echo "Error: Learner information not found.";
+
+        exit();
+
+    }
+
+} catch (Exception $e) {
+
+    // Handle exceptions
+
+    echo "Error: " . $e->getMessage();
+
+    exit();
+
+}
+
+
+// Check if the form is submitted
+
+$successMessage = '';
+
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['submit'])) {
+
+    // Validate and sanitize input data
+
+    $languageToLearn = trim($_POST['language']);
+
+    $proficiencyLevel = trim($_POST['level']);
+
+    $preferredSchedule = trim($_POST['preferred_schedule']);
+
+    $sessionDuration = trim($_POST['session_duration']);
+
+    $learnerGoals = trim($_POST['learner_goals']);
+
+    $requestID = $_POST['request_id']; // Added request ID
+
 
     try {
-        // Create a PDO connection
-        $conn = new PDO($db_name, $user_name, $user_password);
-        $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-        // Prepare and execute the query to fetch specific details of the request
-        $stmt = $conn->prepare("SELECT LanguageToLearn, ProficiencyLevel, PreferredSchedule, SessionDuration FROM LearningRequests WHERE RequestID = ?");
-        $stmt->execute([$requestID]);
-        $requestDetails = $stmt->fetch(PDO::FETCH_ASSOC);
+        // Update the learner's information in the database
 
-        // Check if the request details were found
-        if ($requestDetails) {
+        $stmt = $conn->prepare("UPDATE learningrequests SET LanguageToLearn = ?, ProficiencyLevel = ?, PreferredSchedule = ?, SessionDuration = ?, LearnerGoals = ? WHERE LearnerID = ?");
+
+        $stmt->bind_param("sssssi", $languageToLearn, $proficiencyLevel, $preferredSchedule, $sessionDuration, $learnerGoals, $user_id);
+
+        $stmt->execute();
+
+
+        // Check if the update was successful
+
+        $updatedRows = $stmt->affected_rows;
+
+        if ($updatedRows > 0) {
+
+            // Set success message
+
+            $successMessage = "Information updated successfully!";
+
+            // Refresh the learnerInfo variable with updated data
+
+            $learnerInfo['LanguageToLearn'] = $languageToLearn;
+
+            $learnerInfo['ProficiencyLevel'] = $proficiencyLevel;
+
+            $learnerInfo['PreferredSchedule'] = $preferredSchedule;
+
+            $learnerInfo['SessionDuration'] = $sessionDuration;
+
+            $learnerInfo['LearnerGoals'] = $learnerGoals;
+
+        }
+
+    } catch (Exception $e) {
+
+        // Handle exceptions
+
+        echo "Error: " . $e->getMessage();
+
+        exit();
+
+    }
+
+}
+
 ?>
+
 <!DOCTYPE html>
+
 <html lang="en">
+
 <head>
+
     <meta charset="UTF-8">
+
     <title>Edit request</title>
+
     
+
     <!-- font awesome cdn link  -->
+
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.2/css/all.min.css">
 
+
     <!-- custom css file link  -->
+
     <link rel="stylesheet" href="style.css">
+
     <style>
+
         .footer {
+
             margin-top: 50px;
-        }
+
+        } 
+
+        /* .box {
+
+            width: 100%;
+
+            padding: 10px;
+
+            margin: 5px 0;
+
+            border: 1px solid #ccc;
+
+            border-radius: 5px;
+
+            box-sizing: border-box;
+
+        } */
+
+
     </style>
+
 </head>
+
 <body>
-    <header class="header">
-        <div class="flex">
-            <a href="profileLearner.html" class="logo"> <img src="images/logo.jpg" width="210" height="60" alt="logo"></a> 
-            <div class="icons">
-                <div id="menu-btn" class="fas fa-bars"></div>
-                <div id="toggle-btn" class="fas fa-sun"></div>
-            </div>
-        </div>
-    </header>  
 
-    <div class="side-bar">
-        <div id="close-btn">
-            <i class="fas fa-times"></i>
-        </div>
-        <div class="profile">
-            <img src="images/pic-1.jpg" class="image" alt="">
-            <h3 class="name">Leena Alshaikh</h3>
-            <p class="role">Learner</p>
-        </div>
-        <nav class="navbar">
-            <a href="profileLearner.html"><i class="fas fa-home"></i><span>home</span></a>
-            <a href="SesssionsLearner.html"><i><img src="images/session.png" alt="sessions"></i><span>sessions</span</a>
-            <a href="partners.html"><i class="fas fa-chalkboard-user"></i><span>partners</span></a>
-            <a href="about_learner.html"><i class="fas fa-question"></i><span>about</span></a>
-        </nav>
-        <nav>
-            <div style="text-align: center; margin-top: 20px; margin-bottom: 150px;">
-                <a href="home.html" class="inline-btn">Sign out</a>
-            </div>
-        </nav>
-    </div>
-    <script>
-    function confirmSave() {
-        // Check if any required field is empty
-        if (document.getElementById('language').value.trim() === '' || 
-            document.getElementById('level').value.trim() === '' || 
-            document.getElementById('preferred_schedule').value.trim() === '' || 
-            document.getElementById('session_duration').value.trim() === '') {
-            alert('Please fill all fields.');
-            return false;
-        }
-        return confirm("Are you sure you want to save changes?");
-    }
+<header class="header">
 
-    // Redirect after successful form submission
-    function redirectAfterSave() {
-        window.location.href = 'view_request_learner.php?request_id=<?php echo $requestID; ?>';
-    }
-</script>
+   
+
+   <div class="flex">
+
+
+      <a href="profileLearner.php" class="logo"> <img src = "images/logo.jpg" width="210" height="60" alt="logo"></a> 
+
+      <?php
+
+// session_start(); // Start the session
+
+
+// Check if the session variable is set and not empty
+
+if (isset($_SESSION['redirect_message']) && !empty($_SESSION['redirect_message'])) {
+
+ $redirect_message = $_SESSION['redirect_message'];
+
+
+ // Echo or display the message where needed in your HTML
+
+ echo '<script>alert("' . $redirect_message . '");</script>';
+
+
+ // Clear the session variable
+
+ unset($_SESSION['redirect_message']);
+
+}
+
+?>
+
+      <div class="icons">
+
+         <div id="toggle-btn" class="fas fa-sun"></div>
+
+      </div>
+
+
+
+   </div>
+
+
+</header>  
+
+<div class="side-bar">
+
+
+      <div id="close-btn">
+
+         <i class="fas fa-times"></i>
+
+      </div>
+
+   
+
+      <div class="profile">
+
+      <img src="images/<?= $fetch_user['Photo']; ?>" class="image" alt="">
+
+         <h3 class="name"><?= $fetch_user['FirstName'] . ' ' . $fetch_user['LastName']; ?></h3>
+
+         <p class="role">Learner</p>
+
+      </div>
+
+   
+
+      <nav class="navbar">
+
+      <a href="profileLearner.php"><i class="fas fa-home"></i><span>home</span></a>
+
+         <a href="SesssionsLearner.php"><i><img src="images/session.png" alt="sessions"></i><span>sessions</span></a>
+
+         <a href="partners.php"><i class="fas fa-chalkboard-user"></i><span>partners</span></a>
+
+         <a href="about_learner.php"><i class="fas fa-question"></i><span>about</span></a>
+
+      </nav>
+
+      <nav>
+
+         <div style="text-align: center; margin-top: 20px; margin-bottom: 150px;">
+
+         <a href="user_logout.php"  class="inline-btn" >Sign out</a>
+
+      </div>
+
+      </nav>
+
+   
+
+   </div>
+
+
+    
 
     <section class="form-container">
-        <form id="editForm" method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" onsubmit="return confirmSave()">
-            <h3>Edit your request information</h3>
-            <p>Language <span>*</span></p>
-            <select id="language" name="language" class="box">
-                <option value="" disabled selected>Specify the language you want to learn</option>
-                <option value="English" <?php if ($requestDetails['LanguageToLearn'] == 'English') echo 'selected'; ?>>English</option>
-                <option value="Spanish" <?php if ($requestDetails['LanguageToLearn'] == 'Spanish') echo 'selected'; ?>>Spanish</option>
-                  <option value="French" <?php if ($requestDetails['LanguageToLearn'] == 'French') echo 'selected'; ?>>French</option>
-                  <option value="Mandarin Chinese" <?php if ($requestDetails['LanguageToLearn'] == 'Mandarin Chinese') echo 'selected'; ?>>Mandarin Chinese</option>
-                  <option value="Arabic" <?php if ($requestDetails['LanguageToLearn'] == 'Arabic') echo 'selected'; ?>>Arabic</option>
-                  <option value="Hindi" <?php if ($requestDetails['LanguageToLearn'] == 'Hindi') echo 'selected'; ?>>Hindi</option>
-                  <option value="Russian" <?php if ($requestDetails['LanguageToLearn'] == 'Russian') echo 'selected'; ?>>Russian</option>
-                  <option value="Portuguese" <?php if ($requestDetails['LanguageToLearn'] == 'Portuguese') echo 'selected'; ?>>Portuguese</option>
-                  <option value="Bengali" <?php if ($requestDetails['LanguageToLearn'] == 'Bengali') echo 'selected'; ?>>Bengali</option>
-                  <option value="German" <?php if ($requestDetails['LanguageToLearn'] == 'German') echo 'selected'; ?>>German</option>
-            </select>
-            <p>Your level <span>*</span></p>
-            <select id="level" name="level" class="box">
-                <option value="" disabled selected>Specify your current proficiency level</option>
-                <option value="Beginner" <?php if ($requestDetails['ProficiencyLevel'] == 'Beginner') echo 'selected'; ?>>Beginner</option>
-                <option value="Intermediate" <?php if ($requestDetails['ProficiencyLevel'] == 'Intermediate') echo 'selected'; ?>>Intermediate</option>
-                <option value="Advanced" <?php if ($requestDetails['ProficiencyLevel'] == 'Advanced') echo 'selected'; ?>>Advanced</option>
 
-                <!-- Add other options similarly -->
+        <form id="editForm" method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" onsubmit="return confirmSave()">
+
+            <h3>Edit your request information</h3>
+
+            <p>Language <span>*</span></p>
+
+            <select id="language" name="language" class="box">
+
+                <option value="" disabled selected>Specify the language you want to learn</option>
+
+                <option value="English" <?php if ($learnerInfo['LanguageToLearn'] == 'English') echo 'selected'; ?>>English</option>
+
+                <option value="Spanish" <?php if ($learnerInfo['LanguageToLearn'] == 'Spanish') echo 'selected'; ?>>Spanish</option>
+
+                <option value="French" <?php if ($learnerInfo['LanguageToLearn'] == 'French') echo 'selected'; ?>>French</option>
+
+                <option value="Mandarin Chinese" <?php if ($learnerInfo['LanguageToLearn'] == 'Mandarin Chinese') echo 'selected'; ?>>Mandarin Chinese</option>
+
+                <option value="Arabic" <?php if ($learnerInfo['LanguageToLearn'] == 'Arabic') echo 'selected'; ?>>Arabic</option>
+
+                <option value="Hindi" <?php if ($learnerInfo['LanguageToLearn'] == 'Hindi') echo 'selected'; ?>>Hindi</option>
+
+                <option value="Russian" <?php if ($learnerInfo['LanguageToLearn'] == 'Russian') echo 'selected'; ?>>Russian</option>
+
+                <option value="Portuguese" <?php if ($learnerInfo['LanguageToLearn'] == 'Portuguese') echo 'selected'; ?>>Portuguese</option>
+
+                <option value="Bengali" <?php if ($learnerInfo['LanguageToLearn'] == 'Bengali') echo 'selected'; ?>>Bengali</option>
+
+                <option value="German" <?php if ($learnerInfo['LanguageToLearn'] == 'German') echo 'selected'; ?>>German</option>
+
             </select>
+
+                <!-- Add other language options and handle selected attribute similarly -->
+
+            </select>
+
+            <p>Your level <span>*</span></p>
+
+            <select id="level" name="level" class="box">
+
+                <option value="" disabled selected>Specify your current proficiency level</option>
+
+                <option value="Beginner" <?php if ($learnerInfo['ProficiencyLevel'] == 'Beginner') echo 'selected'; ?>>Beginner</option>
+
+                <option value="Intermediate" <?php if ($learnerInfo['ProficiencyLevel'] == 'Intermediate') echo 'selected'; ?>>Intermediate</option>
+
+                <option value="Advanced" <?php if ($learnerInfo['ProficiencyLevel'] == 'Advanced') echo 'selected'; ?>>Advanced</option>
+
+            </select>
+
+                <!-- Add other proficiency level options and handle selected attribute similarly -->
+
+            </select>
+
             <p>Enter your preferred schedule <span>*</span></p>
-            <input type="text" id="preferred_schedule" name="preferred_schedule" placeholder="E.g. weekdays evenings, weekends mornings" maxlength="20" class="box" value="<?php echo $requestDetails['PreferredSchedule']; ?>">
+
+            <input type="text" id="preferred_schedule" name="preferred_schedule" placeholder="E.g. weekdays evenings, weekends mornings" maxlength="20" class="box" value="<?php echo $learnerInfo['PreferredSchedule']; ?>">
+
             <p>Enter your session duration <span>*</span></p>
-            <input type="text" id="session_duration" name="session_duration" placeholder="E.g. 1 hour, 90 minutes" maxlength="20" class="box" value="<?php echo $requestDetails['SessionDuration']; ?>">
-            <!-- Include other form fields -->
+
+            <input type="text" id="session_duration" name="session_duration" placeholder="E.g. 1 hour, 90 minutes" maxlength="20" class="box" value="<?php echo $learnerInfo['SessionDuration']; ?>">
+
+            <p>Learner Goals:</p>
+
+            <textarea id="learner_goals" name="learner_goals" maxlength="200" cols="4" rows="4" class="box"><?php echo $learnerInfo['LearnerGoals']; ?></textarea>
+
             <input type="hidden" name="request_id" value="<?php echo $requestID; ?>">   
-               <!-- Hidden field to pass the request ID for updating -->
-            
+
             <input type="submit" value="Save changes" name="submit" class="btn">
+
         </form>
+
     </section>
 
+
     <footer class="footer">
-        &copy; copyright @ 2024 by <span>CHAT FLUENCY</span> | all rights reserved!
-        <a href="contact.html"><i class="fas fa-headset"></i><span> contact us</span></a>
+
+        <!-- Footer content -->
+
     </footer>
+
     <script src="script.js"></script>
+
     <script>
+
         // Alert message if information updated successfully
+
         let urlParams = new URLSearchParams(window.location.search);
+
         let success = urlParams.get('success');
+
         if (success === 'true') {
+
             alert('Information updated successfully!');
+
         }
+
+
+        // Function to confirm save
+
+        function confirmSave() {
+
+            // Check if any required field is empty
+
+            if (document.getElementById('language').value.trim() === '' || 
+
+                document.getElementById('level').value.trim() === '' || 
+
+                document.getElementById('preferred_schedule').value.trim() === '' || 
+
+                document.getElementById('session_duration').value.trim() === '' || 
+
+                document.getElementById('learner_goals').value.trim() === '') {
+
+                alert('Please fill all fields.');
+
+                return false;
+
+            }
+
+            if (confirm("Are you sure you want to save changes?")) {
+
+                // Redirect to view_request_learner.php
+
+                return true; 
+
+                
+
+            } else {
+
+                return false; // Prevent form submission
+
+            }
+
+    
+
+        }
+
     </script>
+
 </body>
+
 </html>
-
-<?php
-        } else {
-            echo "<p>No details found for this request ID.</p>";
-        }
-    } catch (PDOException $e) {
-        // Handle PDO exceptions
-        echo "Connection failed: " . $e->getMessage();
-    }
-
-    // Close the PDO connection
-    $conn = null;
-} else {
-    // Request ID not provided in the URL
-    echo "<p>Error: Request ID not specified.</p>";
-}
-?>

@@ -115,12 +115,12 @@ if (isset($_SESSION['redirect_message']) && !empty($_SESSION['redirect_message']
    
       <nav class="navbar">
          <a href="profilePartner.php"><i class="fas fa-home"></i><span>home</span></a>
-         <a href="SessionsPartner.php"><i><img src="images/session.png" alt="sessions"></i><span>sessions</span></a>
+         <a href="sessionsPartner.php"><i><img src="images/session.png" alt="sessions"></i><span>sessions</span></a>
          <a href="about_partner.php"><i class="fas fa-question"></i><span>about</span></a>
       </nav>
       <nav>
          <div style="text-align: center; margin-top: 20px; margin-bottom: 150px;">
-         <a href="user_logout.php"  class="inline-btn" >Sign out</a>
+         <a href="user_logout.php" onclick="return confirm('logout from this website?');" class="inline-btn" >Sign out</a>
       </div>
       </nav>
    
