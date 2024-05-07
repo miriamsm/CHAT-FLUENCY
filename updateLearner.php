@@ -279,7 +279,7 @@ if($redirect_message !== '') {
       </nav>
       <nav>
          <div style="text-align: center; margin-top: 20px; margin-bottom: 150px;">
-         <a href="user_logout.php"  class="inline-btn" >Sign out</a>
+         <a href="user_logout.php" onclick="return confirm('logout from this website?');" class="inline-btn" >Sign out</a>
       </div>
       </nav>
    
