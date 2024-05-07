@@ -187,6 +187,10 @@ if (isset($_POST['remove_photo']) && $_POST['remove_photo'] == 'on') {
       }
   
   }
+    // Check if any field has been updated
+if (empty($redirect_message)&& empty($message)) {
+    $message[] = 'No fields were updated!';
+}
   
 }
 $cancel_button_clicked = isset($_POST['cancel']); // Check if the cancel button was clicked
