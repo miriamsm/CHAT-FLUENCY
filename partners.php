@@ -97,7 +97,7 @@ if ($fetch_user) {
                     echo '<p><img alt="star icon" src="https://static.cambly.com/_next/static/media/star.57929b94.svg" style="color: transparent;">  <span>' . $row["Rating"] . '</span></p>';
                     echo '<p><a href="partner_profile.php?partnerID=' . $row["PartnerID"] . '" class="inline-btn">View partner details</a></p>';
                     echo '<p><a href="mailto:' . $row["Email"] . '" class="inline-btn">Arrange meeting</a></p>';
-                    echo '<p><a href="post_request_learner.php" class="inline-btn">Send request</a></p>';
+                    echo '<p><a href="post_request_learner.php?partnerID=' . $row["PartnerID"] . '" class="inline-btn">Send request</a></p>';
                     echo '</div>';
                 }
             } else {

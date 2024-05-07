@@ -122,6 +122,22 @@ if ($fetch_user) {
     // Default name if the query fails or no data is found
     $name = "Guest";
 }
+
+// Calculate elapsed time since request was posted
+$currentTime = time();
+$requestTime = strtotime($row["RequestTimestamp"]);
+$elapsedTime = $currentTime - $requestTime;
+
+// If elapsed time exceeds 48 hours and request is still pending, withdraw the request
+if ($elapsedTime >= 48 * 60 * 60 && $status == "Pending") {
+    $status = "Withdrawn";
+    // Update the status in the database
+    $update_sql = "UPDATE LearningRequests SET Status = ? WHERE RequestID = ?";
+    $stmt = $connection->conn->prepare($update_sql);
+    $stmt->bind_param('si', $status, $request_id);
+    $stmt->execute();
+    echo "<script>alert('Request has been automatically withdrawn due to no response within 48 hours.');</script>";
+}
 ?>
 
 <!DOCTYPE html>
