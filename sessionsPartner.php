@@ -9,11 +9,28 @@ if (isset($_COOKIE['user_id'])) {
    header('location:login.php');
 }
 
+$select_user = $connection->conn->prepare("SELECT * FROM languagepartners WHERE PartnerID = ? LIMIT 1"); 
+$select_user->bind_param("i", $user_id);
+$select_user->execute();
+$fetch_user = $select_user->get_result()->fetch_assoc();
+
+// Check if the query was successful
+if ($fetch_user) {
+    // Get the 'name' attribute from the fetched row
+    $name = $fetch_user['FirstName'];
+} else {
+    // Default name if the query fails or no data is found
+    $name = "Guest";
+}
+
 $partnerId = $user_id;
 
 
 // Fetching scheduled sessions from LearningSessions table
-$sqlCurrent = "SELECT LearningSessions.SessionID, LearningSessions.SessionDate, LearningSessions.SessionDuration, LanguageLearners.FirstName AS LearnerFirstName, LanguageLearners.LastName AS LearnerLastName, LanguagePartners.FirstName AS PartnerFirstName, LanguagePartners.LastName AS PartnerLastName, LanguageLearner.Photo AS LearnerPhoto
+$sqlCurrent = "SELECT LearningSessions.SessionID, LearningSessions.SessionDate, LearningSessions.SessionDuration,
+ LanguageLearners.FirstName AS LearnerFirstName, LanguageLearners.LastName AS LearnerLastName,
+ LanguagePartners.FirstName AS PartnerFirstName, LanguagePartners.LastName AS PartnerLastName, 
+ LanguageLearners.Photo AS LearnerPhoto
                FROM LearningSessions
                INNER JOIN LanguageLearners ON LearningSessions.LearnerID = LanguageLearners.LearnerID
                INNER JOIN LanguagePartners ON LearningSessions.PartnerID = LanguagePartners.PartnerID
@@ -24,7 +41,7 @@ $sqlCurrent = "SELECT LearningSessions.SessionID, LearningSessions.SessionDate, 
 $sqlPrevious = "SELECT LearningSessions.SessionID, LearningSessions.SessionDate, LearningSessions.SessionDuration, 
 LanguageLearners.FirstName AS LearnerFirstName, LanguageLearners.LastName AS LearnerLastName, 
 LanguagePartners.FirstName AS PartnerFirstName, LanguagePartners.LastName AS PartnerLastName,
-LearningSessions.Status, LanguageLearner.Photo AS LearnerPhoto
+LearningSessions.Status, LanguageLearners.Photo AS LearnerPhoto
 FROM LearningSessions
 INNER JOIN LanguageLearners ON LearningSessions.LearnerID = LanguageLearners.LearnerID
 INNER JOIN LanguagePartners ON LearningSessions.PartnerID = LanguagePartners.PartnerID
@@ -33,12 +50,6 @@ ORDER BY LearningSessions.SessionDate DESC";
 
 $resultCurrent = $connection->conn->query($sqlCurrent); // Execute query for scheduled sessions
 $resultPrevious = $connection->conn->query($sqlPrevious); // Execute query for completed or canceled sessions
-
-$sqlSidebar = "SELECT Photo, CONCAT(FirstName, ' ', LastName) AS FullName FROM LanguagePartners WHERE LanguagePartner.PartnerID=$user_id";
-$resultSidebar = $connection->conn->query($sqlSidebar);
-$rowSidebar = $resultSidebar->fetch_assoc();
-$partnerPhoto = $rowSidebar['Photo'];
-$partnerName = $rowSidebar['FullName'];
 
 ?>
 
@@ -73,26 +84,26 @@ $partnerName = $rowSidebar['FullName'];
 
    <div class="side-bar">
 
-<div id="close-btn">
-   <i class="fas fa-times"></i>
-</div>
+   <div id="close-btn">
+      <i class="fas fa-times"></i>
+   </div>
 
-<div class="profile">
-<img src="images/<?php echo $partnerPhoto; ?>" class="image" alt="Partner Photo">
-   <h3 class="name"><?php echo $partnerName; ?></h3>
-   <p class="role">Partner</p>
-</div>
+   <div class="profile">
+   <img src="images/<?= $fetch_user['Photo']; ?>" class="image" alt="profile photo">
+         <h3 class="name"><?= $fetch_user['FirstName'] . ' ' . $fetch_user['LastName']; ?></h3>
+         <p class="role">Partner</p>
+   </div>
 
-<nav class="navbar">
-   <a href="profilePartner.php"><i class="fas fa-home"></i><span>home</span></a>
-   <a href="SessionsPartner.php"><i><img src="images/session.png" alt="sessions"></i><span>sessions</span></a>
-   <a href="about_partner.php"><i class="fas fa-question"></i><span>about</span></a>
-</nav>
-<nav>
-   <div style="text-align: center; margin-top: 20px; margin-bottom: 150px;">
-   <a href="user_logout.php" onclick="return confirm('logout from this website?');" class="inline-btn" >Sign out</a>
-</div>
-</nav>
+   <nav class="navbar">
+      <a href="profilePartner.php"><i class="fas fa-home"></i><span>home</span></a>
+      <a href="SessionsPartner.php"><i><img src="images/session.png" alt="sessions"></i><span>sessions</span></a>
+      <a href="about_partner.php"><i class="fas fa-question"></i><span>about</span></a>
+   </nav>
+   <nav>
+      <div style="text-align: center; margin-top: 20px; margin-bottom: 150px;">
+      <a href="user_logout.php" onclick="return confirm('logout from this website?');" class="inline-btn" >Sign out</a>
+   </div>
+   </nav>
 
 </div>
 
@@ -164,8 +175,7 @@ $partnerName = $rowSidebar['FullName'];
    <footer style="margin-top : 80px;" class="footer">
    &copy; copyright @ 2024 by <span>CHAT FLUENCY</span> | all rights reserved!
    <a href="contact_partner.php"><i class="fas fa-headset"></i><span> contact us</span></a>
-</footer>/footer>
-
+</footer>
    <!-- custom js file link  -->
    <script src="js/script.js"></script>
 
