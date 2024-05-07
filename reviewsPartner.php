@@ -27,12 +27,6 @@ if (!$result) {
    die("Query failed: " . $conn->error); // Output error message if query fails
 }
 
-$sqlSidebar = "SELECT Photo, CONCAT(FirstName, ' ', LastName) AS FullName FROM LanguagePartners WHERE LanguagePartner.PartnerID=$user_id";
-$resultSidebar = $connection->conn->query($sqlSidebar);
-$rowSidebar = $resultSidebar->fetch_assoc();
-$partnerPhoto = $rowSidebar['Photo'];
-$partnerName = $rowSidebar['FullName'];
-
 ?>
 
 <!DOCTYPE html>
@@ -66,9 +60,9 @@ $partnerName = $rowSidebar['FullName'];
 </div>
 
 <div class="profile">
-<img src="images/<?php echo $partnerPhoto; ?>" class="image" alt="Partner Photo">
-   <h3 class="name"><?php echo $partnerName; ?></h3>
-   <p class="role">Partner</p>
+<img src="images/<?= $fetch_user['Photo']; ?>" class="image" alt="profile photo">
+      <h3 class="name"><?= $fetch_user['FirstName'] . ' ' . $fetch_user['LastName']; ?></h3>
+      <p class="role">Partner</p>
 </div>
 
 <nav class="navbar">
