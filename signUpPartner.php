@@ -150,10 +150,20 @@ if(isset($_FILES['photo']['name']) && !empty($_FILES['photo']['name'])) {
 
       <p>Your city <span>*</span></p> 
       <input type="text" name="city" placeholder="enter your city" required maxlength="50" class="box"> 
-      
       <p>Your spoken language <span>*</span></p> 
-      <input type="text" name="spoken_language" placeholder="enter your spoken language" required maxlength="50" class="box"> 
-     
+  <select id="language" name="spoken_language" class="box">
+     <option value="" disabled selected>Specify the language you speak</option>
+     <option value="English">English</option>
+     <option value="Spanish">Spanish</option>
+     <option value="French">French</option>
+     <option value="Mandarin Chinese">Mandarin Chinese</option>
+     <option value="Arabic">Arabic</option>
+     <option value="Hindi">Hindi</option>
+     <option value="Russian">Russian</option>
+     <option value="Portuguese">Portuguese</option>
+     <option value="Bengali">Bengali</option>
+     <option value="German">German</option>
+  </select>
       <p>Your short bio(Spoken language and cultural knowledge) <span>*</span></p> 
       <textarea name="short_bio" placeholder="enter your short bio" required maxlength="200" class="box" rows="3"></textarea> 
 
